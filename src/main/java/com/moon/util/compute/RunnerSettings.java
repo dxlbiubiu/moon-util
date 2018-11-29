@@ -1,7 +1,7 @@
 package com.moon.util.compute;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.moon.util.compute.core.BaseSettings;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -9,139 +9,78 @@ import java.util.function.Supplier;
 /**
  * @author benshaoye
  */
-public class RunnerSettings {
+public final class RunnerSettings extends BaseSettings {
 
-    protected Supplier<List> arrCreator;
-    protected Supplier<Map> objCreator;
-    private final Map<String, Class> callers = new HashMap<>();
+    final static Object NULL = null;
 
-    private RunnerSettings(Map<? extends String, ? extends Class> callers, Supplier<List> arrCreator, Supplier<Map> objCreator) {
-        this.callers.putAll(callers);
-        this.arrCreator = arrCreator;
-        this.objCreator = objCreator;
+    private RunnerSettings() {
     }
 
-    public Supplier<List> getArrCreator() {
-        return arrCreator;
-    }
-
-    public Supplier<Map> getObjCreator() {
-        return objCreator;
-    }
-
+    @Override
     public RunnerSettings setArrCreator(Supplier<List> arrCreator) {
-        this.arrCreator = arrCreator;
+        super.setArrCreator(arrCreator);
         return this;
     }
 
+    @Override
     public RunnerSettings setObjCreator(Supplier<Map> objCreator) {
-        this.objCreator = objCreator;
+        super.setObjCreator(objCreator);
         return this;
     }
 
+    @Override
     public RunnerSettings addCaller(Class clazz) {
-        return addCaller(clazz.getSimpleName(), clazz);
+        super.addCaller(clazz);
+        return this;
     }
 
+    @Override
     public RunnerSettings addCallers(Class... classes) {
-        for (Class type : classes) {
-            addCaller(type);
-        }
+        super.addCallers(classes);
         return this;
     }
 
+    @Override
+    public RunnerSettings addCaller(RunnerFunction runner) {
+        super.addCaller(runner);
+        return this;
+    }
+
+    @Override
+    public RunnerSettings addCallers(List<RunnerFunction> runners) {
+        super.addCallers(runners);
+        return this;
+    }
+
+    @Override
     public RunnerSettings addCaller(String name, Class staticCallerClass) {
-        this.callers.put(name, staticCallerClass);
+        super.addCaller(name, staticCallerClass);
         return this;
     }
 
+    @Override
     public RunnerSettings addCallers(Map<String, Class> callers) {
-        this.callers.putAll(callers);
+        super.addCallers(callers);
         return this;
     }
 
+    @Override
     public RunnerSettings removeCaller(String name) {
-        this.callers.remove(name);
+        super.removeCaller(name);
         return this;
     }
 
+    @Override
     public RunnerSettings removeCallers(String... names) {
-        for (String name : names) {
-            this.callers.remove(name);
-        }
+        super.removeCallers(names);
         return this;
     }
 
-    public Class getCaller(String name) {
-        return this.callers.get(name);
+    public final static RunnerSettings builder() {
+        return new RunnerSettings();
     }
 
-    public final static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Supplier arrCreator = ArrayList::new;
-        private Supplier<Map> objCreator = HashMap::new;
-        private Map<String, Class> callers = new HashMap<>();
-
-        public Supplier getArrCreator() {
-            return arrCreator;
-        }
-
-        public Builder setArrCreator(Supplier arrCreator) {
-            this.arrCreator = arrCreator;
-            return this;
-        }
-
-        public Supplier<Map> getObjCreator() {
-            return objCreator;
-        }
-
-        public Builder setObjCreator(Supplier<Map> objCreator) {
-            this.objCreator = objCreator;
-            return this;
-        }
-
-        public Map<String, Class> getCallers() {
-            return callers;
-        }
-
-        public Builder addCaller(String name, Class staticCallerClass) {
-            this.callers.put(name, staticCallerClass);
-            return this;
-        }
-
-        public Builder addCaller(Class clazz) {
-            return addCaller(clazz.getSimpleName(), clazz);
-        }
-
-        public Builder addCallers(Class... classes) {
-            for (Class type : classes) {
-                addCaller(type);
-            }
-            return this;
-        }
-
-        public Builder addCallers(Map<String, Class> callers) {
-            this.callers.putAll(callers);
-            return this;
-        }
-
-        public Builder removeCaller(String name) {
-            this.callers.remove(name);
-            return this;
-        }
-
-        public Builder removeCallers(String... names) {
-            for (String name : names) {
-                this.callers.remove(name);
-            }
-            return this;
-        }
-
-        public RunnerSettings build() {
-            return new RunnerSettings(callers, arrCreator, objCreator);
-        }
+    public RunnerSettings build() {
+        return this;
     }
 }

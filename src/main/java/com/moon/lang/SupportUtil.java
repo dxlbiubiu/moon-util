@@ -145,7 +145,7 @@ public final class SupportUtil {
     }
 
     public final static <T> T throwErr(char[] chars, IntAccessor indexer) {
-        int amount = 8, len = chars.length, index = indexer.get();
+        int amount = 12, len = chars.length, index = indexer.get();
         int end = index + amount < len ? index + amount : len;
         int start = index < amount ? 0 : index - amount;
         throw new IllegalArgumentException(

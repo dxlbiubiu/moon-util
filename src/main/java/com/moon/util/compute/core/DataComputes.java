@@ -109,11 +109,6 @@ enum DataComputes implements AsCompute {
         }
     },
     AND(ConstPriorities.AND) {
-        @Override
-        public Object handle(Object o2, Object o1) {
-            throw new UnsupportedOperationException();
-        }
-
         /**
          * 计算
          *
@@ -128,11 +123,6 @@ enum DataComputes implements AsCompute {
         }
     },
     OR(ConstPriorities.OR) {
-        @Override
-        public Object handle(Object o2, Object o1) {
-            throw new UnsupportedOperationException();
-        }
-
         /**
          * 计算
          *
@@ -149,13 +139,31 @@ enum DataComputes implements AsCompute {
     NOT_EQ(ConstPriorities.NOT_EQ) {
         @Override
         public Object handle(Object right, Object left) {
+            if (right == left) {
+                return false;
+            }
+            if (right instanceof Number && left instanceof Number) {
+                if (right instanceof Double || right instanceof Float || left instanceof Double || left instanceof Float) {
+                    return ((Number) right).doubleValue() == ((Number) left).doubleValue();
+                }
+                return ((Number) right).intValue() == ((Number) left).intValue();
+            }
             return Boolean.valueOf(!Objects.equals(right, left));
         }
     },
     EQ(ConstPriorities.EQ) {
         @Override
         public Object handle(Object o2, Object o1) {
-            return o1 == o2 || Boolean.valueOf(Objects.equals(o1, o2));
+            if (o1 == o2) {
+                return true;
+            }
+            if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Double || o1 instanceof Float || o2 instanceof Double || o2 instanceof Float) {
+                    return ((Number) o1).doubleValue() == ((Number) o2).doubleValue();
+                }
+                return ((Number) o1).intValue() == ((Number) o2).intValue();
+            }
+            return Boolean.valueOf(Objects.equals(o1, o2));
         }
     },
     GT(ConstPriorities.GT) {
@@ -166,6 +174,12 @@ enum DataComputes implements AsCompute {
             }
             if (o2 == null) {
                 return Boolean.TRUE;
+            }
+            if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Double || o1 instanceof Float || o2 instanceof Double || o2 instanceof Float) {
+                    return ((Number) o1).doubleValue() > ((Number) o2).doubleValue();
+                }
+                return ((Number) o1).intValue() > ((Number) o2).intValue();
             }
             return ((Comparable) o1).compareTo(o2) > 0;
         }
@@ -179,6 +193,12 @@ enum DataComputes implements AsCompute {
             if (o1 == null) {
                 return Boolean.TRUE;
             }
+            if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Double || o1 instanceof Float || o2 instanceof Double || o2 instanceof Float) {
+                    return ((Number) o1).doubleValue() < ((Number) o2).doubleValue();
+                }
+                return ((Number) o1).intValue() < ((Number) o2).intValue();
+            }
             return ((Comparable) o1).compareTo(o2) < 0;
         }
     },
@@ -191,6 +211,12 @@ enum DataComputes implements AsCompute {
             if (o1 == null) {
                 return Boolean.FALSE;
             }
+            if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Double || o1 instanceof Float || o2 instanceof Double || o2 instanceof Float) {
+                    return ((Number) o1).doubleValue() >= ((Number) o2).doubleValue();
+                }
+                return ((Number) o1).intValue() >= ((Number) o2).intValue();
+            }
             return ((Comparable) o1).compareTo(o2) >= 0;
         }
     },
@@ -202,6 +228,12 @@ enum DataComputes implements AsCompute {
             }
             if (o2 == null) {
                 return Boolean.FALSE;
+            }
+            if (o1 instanceof Number && o2 instanceof Number) {
+                if (o1 instanceof Double || o1 instanceof Float || o2 instanceof Double || o2 instanceof Float) {
+                    return ((Number) o1).doubleValue() <= ((Number) o2).doubleValue();
+                }
+                return ((Number) o1).intValue() <= ((Number) o2).intValue();
             }
             return ((Comparable) o1).compareTo(o2) <= 0;
         }

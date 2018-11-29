@@ -2,10 +2,8 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
-import com.moon.util.compute.RunnerSettings;
 
 import java.util.LinkedList;
-import java.util.Objects;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 
@@ -49,13 +47,13 @@ final class ParseGetter {
      * @return
      */
     private final static AsValuer parseDot(char[] chars, IntAccessor indexer, int len) {
-        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
+        int curr = ParseUtil.nextVal(chars, indexer, len);
         ParseUtil.assertTrue(ParseUtil.isVar(curr), chars, indexer);
         return parseVar(chars, indexer, len, curr);
     }
 
     final static AsRunner parseDot(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner prevHandler
     ) {
         AsValuer prevValuer = (AsValuer) prevHandler;
         AsRunner handler = parseDot(chars, indexer, len);
@@ -65,10 +63,10 @@ final class ParseGetter {
     }
 
     final static AsRunner parseNot(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings
     ) {
-        AsRunner valuer, parsed;
-        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
+        AsRunner valuer, tryLinked;
+        int curr = ParseUtil.nextVal(chars, indexer, len);
         switch (curr) {
             case Constants.FANG_LEFT:
                 valuer = parseFang(chars, indexer, len, settings);
@@ -80,7 +78,7 @@ final class ParseGetter {
                 valuer = ParseCurly.parse(chars, indexer, len, settings);
                 break;
             case Constants.CALLER:
-                valuer = parseCaller(chars, indexer, len, settings);
+                valuer = ParseCaller.parse(chars, indexer, len, settings);
                 break;
             default:
                 if (ParseUtil.isVar(curr)) {
@@ -96,18 +94,23 @@ final class ParseGetter {
                 }
                 break;
         }
-        parsed = tryParseLinked(chars, indexer, len, settings, valuer);
-        return parsed == valuer && parsed.isConst() ? valuer
-            : new DataGetterNot(parsed);
+        tryLinked = tryParseLinked(chars, indexer, len, settings, valuer);
+        return tryLinked == valuer && tryLinked.isConst() ? flip(chars, indexer, tryLinked)
+            : new DataGetterNot(tryLinked);
+    }
+
+    private static AsRunner flip(char[] chars, IntAccessor indexer, AsRunner valuer) {
+        ParseUtil.assertTrue(valuer instanceof DataConstBoolean, chars, indexer);
+        return ((DataConstBoolean) valuer).flip();
     }
 
     final static AsRunner tryParseLinked(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner valuer
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner valuer
     ) {
         final int index = indexer.get();
         AsRunner next = valuer;
         for (int curr; ; ) {
-            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
+            curr = ParseUtil.nextVal(chars, indexer, len);
             if (curr == Constants.DOT) {
                 next = parseDot(chars, indexer, len, settings, next);
             } else if (curr == Constants.FANG_LEFT) {
@@ -129,14 +132,14 @@ final class ParseGetter {
      * @param len
      * @return
      */
-    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
+    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
         AsRunner handler = ParseCore.parse(chars, indexer, len, settings, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
     }
 
     /**
-     * 参考{@link ParseCore#core(char[], IntAccessor, int, RunnerSettings, int, LinkedList, LinkedList, AsRunner)}
+     * 参考{@link ParseCore#core(char[], IntAccessor, int, BaseSettings, int, LinkedList, LinkedList, AsRunner)}
      * case FANG_LEFT: 的详细步骤
      *
      * @param chars
@@ -146,39 +149,14 @@ final class ParseGetter {
      * @return
      */
     private final static AsRunner parseFangToComplex(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner prevHandler
     ) {
         AsRunner handler = ParseGetter.parseFang(chars, indexer, len, settings);
         ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
         return ((DataGetterFang) handler).toComplex(prevHandler);
     }
 
-    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
+    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
         return ParseCore.parse(chars, indexer, len, settings, Constants.YUAN_RIGHT);
-    }
-
-    final static AsRunner parseCaller(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
-        int curr = chars[indexer.get()];
-        AsRunner runner;
-        if (curr == Constants.CALLER) {
-            // 为自定义静态类留位置，调用方式是两个‘@’：@@CustomType.method()
-            throw new UnsupportedOperationException("@@");
-        } else {
-            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
-            if (ParseUtil.isVar(curr)) {
-                runner = parseVar(chars, indexer, len, curr);
-                runner = new DataConstLoader(parseCaller(runner, settings));
-            } else {
-                ParseUtil.throwErr(chars, indexer);
-                // 为更多符号留位置，比如动态变化的类，等
-                throw new UnsupportedOperationException();
-            }
-        }
-        return Objects.requireNonNull(runner);
-    }
-
-    private final static Class parseCaller(AsRunner runner, RunnerSettings settings) {
-        Class caller = settings == null ? ILoader.of(runner.toString()) : settings.getCaller(runner.toString());
-        return caller == null ? ILoader.of(runner.toString()) : caller;
     }
 }

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.moon.util.assertions.Assertions.of;
 
@@ -26,6 +27,7 @@ import static com.moon.util.assertions.Assertions.of;
 class RunnerUtilTestTest {
     static final Assertions assertions = of();
     Object data, res;
+    Runner runner;
 
     @Test
     void testMapAndList() {
@@ -269,12 +271,15 @@ class RunnerUtilTestTest {
         assertions.assertEquals(RunnerUtil.run("1>>1"), 1 >> 1);
         assertions.assertEquals(RunnerUtil.run("1>>>1"), 1 >>> 1);
         assertions.assertEquals(RunnerUtil.run("2>>>2"), 2 >>> 2);
+        assertions.assertEquals(RunnerUtil.run("3>>>5"), 3 >>> 5);
+        assertions.assertEquals(RunnerUtil.run("8>>>2"), 8 >>> 2);
         assertions.assertEquals(RunnerUtil.run("1==1"), 1 == 1);
         assertions.assertEquals(RunnerUtil.run("1!=1"), 1 != 1);
         assertions.assertEquals(RunnerUtil.run("1|1"), 1 | 1);
         assertions.assertEquals(RunnerUtil.run("1&1"), 1 & 1);
         assertions.assertEquals(RunnerUtil.run("1^1"), 1 ^ 1);
         assertions.assertEquals(RunnerUtil.run("3>4?1:2"), 3 > 4 ? 1 : 2);
+        assertions.assertEquals(RunnerUtil.run("9+44*(8-2/1)"), 9 + 44 * (8 - 2 / 1));
 
         data = new HashMap() {{
             put("money", 2640);
@@ -283,8 +288,135 @@ class RunnerUtilTestTest {
             put("cat", 1);
         }};
         runner = RunnerUtil.parse("((money+count)*people/100)+50-88+cat*10");
-        int money = 2640, count = 50, people = 25, cat = 1;
+        int money = 2640, count = 50, people = 25, cat = 1, x = 2;
         assertions.assertEquals(runner.run(data), ((money + count) * people / 100) + 50 - 88 + cat * 10);
+
+        data = new HashMap() {{
+            put("value", 7);
+            put("st", "test");
+            put("state", "正常");
+            put("flag", true);
+        }};
+        int value = 7;
+        String st = "test", state = "正常";
+        boolean flag = true;
+        runner = RunnerUtil.parse("value > 5 && st == \"test\" && state == \"正常\" && flag == true");
+        assertions.assertEquals(runner.run(data), value > 5 && Objects.equals("test", st) && Objects.equals("正常", state) && flag == true);
+        runner = RunnerUtil.parse("value > 5 && st =='test' && state == '正常' && flag == true");
+        assertions.assertEquals(runner.run(data), value > 5 && Objects.equals("test", st) && Objects.equals("正常", state) && flag == true);
+        runner = RunnerUtil.parse("1 + 2 * (4 - 3) / 2");
+        assertions.assertEquals(runner.run(), 1 + 2 * (4 - 3) / 2);
+        runner = RunnerUtil.parse("(10 + 20) * 3 / 5 - 6");
+        assertions.assertEquals(runner.run(), (10 + 20) * 3 / 5 - 6);
+        runner = RunnerUtil.parse("110 + 2 * (40 - 3) / 2");
+        assertions.assertEquals(runner.run(), 110 + 2 * (40 - 3) / 2);
+        runner = RunnerUtil.parse("3+(2-5)*6/3 ");
+        assertions.assertEquals(runner.run(), 3 + (2 - 5) * 6 / 3);
+        runner = RunnerUtil.parse("5 * ( 4.1 + 2 -6 /(8-2))");
+        assertions.assertEquals(runner.run(), 5 * (4.1 + 2 - 6 / (8 - 2)));
+        runner = RunnerUtil.parse("5 * ( 4.1 + 2.9 )");
+        assertions.assertEquals(runner.run(), 5 * (4.1 + 2.9));
+        runner = RunnerUtil.parse("14/3*2");
+        assertions.assertEquals(runner.run(), 14 / 3 * 2);
+
+    }
+
+    @Test
+    void testPerformance() {
+        str = "1000+100.0*99-(600-3*15)/(((68-9)-3)*2-100)+10000%7*71";
+        res = 1000 + 100.0 * 99 - (600 - 3 * 15) / (((68 - 9) - 3) * 2 - 100) + 10000 % 7 * 71;
+
+        runner = RunnerUtil.parse(str);
+        assertions.assertEquals(runner.run(), res);
+
+        runner = RunnerUtil.parse(str);
+        int count = 10000000;
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            res = runner.run();
+        }
+        Console.out.timeEnd();
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            res = 1000 + 100.0 * 99 - (600 - 3 * 15) / (((68 - 9) - 3) * 2 - 100) + 10000 % 7 * 71;
+        }
+        Console.out.timeEnd();
+
+        // ---------------------------------------------------------------------------------------
+    }
+
+    @Test
+    void testPerformance1() {
+        str = "6.7 - 100 > 39.6 ? 5 == 5 ? 4 + 5 : 6 - 1 : !(100 % 3 - 39.0 < 27) ? 8 * 2 - 199 : 100 % 3";
+        runner = RunnerUtil.parse(str);
+
+        res = 6.7 - 100 > 39.6 ? 5 == 5 ? 4 + 5 : 6 - 1 : !(100 % 3 - 39.0 < 27) ? 8 * 2 - 199 : 100 % 3;
+        assertions.assertEquals(runner.run(), res);
+
+        str = "6.7 - 100 > 39.6 ? (5 == 5 ? 4 + 5 : 6 - 1) : (!(100 % 3 - 39.0 < 27) ? (8 * 2 - 199) : 100 % 3)";
+        runner = RunnerUtil.parse(str);
+        res = 6.7 - 100 > 39.6 ? (5 == 5 ? 4 + 5 : 6 - 1) : (!(100 % 3 - 39.0 < 27) ? (8 * 2 - 199) : 100 % 3);
+        assertions.assertEquals(runner.run(), res);
+
+        final Runner er = runner;
+        int count = 10000000;
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            res = 6.7 - 100 > 39.6 ? 5 == 5 ? 4 + 5 : 6 - 1 : !(100 % 3 - 39.0 < 27) ? 8 * 2 - 199 : 100 % 3;
+        }
+        Console.out.timeEnd();
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            res = er.run();
+        }
+        Console.out.timeEnd();
+    }
+
+    @Test
+    void testRandom() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        System.out.println(random.nextDouble());
+        System.out.println(random.nextDouble(20));
+        System.out.println(random.nextDouble(10, 20));
+    }
+
+    @Test
+    void testPerformance2() {
+        data = new HashMap() {{
+            put("i", 100);
+            put("pi", 3.14f);
+            put("d", -3.9);
+            put("b", (byte) 4);
+            put("bool", false);
+        }};
+        str = "i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99 ==i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99";
+        runner = RunnerUtil.parse(str);
+
+        int i = 100, b = 4;
+        double d = -3.9;
+        res = i * Math.PI + (d * b - 199) / (1 - d * Math.PI) - (2 + 100 - i / Math.PI) % 99 == i * Math.PI + (d * b - 199) / (1 - d * Math.PI) - (2 + 100 - i / Math.PI) % 99;
+        assertions.assertEquals(res, runner.run(data));
+
+        final Runner er = runner;
+        int count = 1000;
+        Console.out.time();
+        for (int j = 0; j < count; j++) {
+            res = 6.7 - 100 > 39.6 ? 5 == 5 ? 4 + 5 : 6 - 1 : !(100 % 3 - 39.0 < 27) ? 8 * 2 - 199 : 100 % 3;
+        }
+        Console.out.timeEnd();
+        Console.out.time();
+        for (int j = 0; j < count; j++) {
+            res = er.run(data);
+        }
+        Console.out.timeEnd();
+    }
+
+    @Test
+    void testParse0() {
+        str = "1+5+i";
+        runner = RunnerUtil.parse(str);
+        System.out.println();
     }
 
     public static class Caller {

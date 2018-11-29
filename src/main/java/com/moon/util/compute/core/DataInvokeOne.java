@@ -10,9 +10,9 @@ import java.util.Objects;
 final class DataInvokeOne extends DataInvokeBase {
 
     final AsValuer prevValuer;
-    final AsValuer valuer;
+    final AsRunner valuer;
 
-    public DataInvokeOne(AsValuer prevValuer, AsValuer valuer, String methodName) {
+    public DataInvokeOne(AsValuer prevValuer, AsRunner valuer, String methodName) {
         super(methodName);
         this.valuer = Objects.requireNonNull(valuer);
         this.prevValuer = Objects.requireNonNull(prevValuer);

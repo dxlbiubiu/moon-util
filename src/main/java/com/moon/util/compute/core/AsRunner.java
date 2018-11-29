@@ -5,6 +5,7 @@ import com.moon.util.compute.Runner;
 /**
  * @author benshaoye
  */
+@FunctionalInterface
 interface AsRunner extends Runner {
     /**
      * 使用外部数据
@@ -86,6 +87,15 @@ interface AsRunner extends Runner {
      * @return
      */
     default boolean isGetter() {
+        return false;
+    }
+
+    /**
+     * 是否是赋值器
+     *
+     * @return
+     */
+    default boolean isSetter() {
         return false;
     }
 

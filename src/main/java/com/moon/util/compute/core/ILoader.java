@@ -45,7 +45,7 @@ final class ILoader {
 
     private final static Map<String, Class> CACHE = ReferenceUtil.weakMap();
 
-    public final static Class of(String name) {
+    public final static Class tryLoad(String name) {
         Class type = CACHE.get(name);
         if (type == null) {
             for (String packageName : packages) {
@@ -60,9 +60,14 @@ final class ILoader {
                 }
             }
         }
-        if (type != null) {
-            return type;
+        return type;
+    }
+
+    public final static Class of(String name) {
+        Class type = tryLoad(name);
+        if (type == null) {
+            throw new IllegalArgumentException("can not find class of key: " + name);
         }
-        throw new IllegalArgumentException("can not find class of key: " + name);
+        return type;
     }
 }

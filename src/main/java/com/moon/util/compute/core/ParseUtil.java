@@ -59,7 +59,7 @@ public class ParseUtil {
      * @param len
      * @return
      */
-    final static int skipWhitespaces(char[] chars, IntAccessor indexer, final int len) {
+    final static int nextVal(char[] chars, IntAccessor indexer, final int len) {
         return SupportUtil.skipWhitespaces(chars, indexer, len);
     }
 

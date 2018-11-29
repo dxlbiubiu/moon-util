@@ -1,7 +1,6 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
-import com.moon.util.compute.RunnerSettings;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -20,9 +19,9 @@ final class ParseCurly {
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings
     ) {
-        int curr = ParseUtil.skipWhitespaces(chars, indexer, len);
+        int curr = ParseUtil.nextVal(chars, indexer, len);
         AsRunner handler = tryEmpty(chars, indexer, len, curr);
         if (handler == null) {
             LinkedList<BiConsumer> creators = new LinkedList<>();
@@ -35,7 +34,7 @@ final class ParseCurly {
     }
 
     private final static AsRunner parseList(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int curr,
         final LinkedList<BiConsumer> creators
     ) {
         AsRunner valuer;
@@ -61,9 +60,9 @@ final class ParseCurly {
                     break inner;
             }
             creators.add(new ListAdder(valuer));
-            next = ParseUtil.skipWhitespaces(chars, indexer, len);
+            next = ParseUtil.nextVal(chars, indexer, len);
             if (next == COMMA && (valuer != DataConst.NULL || (curr != COMMA && curr != YUAN_LEFT))) {
-                next = ParseUtil.skipWhitespaces(chars, indexer, len);
+                next = ParseUtil.nextVal(chars, indexer, len);
             }
         }
     }
@@ -83,7 +82,7 @@ final class ParseCurly {
     }
 
     private final static AsRunner parseMap(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int curr,
         final LinkedList<BiConsumer> creators
     ) {
         AsRunner key;
@@ -109,13 +108,13 @@ final class ParseCurly {
                     break;
             }
             ParseUtil.assertTrue(
-                ParseUtil.skipWhitespaces(
+                ParseUtil.nextVal(
                     chars, indexer, len
                 ) == COLON, chars, indexer
             );
 
             index = indexer.get();
-            next = ParseUtil.skipWhitespaces(chars, indexer, len);
+            next = ParseUtil.nextVal(chars, indexer, len);
             ParseUtil.assertTrue(
                 next != COMMA && next != HUA_RIGHT, chars, indexer
             );
@@ -128,7 +127,7 @@ final class ParseCurly {
                 )
             ));
             if ((next = chars[indexer.get() - 1]) == COMMA) {
-                next = ParseUtil.skipWhitespaces(chars, indexer, len);
+                next = ParseUtil.nextVal(chars, indexer, len);
             }
         }
     }
@@ -149,7 +148,7 @@ final class ParseCurly {
     }
 
     private static AsGetter createAsGetter(
-        LinkedList<BiConsumer> creators, RunnerSettings settings, CreateType type
+        LinkedList<BiConsumer> creators, BaseSettings settings, CreateType type
     ) {
         return creators.isEmpty() ? type
             : new DataGetterCurly(
@@ -192,12 +191,12 @@ final class ParseCurly {
     }
 
     private final static CreateType doNext(char[] chars, IntAccessor indexer, int len) {
-        return ParseUtil.skipWhitespaces(chars, indexer, len) == COLON ? CreateType.MAP : CreateType.LIST;
+        return ParseUtil.nextVal(chars, indexer, len) == COLON ? CreateType.MAP : CreateType.LIST;
     }
 
     private final static AsRunner tryEmpty(char[] chars, IntAccessor indexer, int len, int curr) {
         if (curr == COLON) {
-            int next = ParseUtil.skipWhitespaces(chars, indexer, len);
+            int next = ParseUtil.nextVal(chars, indexer, len);
             ParseUtil.assertTrue(next == HUA_RIGHT, chars, indexer);
             return CreateType.MAP;
         } else if (curr == HUA_RIGHT) {
@@ -212,10 +211,10 @@ final class ParseCurly {
      * --------------------------------------------------------------
      */
 
-    private enum CreateType implements AsGetter, Supplier, Function<RunnerSettings, Supplier> {
+    private enum CreateType implements AsGetter, Supplier, Function<BaseSettings, Supplier> {
         MAP {
             @Override
-            public Supplier apply(RunnerSettings settings) {
+            public Supplier apply(BaseSettings settings) {
                 return settings == null ? MAP : Objects.requireNonNull(settings.getObjCreator());
             }
 
@@ -236,7 +235,7 @@ final class ParseCurly {
         },
         LIST {
             @Override
-            public Supplier apply(RunnerSettings settings) {
+            public Supplier apply(BaseSettings settings) {
                 return settings == null ? LIST : Objects.requireNonNull(settings.getArrCreator());
             }
 

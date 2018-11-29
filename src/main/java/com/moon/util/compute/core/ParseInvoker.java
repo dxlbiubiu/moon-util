@@ -2,13 +2,9 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 import com.moon.lang.reflect.FieldUtil;
-import com.moon.util.compute.Runner;
-import com.moon.util.compute.RunnerSettings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 import static com.moon.lang.SupportUtil.matchOne;
@@ -16,7 +12,7 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.lang.reflect.FieldUtil.getAccessibleField;
 import static com.moon.lang.reflect.MethodUtil.getPublicStaticMethods;
 import static com.moon.util.compute.core.Constants.*;
-import static com.moon.util.compute.core.ParseUtil.skipWhitespaces;
+import static com.moon.util.compute.core.ParseUtil.nextVal;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -30,17 +26,17 @@ final class ParseInvoker {
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
     final static AsRunner tryParseInvoker(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, String name, AsValuer prevValuer
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
         final boolean isStatic = prevValuer instanceof DataConstLoader;
-        if (skipWhitespaces(chars, indexer, len) == YUAN_LEFT) {
-            if (skipWhitespaces(chars, indexer, len) == YUAN_RIGHT) {
+        if (nextVal(chars, indexer, len) == YUAN_LEFT) {
+            if (nextVal(chars, indexer, len) == YUAN_RIGHT) {
                 // 无参方法调用
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
                 // 带有参数的方法调用
-                return parseHasParams(chars, indexer.minus(), len,settings, prevValuer, name, isStatic);
+                return parseHasParams(chars, indexer.minus(), len, settings, prevValuer, name, isStatic);
             }
         } else {
             // 静态字段检测
@@ -53,24 +49,19 @@ final class ParseInvoker {
      * 带有参数的方法调用
      */
     private final static AsRunner parseHasParams(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings,
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings,
         AsValuer prev, String name, boolean isStatic
     ) {
-        for (List valuers = new ArrayList(); ; ) {
-            valuers.add(ParseCore.parse(chars, indexer, len, settings,YUAN_RIGHT, COMMA));
-            if (chars[indexer.get() - 1] == YUAN_RIGHT) {
-                return valuers.size() > 1
-                    ? parseMultiParamCaller(valuers, prev, name, isStatic)
-                    : parseOnlyParamCaller(valuers, prev, name, isStatic);
-            }
-        }
+        AsRunner[] params = ParseParams.parse(chars, indexer, len, settings);
+        return params.length>1? parseMultiParamCaller(params, prev, name, isStatic)
+            : parseOnlyParamCaller(params, prev, name, isStatic);
     }
 
     /**
      * 多参数调用的方法
      */
     private final static AsRunner parseMultiParamCaller(
-        List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
+        AsRunner[] params, AsValuer prev, String name, boolean isStatic
     ) {
         if (isStatic) {
 
@@ -84,15 +75,15 @@ final class ParseInvoker {
      * 带有一个参数的方法
      */
     private final static AsRunner parseOnlyParamCaller(
-        List<AsValuer> valuers, AsValuer prev, String name, boolean isStatic
+        AsRunner[] valuers, AsValuer prev, String name, boolean isStatic
     ) {
         if (isStatic) {
             // 静态方法
             Class sourceType = ((DataConstLoader) prev).getValue();
-            return EnsureInvokerOne.of(valuers.get(0), sourceType, name);
+            return EnsureInvokerOne.of(valuers[0], sourceType, name);
         } else {
             // 成员方法
-            return new DataInvokeOne(prev, valuers.get(0), name);
+            return new DataInvokeOne(prev, valuers[0], name);
         }
     }
 

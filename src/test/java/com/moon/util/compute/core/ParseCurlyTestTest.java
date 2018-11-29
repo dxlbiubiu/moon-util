@@ -5,7 +5,6 @@ import com.moon.util.Console;
 import com.moon.util.ListUtil;
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
-import com.moon.util.compute.RunnerSettings;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ class ParseCurlyTestTest {
         char[] chars = expression.toCharArray();
         IntAccessor indexer = IntAccessor.of();
         int length = chars.length;
-        ParseUtil.skipWhitespaces(chars, indexer, length);
+        ParseUtil.nextVal(chars, indexer, length);
         return ParseCurly.parse(chars, indexer, length, null);
     }
 

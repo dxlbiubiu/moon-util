@@ -9,28 +9,53 @@ import java.util.List;
  * @author benshaoye
  */
 class DataGetterCalculator implements AsGetter {
-    final AsRunner[] handlers;
+    final AsRunner[] runners;
 
-    private DataGetterCalculator(List<AsRunner> handlers) {
-        this.handlers = handlers.toArray(new AsRunner[handlers.size()]);
+    private DataGetterCalculator(AsRunner[] runners) {
+        this.runners = runners;
     }
 
-    final static AsRunner valueOf(List<AsRunner> handlers) {
-        AsRunner handler;
-        int size = handlers.size();
+    final static AsRunner valueOf(List<AsRunner> runners) {
+        int size = runners.size();
         if (size == 0) {
             return DataConst.NULL;
         }
-        if (size == 1 && (handler = handlers.get(0)).isValuer()) {
-            return handler;
+        if (size == 1 && runners.get(0).isValuer()) {
+            return runners.get(0);
         }
-        DataGetterCalculator calculator = new DataGetterCalculator(handlers);
-        for (AsRunner current : handlers) {
-            if (current.isValuer() && !current.isConst()) {
-                return calculator;
+        return preRun(toArr(runners));
+    }
+
+    private static AsRunner[] toArr(List<AsRunner> runners) {
+        return runners.toArray(new AsRunner[runners.size()]);
+    }
+
+    private static AsRunner preRun(AsRunner[] runnerArr) {
+        LinkedList<AsRunner> result = new LinkedList();
+        final int length = runnerArr.length;
+        AsRunner right, left;
+        AsRunner operator;
+        for (int i = 0; i < length; i++) {
+            operator = runnerArr[i];
+            if (operator.isConst()) {
+                result.offerFirst(operator);
+            } else if (operator.isHandler()) {
+                right = result.pollFirst();
+                left = result.pollFirst();
+                result.offerFirst(
+                    DataConst.get(operator.handle(right, left, null))
+                );
+            } else {
+                if (result.isEmpty()) {
+                    return new DataGetterCalculator(runnerArr);
+                }
+                for (; i < length; i++) {
+                    result.offerLast(runnerArr[i]);
+                }
+                return new DataGetterCalculator(toArr(result));
             }
         }
-        return DataConst.get(calculator.run());
+        return result.pollFirst();
     }
 
     @Override
@@ -40,12 +65,12 @@ class DataGetterCalculator implements AsGetter {
 
     private Object use1(Object data) {
         Deque<AsRunner> result = new LinkedList();
-        AsRunner[] handlers = this.handlers;
-        final int length = handlers.length;
+        AsRunner[] runners = this.runners;
+        final int length = runners.length;
         AsRunner right, left;
         AsRunner operator;
         for (int i = 0; i < length; i++) {
-            operator = handlers[i];
+            operator = runners[i];
             if (operator.isValuer()) {
                 result.offerFirst(operator);
             } else if (operator.isHandler()) {
@@ -66,7 +91,7 @@ class DataGetterCalculator implements AsGetter {
     }
 
     private Object use0(Object data) {
-        AsRunner[] handlers = this.handlers;
+        AsRunner[] handlers = this.runners;
         final int length = handlers.length;
         Deque result = new LinkedList();
         AsRunner operator;
@@ -104,6 +129,6 @@ class DataGetterCalculator implements AsGetter {
 
     @Override
     public String toString() {
-        return Arrays.toString(handlers);
+        return Arrays.toString(runners);
     }
 }

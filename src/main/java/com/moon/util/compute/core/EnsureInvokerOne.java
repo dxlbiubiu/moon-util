@@ -16,20 +16,20 @@ import static java.util.Objects.requireNonNull;
  * @author benshaoye
  */
 class EnsureInvokerOne implements AsInvoker {
-    final AsValuer valuer;
+    final AsRunner valuer;
     final Class sourceType;
     final String name;
     Method method;
     Class paramType;
     Class componentType;
 
-    private EnsureInvokerOne(AsValuer paramValuer, Class sourceType, String name) {
+    private EnsureInvokerOne(AsRunner paramValuer, Class sourceType, String name) {
         this.valuer = paramValuer;
         this.sourceType = sourceType;
         this.name = name;
     }
 
-    final static EnsureInvokerOne of(AsValuer paramValuer, Class sourceType, String name) {
+    final static EnsureInvokerOne of(AsRunner paramValuer, Class sourceType, String name) {
         return new EnsureInvokerOne(paramValuer, sourceType, name);
     }
 

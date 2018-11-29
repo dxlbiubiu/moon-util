@@ -86,7 +86,6 @@ import com.moon.util.compute.core.ParseUtil;
  * * 基本数据类型只支持 boolean、int、double，没有 char 类型数据，被征用做字符串了
  * <p>
  * * 没有 char 数据类型，双引号和单引号包裹的都是字符串，
- * 单引号可包裹双引号，双引号可包裹单引号，暂不支持同时出现在字符串中的情况
  *
  * @author benshaoye
  */

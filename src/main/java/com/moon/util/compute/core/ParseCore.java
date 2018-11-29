@@ -2,7 +2,6 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 import com.moon.lang.ref.ReferenceUtil;
-import com.moon.util.compute.RunnerSettings;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -36,39 +35,58 @@ class ParseCore {
         return runner == null ? (expression == null ? DataConst.NULL : parse(expression, null)) : runner;
     }
 
-    final static AsRunner parse(String expression, RunnerSettings settings) {
+    final static AsRunner parse(String expression, BaseSettings settings) {
         char[] chars = expression.trim().toCharArray();
         AsRunner runner = parse(chars, IntAccessor.of(), chars.length, settings);
         return settings == null ? putCache(expression, runner) : runner;
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings
     ) {
         return parse(chars, indexer, len, settings, -1);
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int end
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int end
     ) {
         return parse(chars, indexer, len, settings, end, -1);
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int end0, int end1
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int end0, int end1
     ) {
-        return parse(chars, indexer, len, settings, end0, end1, IntTesters.FALSE);
+        return parse(chars, indexer, len, settings, end0, end1, -1);
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int end0, int end1, IntPredicate tester
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int end0, int end1, int end2
     ) {
-        AsRunner handler = null;
-        DataGetterThree.Builder builder = null;
+        return parse(chars, indexer, len, settings, end0, end1, end2, -1);
+    }
+
+    final static AsRunner parse(
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int end0, int end1, int end2, int end3
+    ) {
+        return parse(chars, indexer, len, settings, end0, end1, end2, end3, -1);
+    }
+
+    final static AsRunner parse(
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int end0, int end1, int end2, int end3, int end4
+    ) {
+        return parse(chars, indexer, len, settings, end0, end1, end2, end3, end4, IntTesters.FALSE);
+    }
+
+    final static AsRunner parse(
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings,
+        int end0, int end1, int end2, int end3, int end4, IntPredicate tester
+    ) {
+        AsRunner runner = null;
+        DataGetterThree.Builder builder;
         LinkedList<AsRunner> values = new LinkedList<>(), methods = new LinkedList();
         for (int curr; indexer.get() < len; ) {
-            curr = ParseUtil.skipWhitespaces(chars, indexer, len);
-            if (curr == end0 || curr == end1 || tester.test(curr)) {
+            curr = ParseUtil.nextVal(chars, indexer, len);
+            if (curr == end0 || curr == end1 || curr == end2 || curr == end3 || curr == end4 || tester.test(curr)) {
                 if (curr == YUAN_RIGHT) {
                     cleanMethodsTo(values, methods, DataComputes.YUAN_LEFT);
                 }
@@ -76,18 +94,15 @@ class ParseCore {
             } else if (curr == ASK) {
                 // ?
                 builder = new DataGetterThree.Builder(toRunner(values, methods));
-                values = new LinkedList<>();
-                methods = new LinkedList();
-            } else if (curr == COLON) {
-                // :
-                builder.setTrueRunner(toRunner(values, methods));
-                values = new LinkedList<>();
-                methods = new LinkedList();
+                builder.setTrueRunner(parse(chars, indexer, len, settings, COLON));
+                builder.setFalseRunner(parse(chars, indexer, len, settings,
+                    COLON, YUAN_RIGHT, HUA_RIGHT, FANG_RIGHT, COMMA));
+                return builder.build();
             } else {
-                handler = core(chars, indexer, len, settings, curr, values, methods, handler);
+                runner = core(chars, indexer, len, settings, curr, values, methods, runner);
             }
         }
-        return builder == null ? toRunner(values, methods) : builder.setFalseRunner(toRunner(values, methods)).build();
+        return toRunner(values, methods);
     }
 
     private final static AsRunner toRunner(LinkedList<AsRunner> values, LinkedList<AsRunner> methods) {
@@ -95,7 +110,7 @@ class ParseCore {
     }
 
     private final static AsRunner core(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
+        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int curr,
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsRunner prevHandler
     ) {
         AsRunner handler;
@@ -143,7 +158,7 @@ class ParseCore {
                 case GT:
                     // >、>=
                     if (chars[indexer.get()] == GT) {
-                        if (chars[indexer.addAndGet()] == GT){
+                        if (chars[indexer.addAndGet()] == GT) {
                             indexer.add();
                             handler = compareAndSwapSymbol(values, methods, DataComputes.UN_BIT_RIGHT);
                         } else {
@@ -185,7 +200,7 @@ class ParseCore {
                     break;
                 case CALLER:
                     // @
-                    values.add(handler = ParseGetter.parseCaller(chars, indexer, len, settings));
+                    values.add(handler = ParseCaller.parse(chars, indexer, len, settings));
                     break;
                 case DOT:
                     // .
