@@ -1,6 +1,7 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -19,7 +20,7 @@ final class ParseCurly {
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
     ) {
         int curr = ParseUtil.nextVal(chars, indexer, len);
         AsRunner handler = tryEmpty(chars, indexer, len, curr);
@@ -34,7 +35,7 @@ final class ParseCurly {
     }
 
     private final static AsRunner parseList(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int curr,
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
         final LinkedList<BiConsumer> creators
     ) {
         AsRunner valuer;
@@ -82,7 +83,7 @@ final class ParseCurly {
     }
 
     private final static AsRunner parseMap(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, int curr,
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
         final LinkedList<BiConsumer> creators
     ) {
         AsRunner key;
@@ -148,7 +149,7 @@ final class ParseCurly {
     }
 
     private static AsGetter createAsGetter(
-        LinkedList<BiConsumer> creators, BaseSettings settings, CreateType type
+        LinkedList<BiConsumer> creators, RunnerSettings settings, CreateType type
     ) {
         return creators.isEmpty() ? type
             : new DataGetterCurly(
@@ -211,10 +212,10 @@ final class ParseCurly {
      * --------------------------------------------------------------
      */
 
-    private enum CreateType implements AsGetter, Supplier, Function<BaseSettings, Supplier> {
+    private enum CreateType implements AsGetter, Supplier, Function<RunnerSettings, Supplier> {
         MAP {
             @Override
-            public Supplier apply(BaseSettings settings) {
+            public Supplier apply(RunnerSettings settings) {
                 return settings == null ? MAP : Objects.requireNonNull(settings.getObjCreator());
             }
 
@@ -235,7 +236,7 @@ final class ParseCurly {
         },
         LIST {
             @Override
-            public Supplier apply(BaseSettings settings) {
+            public Supplier apply(RunnerSettings settings) {
                 return settings == null ? LIST : Objects.requireNonNull(settings.getArrCreator());
             }
 

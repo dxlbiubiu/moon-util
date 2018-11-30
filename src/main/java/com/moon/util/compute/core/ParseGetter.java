@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.LinkedList;
 
@@ -53,7 +54,7 @@ final class ParseGetter {
     }
 
     final static AsRunner parseDot(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
     ) {
         AsValuer prevValuer = (AsValuer) prevHandler;
         AsRunner handler = parseDot(chars, indexer, len);
@@ -63,7 +64,7 @@ final class ParseGetter {
     }
 
     final static AsRunner parseNot(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
     ) {
         AsRunner valuer, tryLinked;
         int curr = ParseUtil.nextVal(chars, indexer, len);
@@ -105,7 +106,7 @@ final class ParseGetter {
     }
 
     final static AsRunner tryParseLinked(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner valuer
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner valuer
     ) {
         final int index = indexer.get();
         AsRunner next = valuer;
@@ -132,14 +133,14 @@ final class ParseGetter {
      * @param len
      * @return
      */
-    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
+    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         AsRunner handler = ParseCore.parse(chars, indexer, len, settings, Constants.FANG_RIGHT);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         return new DataGetterFang((AsValuer) handler);
     }
 
     /**
-     * 参考{@link ParseCore#core(char[], IntAccessor, int, BaseSettings, int, LinkedList, LinkedList, AsRunner)}
+     * 参考{@link ParseCore#core(char[], IntAccessor, int, RunnerSettings, int, LinkedList, LinkedList, AsRunner)}
      * case FANG_LEFT: 的详细步骤
      *
      * @param chars
@@ -149,14 +150,14 @@ final class ParseGetter {
      * @return
      */
     private final static AsRunner parseFangToComplex(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
     ) {
         AsRunner handler = ParseGetter.parseFang(chars, indexer, len, settings);
         ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
         return ((DataGetterFang) handler).toComplex(prevHandler);
     }
 
-    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
+    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         return ParseCore.parse(chars, indexer, len, settings, Constants.YUAN_RIGHT);
     }
 }

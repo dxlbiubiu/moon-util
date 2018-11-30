@@ -12,6 +12,6 @@ class BaseSettingsTestTest {
 
     @Test
     void testGetCaller() {
-        RunnerSettings.builder();
+        RunnerSettings.of();
     }
 }

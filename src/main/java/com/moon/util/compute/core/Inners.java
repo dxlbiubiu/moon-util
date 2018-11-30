@@ -1,5 +1,8 @@
 package com.moon.util.compute.core;
 
+import com.moon.lang.DoubleUtil;
+import com.moon.lang.IntUtil;
+import com.moon.time.TimeUtil;
 import com.moon.util.DateUtil;
 import com.moon.util.ListUtil;
 import com.moon.util.MapUtil;
@@ -20,35 +23,25 @@ final class Inners {
     private final static Map<String, RunnerFunction> CACHE = new HashMap<>();
 
     static {
-        for (NowFunctions value : NowFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
-        }
-
-        for (StrFunctions value : StrFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
-        }
-
-        for (MapFunctions value : MapFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
-        }
-
-        for (ListFunctions value : ListFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
-        }
-
-        for (MathFunctions value : MathFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
-        }
-
-        for (DateFunctions value : DateFunctions.values()) {
-            CACHE.put(value.name().replace('_', '.'), value);
+        Class[] classes = {
+            NowFunctions.class,
+            StrFunctions.class,
+            MapFunctions.class,
+            ListFunctions.class,
+            MathFunctions.class,
+            DateFunctions.class,
+        };
+        for (Class<RunnerFunction> runner : classes) {
+            for (RunnerFunction fun : runner.getEnumConstants()) {
+                CACHE.put(fun.functionName(), fun);
+            }
         }
     }
 
     private enum DateFunctions implements RunnerFunction {
         date_format {
             @Override
-            public Object execute(Object date, Object pattern) {
+            public Object apply(Object date, Object pattern) {
                 String format = String.valueOf(pattern);
                 if (date instanceof Date) {
                     return DateUtil.format((Date) date, format);
@@ -58,6 +51,12 @@ final class Inners {
                 throw new IllegalArgumentException(String.valueOf(date));
             }
         },
+        date_now {
+            @Override
+            public Object apply() {
+                return System.currentTimeMillis();
+            }
+        },
         date {
             @Override
             public boolean isChangeless() {
@@ -65,28 +64,28 @@ final class Inners {
             }
 
             @Override
-            public Object execute() {
+            public Object apply() {
                 return new Date();
             }
 
             @Override
-            public Object execute(Object o) {
-                return this.execute();
+            public Object apply(Object o) {
+                return DateUtil.toDate(o);
             }
 
             @Override
-            public Object execute(Object o, Object o1) {
-                return this.execute();
+            public Object apply(Object o, Object o1) {
+                return this.apply();
             }
 
             @Override
-            public Object execute(Object o, Object o1, Object o2) {
-                return this.execute();
+            public Object apply(Object o, Object o1, Object o2) {
+                return this.apply();
             }
 
             @Override
-            public Object execute(Object... values) {
-                return this.execute();
+            public Object apply(Object... values) {
+                return this.apply();
             }
         };
 
@@ -99,51 +98,52 @@ final class Inners {
     private enum StrFunctions implements RunnerFunction {
         str_substring {
             @Override
-            public String execute(Object str, Object from) {
+            public String apply(Object str, Object from) {
                 return ((String) str).substring(toInt(from));
             }
 
             @Override
-            public String execute(Object str, Object from, Object to) {
+            public String apply(Object str, Object from, Object to) {
                 return ((String) str).substring(toInt(from), toInt(to));
             }
         },
         str_contains {
             @Override
-            public Object execute(Object value1, Object value2) {
+            public Object apply(Object value1, Object value2) {
                 return String.valueOf(value1).contains(String.valueOf(value2));
             }
         },
         str_indexOf {
             @Override
-            public Integer execute(Object value1, Object value2) {
+            public Integer apply(Object value1, Object value2) {
                 return String.valueOf(value1).indexOf(String.valueOf(value2));
             }
         },
         str_startsWith {
             @Override
-            public Boolean execute(Object value1, Object value2) {
+            public Boolean apply(Object value1, Object value2) {
                 return String.valueOf(value1).startsWith(String.valueOf(value2));
             }
         },
         str_endsWith {
             @Override
-            public Boolean execute(Object value1, Object value2) {
+            public Boolean apply(Object value1, Object value2) {
                 return String.valueOf(value1).endsWith(String.valueOf(value2));
             }
         },
         str_length {
             @Override
-            public Integer execute(Object value) {
+            public Integer apply(Object value) {
                 return value == null ? 0 : ((CharSequence) value).length();
             }
         },
         str {
             @Override
-            public String execute(Object value) {
+            public String apply(Object value) {
                 return String.valueOf(value);
             }
-        },;
+        },
+        ;
 
         @Override
         public String functionName() {
@@ -152,66 +152,66 @@ final class Inners {
     }
 
     private enum NowFunctions implements RunnerFunction {
-        now_year {
+        time_year {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalDate.now().getYear();
             }
         },
-        now_month {
+        time_month {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalDate.now().getMonthValue();
             }
         },
-        now_day {
+        time_day {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalDate.now().getDayOfMonth();
             }
         },
-        now_hour {
+        time_hour {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalTime.now().getHour();
             }
         },
-        now_minute {
+        time_minute {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalTime.now().getMinute();
             }
         },
-        now_second {
+        time_second {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return LocalTime.now().getSecond();
             }
         },
-        now {
+        time {
             @Override
-            public Object execute() {
-                return System.currentTimeMillis();
+            public Object apply() {
+                return TimeUtil.nowDateTime();
             }
 
             @Override
-            public Object execute(Object o) {
-                return this.execute();
+            public Object apply(Object o) {
+                return TimeUtil.toDateTime(o);
             }
 
             @Override
-            public Object execute(Object o, Object o1) {
-                return this.execute();
+            public Object apply(Object o, Object o1) {
+                return this.apply();
             }
 
             @Override
-            public Object execute(Object o, Object o1, Object o2) {
-                return this.execute();
+            public Object apply(Object o, Object o1, Object o2) {
+                return this.apply();
             }
 
             @Override
-            public Object execute(Object... values) {
-                return this.execute();
+            public Object apply(Object... values) {
+                return this.apply();
             }
         };
 
@@ -241,56 +241,56 @@ final class Inners {
     private enum MapFunctions implements ChangeableRunnerFunction {
         map_hasKey {
             @Override
-            public Object execute(Object value1, Object value2) {
+            public Object apply(Object value1, Object value2) {
                 return value1 == null ? false : ((Map) value1).containsKey(value2);
             }
         },
         map_hasValue {
             @Override
-            public Object execute(Object value1, Object value2) {
+            public Object apply(Object value1, Object value2) {
                 return value1 == null ? false : ((Map) value1).containsValue(value2);
             }
         },
         map_isEmpty {
             @Override
-            public Object execute(Object value) {
+            public Object apply(Object value) {
                 return MapUtil.sizeByObject(value) == 0;
             }
         },
         map_get {
             @Override
-            public Object execute(Object value1, Object value2) {
+            public Object apply(Object value1, Object value2) {
                 return ListUtil.getByObject(value1, toInt(value2));
             }
         },
         map_size {
             @Override
-            public Object execute(Object value) {
+            public Object apply(Object value) {
                 return MapUtil.sizeByObject(value);
             }
         },
         map {
             @Override
-            public Object execute() {
+            public Object apply() {
                 return new HashMap<>();
             }
 
             @Override
-            public Map execute(Object key) {
+            public Map apply(Object key) {
                 HashMap map = new HashMap();
                 map.put(formatToKey(key), null);
                 return map;
             }
 
             @Override
-            public Map execute(Object key, Object value) {
+            public Map apply(Object key, Object value) {
                 HashMap map = new HashMap();
                 map.put(formatToKey(key), value);
                 return map;
             }
 
             @Override
-            public Map execute(Object key, Object value, Object key1) {
+            public Map apply(Object key, Object value, Object key1) {
                 HashMap map = new HashMap();
                 map.put(formatToKey(key), value);
                 map.put(formatToKey(key1), null);
@@ -298,7 +298,7 @@ final class Inners {
             }
 
             @Override
-            public Map execute(Object... values) {
+            public Map apply(Object... values) {
                 HashMap map = new HashMap();
                 int length = values.length;
                 if (length > 0) {
@@ -323,32 +323,32 @@ final class Inners {
     private enum ListFunctions implements ChangeableRunnerFunction {
         list_hasIndex {
             @Override
-            public Boolean execute(Object value1, Object value2) {
+            public Boolean apply(Object value1, Object value2) {
                 int index = toInt(value2);
                 return value1 == null ? false : index >= 0 && index < ((List) value1).size();
             }
         },
         list_hasValue {
             @Override
-            public Boolean execute(Object value1, Object value2) {
+            public Boolean apply(Object value1, Object value2) {
                 return value1 == null ? false : ((List) value1).contains(value2);
             }
         },
         list_isEmpty {
             @Override
-            public Boolean execute(Object value) {
+            public Boolean apply(Object value) {
                 return ListUtil.isEmpty((List) value);
             }
         },
         list_get {
             @Override
-            public Object execute(Object value1, Object value2) {
+            public Object apply(Object value1, Object value2) {
                 return ListUtil.getByObject(value1, toInt(value2));
             }
         },
         list_size {
             @Override
-            public Integer execute(Object value) {
+            public Integer apply(Object value) {
                 return ListUtil.sizeByObject(value);
             }
         },
@@ -359,22 +359,22 @@ final class Inners {
             }
 
             @Override
-            public List execute(Object value) {
+            public List apply(Object value) {
                 return ListUtil.ofArrayList(value);
             }
 
             @Override
-            public List execute(Object value1, Object value2) {
+            public List apply(Object value1, Object value2) {
                 return ListUtil.ofArrayList(value1, value2);
             }
 
             @Override
-            public List execute(Object value1, Object value2, Object value3) {
+            public List apply(Object value1, Object value2, Object value3) {
                 return ListUtil.ofArrayList(value1, value2, value3);
             }
 
             @Override
-            public List execute(Object... values) {
+            public List apply(Object... values) {
                 return ListUtil.ofArrayList(values);
             }
         };
@@ -386,75 +386,87 @@ final class Inners {
     }
 
     private enum MathFunctions implements RunnerFunction {
+        math_double {
+            @Override
+            public Double apply(Object value) {
+                return DoubleUtil.toDoubleValue(value);
+            }
+        },
+        math_int {
+            @Override
+            public Integer apply(Object value) {
+                return IntUtil.toIntValue(value);
+            }
+        },
         math_ceil {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.ceil(toDb(value));
             }
         },
         math_floor {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.floor(toDb(value));
             }
         },
         math_cos {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.cos(toDb(value));
             }
         },
         math_sin {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.sin(toDb(value));
             }
         },
         math_tan {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.tan(toDb(value));
             }
         },
         math_abs {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.abs(toDb(value));
             }
         },
         math_round {
             @Override
-            public Long execute(Object value) {
+            public Long apply(Object value) {
                 return Math.round(toDb(value));
             }
         },
         math_pow {
             @Override
-            public Double execute(Object value1, Object value2) {
+            public Double apply(Object value1, Object value2) {
                 return Math.pow(toDb(value1), toDb(value2));
             }
         },
         math_cbrt {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.cbrt(toDb(value));
             }
         },
         math_sqrt {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.sqrt(toDb(value));
             }
         },
         math_log {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.log(toDb(value));
             }
         },
         math_log10 {
             @Override
-            public Double execute(Object value) {
+            public Double apply(Object value) {
                 return Math.log10(toDb(value));
             }
         },
@@ -467,22 +479,22 @@ final class Inners {
             }
 
             @Override
-            public Double execute() {
+            public Double apply() {
                 return random.nextDouble();
             }
 
             @Override
-            public Integer execute(Object value) {
+            public Integer apply(Object value) {
                 return random.nextInt(toInt(value));
             }
 
             @Override
-            public Integer execute(Object value1, Object value2) {
+            public Integer apply(Object value1, Object value2) {
                 return random.nextInt(toInt(value1), toInt(value2));
             }
 
             @Override
-            public Double execute(Object... values) {
+            public Double apply(Object... values) {
                 return random.nextDouble();
             }
         };
@@ -506,7 +518,9 @@ final class Inners {
             || key instanceof Integer || key instanceof Double;
         if (!test) {
             if (key instanceof Number) {
-                key = key instanceof Float ? ((Float) key).doubleValue() : ((Number) key).intValue();
+                key = key instanceof Float
+                    ? ((Float) key).doubleValue()
+                    : ((Number) key).intValue();
             } else {
                 key = String.valueOf(key);
             }
@@ -520,24 +534,6 @@ final class Inners {
                 throw new IllegalArgumentException("包含非法字符（只能是字母、数字、$、_ 的组合）>>>>>" + str + "<<<<<");
             }
         }
-    }
-
-    final static String checkName(String name) {
-        if (name == null) {
-            throw new NullPointerException("RunnerFunction 的 name 不能为空");
-        }
-        name = name.trim();
-        int len = name.length(), curr;
-        boolean hasDot = false;
-        for (int i = 0; i < len; i++) {
-            curr = name.charAt(i);
-            if (curr == Constants.DOT && !hasDot) {
-                hasDot = true;
-            } else if (!ParseUtil.isVar(curr)) {
-                throw new IllegalArgumentException("包含非法字符（只能是字母、数字、$、_ 的组合，中间最多可有一个‘.’号以区分命名空间）>>>>>" + name + "<<<<<");
-            }
-        }
-        return name;
     }
 
     final static String toName(String ns, String name) {

@@ -4,6 +4,8 @@ import com.moon.util.assertions.Assertions;
 import com.moon.util.compute.Runner;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 
 import static com.moon.util.compute.core.ParseUtil.parse;
@@ -48,6 +50,26 @@ class InnersTestTest {
 
         toValue("@now.year()");
         assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalDate.now().getYear());
 
+        toValue("@now.month()");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalDate.now().getMonthValue());
+
+        toValue("@now.day()");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalDate.now().getDayOfMonth());
+
+        toValue("@now.hour()");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalTime.now().getHour());
+
+        toValue("@now.minute()");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalTime.now().getMinute());
+
+        toValue("@now.second()");
+        assertions.assertInstanceOf(res, Integer.class);
+        assertions.assertEquals(res, LocalTime.now().getSecond());
     }
 }

@@ -1,6 +1,7 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
@@ -13,7 +14,7 @@ final class ParseOpposite {
         noInstanceError();
     }
 
-    final static AsRunner parse(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
+    final static AsRunner parse(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         AsRunner handler, linked;
         int curr = ParseUtil.nextVal(chars, indexer, len);
         switch (curr) {

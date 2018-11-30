@@ -265,7 +265,7 @@ public final class FieldDescriptor {
     }
 
     /**
-     * execute consumer when setter defaultExecutor is present
+     * apply consumer when setter defaultExecutor is present
      *
      * @param c
      * @return
@@ -278,7 +278,7 @@ public final class FieldDescriptor {
     }
 
     /**
-     * execute consumer when setter method is present
+     * apply consumer when setter method is present
      *
      * @param c
      * @return
@@ -291,7 +291,7 @@ public final class FieldDescriptor {
     }
 
     /**
-     * execute consumer when getter defaultExecutor is present
+     * apply consumer when getter defaultExecutor is present
      *
      * @param c
      * @return
@@ -304,7 +304,7 @@ public final class FieldDescriptor {
     }
 
     /**
-     * execute consumer when setter method is present
+     * apply consumer when setter method is present
      *
      * @param c
      * @return

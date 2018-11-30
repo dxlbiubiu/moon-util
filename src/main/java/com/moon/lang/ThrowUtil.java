@@ -121,7 +121,7 @@ public final class ThrowUtil {
      * 不能访问指定位置
      */
     public final static <T> T rejectAccessError() {
-        return rejectAccessError("Refuse to execute. \n\tLocation: " + StackTraceUtil.getPrevTraceOfSteps(1));
+        return rejectAccessError("Refuse to apply. \n\tLocation: " + StackTraceUtil.getPrevTraceOfSteps(1));
     }
 
     /***

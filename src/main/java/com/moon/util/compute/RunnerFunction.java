@@ -16,11 +16,17 @@ package com.moon.util.compute;
  * @author benshaoye
  */
 public interface RunnerFunction {
-
+    /**
+     * 每个 function 需要定义一个名字，
+     * 而且符合 java 变量命名规则
+     * 首字母小写
+     *
+     * @return
+     */
     String functionName();
 
     /**
-     * 这个函数执行相同参数的返回值是否相同，不可变的
+     * 这个函数执行相同参数的返回值是否相同，根据这个值会有少量优化
      *
      * @return
      */
@@ -33,8 +39,8 @@ public interface RunnerFunction {
      *
      * @return
      */
-    default Object execute() {
-        return this.execute(RunnerSettings.NULL);
+    default Object apply() {
+        return null;
     }
 
     /**
@@ -43,8 +49,8 @@ public interface RunnerFunction {
      * @param value
      * @return
      */
-    default Object execute(Object value) {
-        return this.execute(value, null);
+    default Object apply(Object value) {
+        return null;
     }
 
     /**
@@ -54,8 +60,8 @@ public interface RunnerFunction {
      * @param value2
      * @return
      */
-    default Object execute(Object value1, Object value2) {
-        return this.execute(value1, value2, null);
+    default Object apply(Object value1, Object value2) {
+        return null;
     }
 
     /**
@@ -66,8 +72,8 @@ public interface RunnerFunction {
      * @param value3
      * @return
      */
-    default Object execute(Object value1, Object value2, Object value3) {
-        throw new UnsupportedOperationException();
+    default Object apply(Object value1, Object value2, Object value3) {
+        return null;
     }
 
     /**
@@ -76,7 +82,7 @@ public interface RunnerFunction {
      * @param values
      * @return
      */
-    default Object execute(Object... values) {
-        throw new UnsupportedOperationException();
+    default Object apply(Object... values) {
+        return null;
     }
 }

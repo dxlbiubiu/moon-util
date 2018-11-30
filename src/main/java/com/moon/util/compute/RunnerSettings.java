@@ -1,7 +1,11 @@
 package com.moon.util.compute;
 
-import com.moon.util.compute.core.BaseSettings;
+import com.moon.lang.BooleanUtil;
+import com.moon.lang.SupportUtil;
+import com.moon.util.IteratorUtil;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -9,78 +13,119 @@ import java.util.function.Supplier;
 /**
  * @author benshaoye
  */
-public final class RunnerSettings extends BaseSettings {
+public final class RunnerSettings {
 
-    final static Object NULL = null;
+    protected Supplier<List> arrCreator;
+    protected Supplier<Map> objCreator;
 
-    private RunnerSettings() {
+    private final Map<String, Object> callers = new HashMap<>();
+
+    public RunnerSettings() {
+        this(ArrayList::new, HashMap::new);
     }
 
-    @Override
+    public RunnerSettings(Supplier<List> arrCreator, Supplier<Map> objCreator) {
+        this.arrCreator = arrCreator;
+        this.objCreator = objCreator;
+    }
+
+    /**
+     * 获取静态方法执行类
+     *
+     * @param name
+     * @return
+     */
+    public final Object getCaller(String name) {
+        return this.callers.get(name);
+    }
+
+    public final Supplier<List> getArrCreator() {
+        return arrCreator;
+    }
+
+    public final Supplier<Map> getObjCreator() {
+        return objCreator;
+    }
+
     public RunnerSettings setArrCreator(Supplier<List> arrCreator) {
-        super.setArrCreator(arrCreator);
+        this.arrCreator = arrCreator;
         return this;
     }
 
-    @Override
     public RunnerSettings setObjCreator(Supplier<Map> objCreator) {
-        super.setObjCreator(objCreator);
+        this.objCreator = objCreator;
         return this;
     }
 
-    @Override
+    public RunnerSettings addFunction(RunnerFunction runner) {
+        this.callers.put(checkName(runner.functionName()), runner);
+        return this;
+    }
+
+    public RunnerSettings addFunctions(List<RunnerFunction> runners) {
+        IteratorUtil.forEach(runners, runner -> addFunction(runner));
+        return this;
+    }
+
+    public RunnerSettings addFunction(String namespace, RunnerFunction fun) {
+        this.callers.put(toNsName(namespace, fun.functionName()), fun);
+        return this;
+    }
+
+    public RunnerSettings addFunctions(String namespace, List<RunnerFunction> runners) {
+        IteratorUtil.forEach(runners, fun -> addFunction(namespace, fun));
+        return this;
+    }
+
     public RunnerSettings addCaller(Class clazz) {
-        super.addCaller(clazz);
-        return this;
+        return addCaller(clazz.getSimpleName(), clazz);
     }
 
-    @Override
     public RunnerSettings addCallers(Class... classes) {
-        super.addCallers(classes);
+        for (Class type : classes) {
+            addCaller(type);
+        }
         return this;
     }
 
-    @Override
-    public RunnerSettings addCaller(RunnerFunction runner) {
-        super.addCaller(runner);
-        return this;
-    }
-
-    @Override
-    public RunnerSettings addCallers(List<RunnerFunction> runners) {
-        super.addCallers(runners);
-        return this;
-    }
-
-    @Override
     public RunnerSettings addCaller(String name, Class staticCallerClass) {
-        super.addCaller(name, staticCallerClass);
+        this.callers.put(name, staticCallerClass);
         return this;
     }
 
-    @Override
     public RunnerSettings addCallers(Map<String, Class> callers) {
-        super.addCallers(callers);
+        this.callers.putAll(callers);
         return this;
     }
 
-    @Override
     public RunnerSettings removeCaller(String name) {
-        super.removeCaller(name);
+        this.callers.remove(name);
         return this;
     }
 
-    @Override
     public RunnerSettings removeCallers(String... names) {
-        super.removeCallers(names);
+        for (String name : names) {
+            this.callers.remove(name);
+        }
         return this;
     }
 
-    public final static RunnerSettings builder() {
+    public final static RunnerSettings of() {
         return new RunnerSettings();
     }
 
-    public RunnerSettings build() {
-        return this;
+    static String toNsName(String ns, String name) {
+        return checkName(ns) + '.' + checkName(name);
+    }
+
+    static String checkName(String name) {
+        char curr = name.charAt(0);
+        BooleanUtil.requireTrue(SupportUtil.isVar(curr), name);
+        for (int i = 1, len = name.length(); i < len; i++) {
+            BooleanUtil.requireTrue(
+                SupportUtil.isVar(curr = name.charAt(i))
+                    || SupportUtil.isNum(curr), name);
+        }
+        return name;
     }
 }

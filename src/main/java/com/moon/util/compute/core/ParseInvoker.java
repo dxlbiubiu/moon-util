@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 import com.moon.lang.reflect.FieldUtil;
+import com.moon.util.compute.RunnerSettings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -26,7 +27,7 @@ final class ParseInvoker {
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
     final static AsRunner tryParseInvoker(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, String name, AsValuer prevValuer
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
         final boolean isStatic = prevValuer instanceof DataConstLoader;
@@ -49,7 +50,7 @@ final class ParseInvoker {
      * 带有参数的方法调用
      */
     private final static AsRunner parseHasParams(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings,
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings,
         AsValuer prev, String name, boolean isStatic
     ) {
         AsRunner[] params = ParseParams.parse(chars, indexer, len, settings);

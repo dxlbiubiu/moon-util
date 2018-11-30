@@ -2,6 +2,7 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
 import com.moon.util.compute.RunnerFunction;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ final class ParseCaller {
     }
 
     final static AsRunner parse(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
     ) {
         AsRunner runner;
         Object runnerCache;
@@ -36,41 +37,52 @@ final class ParseCaller {
             if (runnerCache instanceof RunnerFunction) {
                 RunnerFunction fn = (RunnerFunction) runnerCache;
                 fn = tryParseNsCaller(chars, indexer, len, settings, fn);
-                runner = parseFuncCaller(chars, indexer, len, settings, fn);
+                runner = parseFunCaller(chars, indexer, len, settings, fn);
             } else {
                 runner = (AsRunner) runnerCache;
             }
         } else {
-            throwErr(chars, indexer);
+            runner = throwErr(chars, indexer);
             // 为更多符号留位置，比如动态变化的类，等
-            throw new UnsupportedOperationException();
         }
         return Objects.requireNonNull(runner);
     }
 
-    private final static AsRunner parseFuncCaller(
+    private final static AsRunner parseFunCaller(
         char[] chars, IntAccessor indexer, int len,
-        BaseSettings settings, RunnerFunction fn
+        RunnerSettings settings, RunnerFunction fn
     ) {
         int curr = nextVal(chars, indexer, len);
         assertTrue(curr == YUAN_LEFT, chars, indexer);
-        AsRunner[] runners = ParseParams.parse(chars, indexer, len, settings);
-        switch (runners.length) {
+        AsRunner[] runs = ParseParams.parse(chars, indexer, len, settings);
+        switch (runs.length) {
             case 0:
                 return valueOf(fn);
             case 1:
-                return valueOf(fn, runners[0]);
+                return valueOf(fn, runs[0]);
             case 2:
-                return valueOf(fn, runners[0], runners[1]);
+                return valueOf(fn, runs[0], runs[1]);
             case 3:
-                return valueOf(fn, runners[0], runners[1], runners[2]);
+                return valueOf(fn, runs[0], runs[1], runs[2]);
             default:
-                return new FunctionMulti(fn, runners);
+                return new FunctionMulti(fn, runs);
         }
     }
 
+    /**
+     * 尝试解析具有命名空间的函数
+     * <p>
+     * 最开始解析出来的是函数，这一步仍然可能是函数
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param settings
+     * @param fn
+     * @return
+     */
     private final static RunnerFunction tryParseNsCaller(
-        char[] chars, IntAccessor indexer, int len, BaseSettings settings, RunnerFunction fn
+        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, RunnerFunction fn
     ) {
         int curr = nextVal(chars, indexer, len);
         if (curr == DOT) {
@@ -109,7 +121,7 @@ final class ParseCaller {
             for (int i = 0; i < length; i++) {
                 params[i] = runners[i].run(data);
             }
-            return fn.execute(params);
+            return fn.apply(params);
         }
     }
 
@@ -117,7 +129,7 @@ final class ParseCaller {
         RunnerFunction fn, AsRunner runner, AsRunner runner0, AsRunner runner1
     ) {
         if (runner.isConst() && runner0.isConst() && fn.isChangeless()) {
-            return DataConst.get(fn.execute(runner.run(), runner0.run(), runner1.run()));
+            return DataConst.get(fn.apply(runner.run(), runner0.run(), runner1.run()));
         }
         return new FunctionThree(fn, runner, runner0, runner1);
     }
@@ -132,13 +144,13 @@ final class ParseCaller {
 
         @Override
         public Object run(Object data) {
-            return fn.execute(runner.run(data), runner0.run(), runner1.run());
+            return fn.apply(runner.run(data), runner0.run(), runner1.run());
         }
     }
 
     final static AsRunner valueOf(RunnerFunction fn, AsRunner runner, AsRunner runner0) {
         if (runner.isConst() && runner0.isConst() && fn.isChangeless()) {
-            return DataConst.get(fn.execute(runner.run(), runner0.run()));
+            return DataConst.get(fn.apply(runner.run(), runner0.run()));
         }
         return new FunctionTwo(fn, runner, runner0);
     }
@@ -153,14 +165,14 @@ final class ParseCaller {
 
         @Override
         public Object run(Object data) {
-            return fn.execute(runner.run(data), runner0.run());
+            return fn.apply(runner.run(data), runner0.run());
         }
     }
 
     final static AsRunner valueOf(RunnerFunction fn, AsRunner runner) {
         if (runner.isConst() && fn.isChangeless()) {
             Object value = runner.run();
-            return DataConst.get(fn.execute(value));
+            return DataConst.get(fn.apply(value));
         }
         return new FunctionOne(fn, runner);
     }
@@ -175,12 +187,12 @@ final class ParseCaller {
 
         @Override
         public Object run(Object data) {
-            return fn.execute(runner.run(data));
+            return fn.apply(runner.run(data));
         }
     }
 
     final static AsRunner valueOf(RunnerFunction fn) {
-        return fn.isChangeless() ? DataConst.get(fn.execute()) : new FunctionNone(fn);
+        return fn.isChangeless() ? DataConst.get(fn.apply()) : new FunctionNone(fn);
     }
 
     private static class FunctionNone implements AsInvoker {
@@ -192,11 +204,17 @@ final class ParseCaller {
 
         @Override
         public Object run(Object data) {
-            return fn.execute();
+            return fn.apply();
         }
     }
 
     /**
+     * 在{@link #tryLoaderOrSimpleFn(char[], IntAccessor, int, RunnerSettings, String)}
+     * 加载失败后，这里解析具有命名空间的函数
+     * 同样，settings 优先于内置函数
+     * <p>
+     * 这一步解析不出来一定会抛出异常
+     * <p>
      * 在尝试加载简单函数或静态方法失败后
      * 到这儿只能加载含有命名空间的函数
      * 否则抛出异常
@@ -210,7 +228,7 @@ final class ParseCaller {
      */
     private final static Object ensureLoadNsFn(
         char[] chars, IntAccessor indexer, int len,
-        BaseSettings settings, String runnerName
+        RunnerSettings settings, String runnerName
     ) {
         Object callerTemp = null;
         int curr = nextVal(chars, indexer, len);
@@ -231,11 +249,14 @@ final class ParseCaller {
     }
 
     /**
+     * 尝试解析函数或静态方法类
+     * <p>
+     * settings 优先于默认，函数优先于静态方法
      * 优先从 settings 加载函数或静态方法
      * 不能加载情况下尝试加载内置函数或方法
      * 这一步如果是加载函数的话，只加载简单函数，即不含有命名空间的函数
      * <p>
-     * 均加载失败返回 null
+     * 均加载失败返回 null，失败的意思是一定是一个具有命名空间的函数，否则就是异常
      * <p>
      * 加载异常将抛出
      *
@@ -248,7 +269,7 @@ final class ParseCaller {
      */
     private final static Object tryLoaderOrSimpleFn(
         char[] chars, IntAccessor indexer, int len,
-        BaseSettings settings, String runnerName
+        RunnerSettings settings, String runnerName
     ) {
         if (settings == null) {
             return tryLoadDefault(runnerName);

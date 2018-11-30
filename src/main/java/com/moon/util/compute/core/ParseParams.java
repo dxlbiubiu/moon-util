@@ -1,6 +1,7 @@
 package com.moon.util.compute.core;
 
 import com.moon.lang.ref.IntAccessor;
+import com.moon.util.compute.RunnerSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ final class ParseParams {
      * @param settings
      * @return
      */
-    final static AsRunner[] parse(char[] chars, IntAccessor indexer, int len, BaseSettings settings) {
+    final static AsRunner[] parse(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
         int curr = ParseUtil.nextVal(chars, indexer, len);
         List params = new ArrayList();
         AsRunner runner;

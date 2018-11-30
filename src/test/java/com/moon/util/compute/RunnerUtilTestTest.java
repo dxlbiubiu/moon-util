@@ -182,7 +182,7 @@ class RunnerUtilTestTest {
     void testParseMultipleParamMethod() {
         res = ClassUtil.getClasses(1, 2.0);
         res = MethodUtil.getPublicStaticMethods(DoubleUtil.class, "requireGt", (Class[]) res);
-        //res = RunnerUtil.run("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
+        //res = RunnerUtil.apply("@DateUtil.parse('2018-05-09 12:35:26', 'yyyy-MM-dd HH:mm:ss')");
 
         assertions.assertSame(String.class.getPackage(), Class.class.getPackage());
         data = new HashMap() {{
@@ -228,12 +228,11 @@ class RunnerUtilTestTest {
 
     @Test
     void testCustomCaller() {
-        RunnerSettings settings = RunnerSettings.builder()
+        RunnerSettings settings = RunnerSettings.of()
             .setObjCreator(LinkedHashMap::new)
             .setArrCreator(LinkedList::new)
             .addCaller("call", Caller.class)
-            .addCaller("Objects", InnerObjects.class)
-            .build();
+            .addCaller("Objects", InnerObjects.class);
 
         Runner runner = RunnerUtil.parse("@call.get()", settings);
         assertions.assertEquals(runner.run(), "123456789");
