@@ -59,5 +59,9 @@ class ParseParamsTestTest {
         assertions.assertEq(res.length, 5);
         res = parse("( 12.3  ,  12, name, , ,'',   true)");
         assertions.assertEq(res.length, 6);
+        res = parse("( 12.3  ,  12, name, null , ,'',   true)");
+        assertions.assertEq(res.length, 6);
+        res = parse("( 12.3  ,  12, name, null,  , ,'',   true)");
+        assertions.assertEq(res.length, 7);
     }
 }
