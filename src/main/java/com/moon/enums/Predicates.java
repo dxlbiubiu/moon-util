@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 /**
  * @author benshaoye
  */
-public enum PredicateEnum implements Predicate {
+public enum Predicates implements Predicate {
     TRUE {
         /**
          * Evaluates this predicate on the given argument.

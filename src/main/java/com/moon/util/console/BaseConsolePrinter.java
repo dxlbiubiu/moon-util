@@ -8,7 +8,7 @@ import com.sun.istack.internal.NotNull;
 
 import java.io.PrintStream;
 
-import static com.moon.enums.PropsEnum.line_separator;
+import static com.moon.enums.Props.line_separator;
 import static com.moon.util.Appender.SYSTEM;
 import static com.moon.util.OptionalUtil.ifPresent;
 import static com.moon.util.console.ConsoleSettingsUtil.parseByStackTraces;

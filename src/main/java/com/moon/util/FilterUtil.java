@@ -1,6 +1,6 @@
 package com.moon.util;
 
-import com.moon.enums.CollectEnum;
+import com.moon.enums.Collects;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -272,12 +272,12 @@ public final class FilterUtil {
      * @return
      */
     public static <E, L extends List<E>> List<E> filter(L list, Predicate<? super E> tester) {
-        final Supplier supplier = CollectEnum.getOrDefault(list, CollectEnum.ArrayList);
+        final Supplier supplier = Collects.getOrDefault(list, Collects.ArrayList);
         return (List) filter(list, tester, supplier);
     }
 
     public static <E, L extends List<E>> List<E> multiplyFilter(L list, Predicate<? super E>... testers) {
-        final Supplier supplier = CollectEnum.getOrDefault(list, CollectEnum.HashSet);
+        final Supplier supplier = Collects.getOrDefault(list, Collects.HashSet);
         return (List) multiplyFilterTo(list, supplier, testers);
     }
 
@@ -291,12 +291,12 @@ public final class FilterUtil {
      * @return
      */
     public static <E, S extends Set<E>> Set<E> filter(S set, Predicate<? super E> tester) {
-        final Supplier supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
+        final Supplier supplier = Collects.getOrDefault(set, Collects.HashSet);
         return (Set) filter(set, tester, supplier);
     }
 
     public static <E, S extends Set<E>> Set<E> multiplyFilter(S set, Predicate<? super E>... testers) {
-        final Supplier supplier = CollectEnum.getOrDefault(set, CollectEnum.HashSet);
+        final Supplier supplier = Collects.getOrDefault(set, Collects.HashSet);
         return (Set) multiplyFilterTo(set, supplier, testers);
     }
 

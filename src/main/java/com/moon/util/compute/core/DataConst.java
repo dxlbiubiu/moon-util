@@ -58,7 +58,7 @@ abstract class DataConst<T> implements AsConst {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return String.valueOf(value);
     }
 

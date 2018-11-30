@@ -15,7 +15,7 @@ public final class Const {
     /**
      * ","——英文逗号
      */
-    public static final Character SEPARATOR_CHAR = CharsEnum.COMMA;
+    public static final Character SEPARATOR_CHAR = Chars.COMMA;
     /**
      * ","——英文逗号
      */

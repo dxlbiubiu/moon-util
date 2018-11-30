@@ -59,7 +59,7 @@ class WorkCenterMap extends RunnerDataMap
     private int currentCellIndex;
 
     WorkCenterMap createSheet(String sheetName) {
-        currentSheet = ensureCreateSheet(sheetName);
+        currentSheet = ensureCreateSheet(String.valueOf(sheetName));
         currentRowIndex = 0;
         mergeManage.clear();
         return this;

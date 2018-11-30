@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * @author benshaoye
  * @date 2018/9/17
  */
-public enum MapEnum implements Supplier<Map>,
+public enum Maps implements Supplier<Map>,
     IntFunction<Map>, Function<Map, Map> {
 
     /**
@@ -274,10 +274,10 @@ public enum MapEnum implements Supplier<Map>,
     private final Class type;
 
     static final class CtorCached {
-        final static HashMap<Class, MapEnum> CACHE = new HashMap();
+        final static HashMap<Class, Maps> CACHE = new HashMap();
     }
 
-    MapEnum(Class type) {
+    Maps(Class type) {
         CtorCached.CACHE.put(this.type = type, this);
     }
 

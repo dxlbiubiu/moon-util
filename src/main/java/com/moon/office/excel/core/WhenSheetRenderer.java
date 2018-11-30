@@ -1,17 +1,21 @@
 package com.moon.office.excel.core;
 
+import com.moon.util.compute.Runner;
 import com.moon.util.compute.RunnerUtil;
 
 /**
  * @author benshaoye
  */
 final class WhenSheetRenderer extends AbstractRenderer<TableSheet> {
-    private final String sheetName;
+    private final Runner sheetName;
     private final String when;
 
     protected WhenSheetRenderer(TableSheet annotation, CenterRenderer[] children, String[] formatted) {
         super(annotation, children, annotation.var(), formatted);
-        this.sheetName = annotation.sheetName();
+        String sheetName = annotation.sheetName();
+        this.sheetName = isZero() ? RunnerUtil.parse(sheetName)
+            : RunnerUtil.parse(sheetName, getDelimiters());
+
         this.when = annotation.when().trim();
     }
 
@@ -29,9 +33,6 @@ final class WhenSheetRenderer extends AbstractRenderer<TableSheet> {
 
     @Override
     public WorkCenterMap beforeRender(WorkCenterMap centerMap) {
-        return centerMap.createSheet(String.valueOf(isZero()
-            ? RunnerUtil.run(sheetName, centerMap)
-            : RunnerUtil.parseRun(sheetName, getDelimiters(), centerMap)
-        ));
+        return centerMap.createSheet(sheetName.run(centerMap));
     }
 }

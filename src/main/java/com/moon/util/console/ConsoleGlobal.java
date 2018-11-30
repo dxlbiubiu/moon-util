@@ -1,6 +1,6 @@
 package com.moon.util.console;
 
-import com.moon.enums.PropsEnum;
+import com.moon.enums.Props;
 import com.moon.util.Console;
 import com.moon.util.Console.Level;
 
@@ -20,7 +20,7 @@ public enum ConsoleGlobal implements ConsoleEnabled {
 
     ConsoleGlobal() {
         // 留着初始化 base path
-        setBasePath(PropsEnum.moonBasePath.value());
+        setBasePath(Props.moonBasePath.value());
     }
 
     @Override

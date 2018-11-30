@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author benshaoye
  * @date 2018/9/18
  */
-class MapEnumTestTest {
+class MapsTestTest {
 
 
 

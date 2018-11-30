@@ -14,31 +14,31 @@ public interface StringsEnum {
     /**
      * 点号、句号
      */
-    String DOT = String.valueOf(CharsEnum.DOT);
+    String DOT = String.valueOf(Chars.DOT);
     /**
      * 空格
      */
-    String SPACE = String.valueOf(CharsEnum.SPACE);
+    String SPACE = String.valueOf(Chars.SPACE);
     /**
      * 下划线
      */
-    String UNDERLINE = String.valueOf(CharsEnum.UNDERLINE);
+    String UNDERLINE = String.valueOf(Chars.UNDERLINE);
     /**
      * 逗号
      */
-    String COMMA = String.valueOf(CharsEnum.COMMA);
+    String COMMA = String.valueOf(Chars.COMMA);
     /**
      * 减号
      */
-    String MINUS = String.valueOf(CharsEnum.MINUS);
+    String MINUS = String.valueOf(Chars.MINUS);
     /**
      * 冒号
      */
-    String COLON = String.valueOf(CharsEnum.COLON);
+    String COLON = String.valueOf(Chars.COLON);
     /**
      * 竖线
      */
-    String VERTICAL_LINE = String.valueOf(CharsEnum.VERTICAL_LINE);
+    String VERTICAL_LINE = String.valueOf(Chars.VERTICAL_LINE);
 
     /**
      * 常见英文符号：键盘上能直接敲出来的英文符号

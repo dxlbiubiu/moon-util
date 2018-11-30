@@ -1,6 +1,6 @@
 package com.moon.util;
 
-import com.moon.enums.PredicateEnum;
+import com.moon.enums.Predicates;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class PropertiesUtilTestTest {
         "/test2.properties",
         "/test3.properties",
     };
-    String path = FilterUtil.requireFirst(paths, PredicateEnum.NON_NULL);
+    String path = FilterUtil.requireFirst(paths, Predicates.NON_NULL);
 
 
     static final Assertions ASSERTIONS = of();

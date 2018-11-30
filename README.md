@@ -25,35 +25,35 @@
 1. null：这是一个关键字，但因为它符合和变量的定义规则，所以需要注意一下，同样被定义为关键字的还有 true 和 false。
 2. boolean：true 和 false
 ``` Java
-RunnerUtil.apply(" null   "); // null
-RunnerUtil.apply("   true "); // true
-RunnerUtil.apply("false"); // false
+RunnerUtil.run(" null   "); // null
+RunnerUtil.run("   true "); // true
+RunnerUtil.run("false"); // false
 // 表达式中多余的空格自动忽略
 ```
 3. 数字：这里面的数字统一采用 Java 里的 int 和 double 型数据，直接参与运算的也只有是这两种类型，区别就是有没有小数点。
 ``` Java
-RunnerUtil.apply(" 12  "); // 12
-RunnerUtil.apply(" 12.5 "); // 12.5
+RunnerUtil.run(" 12  "); // 12
+RunnerUtil.run(" 12.5 "); // 12.5
 // 表示数字必须是连续，中间不能有空格的
 // 否则将抛出异常，如
-RunnerUtil.apply(" 12. 5"); // 异常
-RunnerUtil.apply(" 1 2 "); // 异常
+RunnerUtil.run(" 12. 5"); // 异常
+RunnerUtil.run(" 1 2 "); // 异常
 ```
 > 表示数字的字符之间应该是连续的，如：25、36.9 等；如果是不连续的会抛出异常，如：2 5、36 .9 等；
 4. 字符串：Java 里的字符串用双引号包裹，在这里还将表示字符的单引号“征用”，双引号单引号包裹的都表示普通字符串的直接值，这样做也是为了书写方便（与 JavaScript 相似），同时也就没有了 char 类型数据啦啦啦……
 
 ``` Java
-RunnerUtil.apply(" 'abcdef'  "); // "abcdef"
-RunnerUtil.apply(" \"abcdef\"  "); // "abcdef"
-RunnerUtil.apply(" 'abc   def'  "); // "abc   def"
+RunnerUtil.run(" 'abcdef'  "); // "abcdef"
+RunnerUtil.run(" \"abcdef\"  "); // "abcdef"
+RunnerUtil.run(" 'abc   def'  "); // "abc   def"
 ```
 5. List：实际上是 ArrayList，对应 JavaScript 里面的数组。Java 的数组也对应 JavaScript 数组。
 
 ``` Java
-RunnerUtil.apply(" { } "); 
+RunnerUtil.run(" { } "); 
 // 总是返回一个空 ArrayList
 
-RunnerUtil.apply(" {1,2,,4, } "); 
+RunnerUtil.run(" {1,2,,4, } "); 
 // 总是返回一个包含：1、2、null、4 这几项的 ArrayList
 
 // 可以看出最后一个逗号之后如果是结束符号会自动忽略
@@ -66,30 +66,30 @@ Map 对应的是 JavaScript 里的对象，但是在这里 Map 的键可以是�
 > null、true / false、数字（int / double）、字符串，不能再是其他 Java 对象了
 
 ``` Java
-RunnerUtil.apply(" {:} "); // 总是返回一个空 HashMap，
+RunnerUtil.run(" {:} "); // 总是返回一个空 HashMap，
 // 注意与空 List 的异同，都是用花括号表示
 // 但空 Map 里面需要有一个冒号，否则就是 List
 
-RunnerUtil.apply(" {key: 'value'}");
+RunnerUtil.run(" {key: 'value'}");
 // 总是返回包含一个键值对的 HashMap
 // 可以看出，对象的键名是字符串的话可以不用引号包裹
 // 但是值必须被包裹
-RunnerUtil.apply(" {true: 'value'}"); // 键是 true
+RunnerUtil.run(" {true: 'value'}"); // 键是 true
 /*
  * 这里的 true 不是字符串，而是 boolean。
  * 同样，未被引号包裹的 null、false、数字都是对应类型的数据，而不是字符串
  * 其他符合变量命名规则的键都是普通字符串，被单引号或双引号包裹的也是
  */
-RunnerUtil.apply(" {'true': 'value', 25: false, 'name': \"张三\"}");
+RunnerUtil.run(" {'true': 'value', 25: false, 'name': \"张三\"}");
 ```
 
 #### 运算支持的类型：
 1. 普通四则混合运算：+、-、*、/、%、()
 ``` java
-RunnerUtil.apply(" 1 + 1 "); // 2
-RunnerUtil.apply(" 1 + (3 * 4)) "); // 13
-RunnerUtil.apply(" 'Hello ' + \"World!\" ");  // "Hello World!"
-RunnerUtil.apply(" true + false "); // "truefalse"
+RunnerUtil.run(" 1 + 1 "); // 2
+RunnerUtil.run(" 1 + (3 * 4)) "); // 13
+RunnerUtil.run(" 'Hello ' + \"World!\" ");  // "Hello World!"
+RunnerUtil.run(" true + false "); // "truefalse"
 /*
  * true+false 在 Java 中是不允许的
  * 但如果是“+”运算的话，这里均作为普通字符串；
@@ -98,38 +98,38 @@ RunnerUtil.apply(" true + false "); // "truefalse"
 ```
 2. 位运算：&、|、^、<<、>>
 ``` java
-RunnerUtil.apply(" 1 ^ 1 "); 
-RunnerUtil.apply(" 1 & 1 "); 
-RunnerUtil.apply(" 1 | 1 "); 
-RunnerUtil.apply(" 1 << 1 "); 
-RunnerUtil.apply(" 1 >> 1 ");
+RunnerUtil.run(" 1 ^ 1 "); 
+RunnerUtil.run(" 1 & 1 "); 
+RunnerUtil.run(" 1 | 1 "); 
+RunnerUtil.run(" 1 << 1 "); 
+RunnerUtil.run(" 1 >> 1 ");
 ```
 3. 比较运算：>、>=、==、<=、<
 ``` java
-RunnerUtil.apply(" 1 + 1 == 2 "); // true
-RunnerUtil.apply(" 1 + 1 < 2 "); // false
+RunnerUtil.run(" 1 + 1 == 2 "); // true
+RunnerUtil.run(" 1 + 1 < 2 "); // false
 ```
 4. 逻辑运算：&&、||、!
 ``` java
-RunnerUtil.apply("1+1==2 && 5 > 4"); // true
+RunnerUtil.run("1+1==2 && 5 > 4"); // true
 ```
 5. 三元运算：assertExpression ? trueExpression : falseExpression
 ``` java
-RunnerUtil.apply("true ? 'name' : 'age'"); // name
-RunnerUtil.apply("false ? 'name' : 'age'"); // age
-RunnerUtil.apply("1 > 2 ? 'name' : 'age'"); // age
-RunnerUtil.apply("1 < 2 ? 'name' : 'age'"); // name
+RunnerUtil.run("true ? 'name' : 'age'"); // name
+RunnerUtil.run("false ? 'name' : 'age'"); // age
+RunnerUtil.run("1 > 2 ? 'name' : 'age'"); // age
+RunnerUtil.run("1 < 2 ? 'name' : 'age'"); // name
 ```
 6. 变量：命名规则与 Java 变量命名规则相同，同时 null、true、false 不能作为变量
 
 表达式中包含变量就代表这个表达式在运行得到结果时需要从外部获取数据，如果不能正确的从数据源读取到数据，运行就会抛出异常；
 ``` java
-RunnerUtil.apply(" 'Hello, ' + name "); // 抛出异常
+RunnerUtil.run(" 'Hello, ' + name "); // 抛出异常
 
 Map data = new HashMap();
 data.put("name", "Li Lei!");
 
-RunnerUtil.apply(" 'Hello, ' + name ", data); // "Hello, Li Lei!"
+RunnerUtil.run(" 'Hello, ' + name ", data); // "Hello, Li Lei!"
 ```
 7. 链式取值：链式语法与 JavaScript 很相似
 ``` java
@@ -149,26 +149,26 @@ map.put(true, "true 是 Boolean 类型作为键");
 data.put("list", list); 
 data.put("map", map); 
 
-RunnerUtil.apply("map.name", data); // "小四"
+RunnerUtil.run("map.name", data); // "小四"
 
-RunnerUtil.apply("map['name']", data); 
+RunnerUtil.run("map['name']", data); 
 // "小四" （也可以这样取值）
 
-RunnerUtil.apply("list[ 2 ]", data);
+RunnerUtil.run("list[ 2 ]", data);
 // 25 （索引取值需要用方括号包裹） 
 
-RunnerUtil.apply("list[3]", data);
+RunnerUtil.run("list[3]", data);
 // "隔壁老王" （索引取值需要用方括号包裹） 
 
-RunnerUtil.apply("list[map.index]", data); // 25
+RunnerUtil.run("list[map.index]", data); // 25
 // （这是高级点的用法，方括号包含另一个表达式
 // 返回值是一个索引，然后返回索引指向的值）
 
-RunnerUtil.apply("[true]", data); // "true 是 Boolean 类型作为键"
+RunnerUtil.run("[true]", data); // "true 是 Boolean 类型作为键"
 // 如果不用方括号包括，true 就是一个直接值，返回 true
 // 那么问题来了：
 // 如果传入的数据不是 Map 或 POJO，而是 List 或数组怎么办呢？
-RunnerUtil.apply(" [1] ", list); // false
+RunnerUtil.run(" [1] ", list); // false
 // 啊……唐宗宋祖，略显风骚！
 
 // 这种链式语法与 JavaScript 很相似
@@ -177,20 +177,20 @@ RunnerUtil.apply(" [1] ", list); // false
 ``` java
 这里的数据 data 继续用上一条的 data，具体数据不写了
 
-RunnerUtil.apply("map.size()", data); // 3
-RunnerUtil.apply("map.get('name')", data); // "小四" 
-RunnerUtil.apply("map.get('name').length()", data); // 2
-RunnerUtil.apply("map.name.length()", data); // 2
-RunnerUtil.apply(" [3].length() ", list); // 4
+RunnerUtil.run("map.size()", data); // 3
+RunnerUtil.run("map.get('name')", data); // "小四" 
+RunnerUtil.run("map.get('name').length()", data); // 2
+RunnerUtil.run("map.name.length()", data); // 2
+RunnerUtil.run(" [3].length() ", list); // 4
 // 唐宗宋祖，又显风骚！
 ```
 9. 运行静态方法： @ ；运行静态方法需要用到“@”符号作为标记。目前也不支持多参数方法调用。
 
 当你打开源码会发现这是一整个独立的工具库，很多方法和 commons-lang 包内容相似（个人认为不是重复造轮子，也有很多不同的和不如的）...，运行静态方法也可以运行这个工具库内的所有工具方法，暂时未将 RunnerUtil 剥离出来，也还不支持自定义的静态方法调用，不过这个工具库所提供的功能
 ``` java
-RunnerUtil.apply("@System.currentTimeMillis() ");
+RunnerUtil.run("@System.currentTimeMillis() ");
 // 15.....（一个毫秒数）
-RunnerUtil.apply("@Objects.toString(25) "); // "25"
+RunnerUtil.run("@Objects.toString(25) "); // "25"
 ```
 
 10. 自定义 List 类型、Map 类型、静态方法调用类。
@@ -213,8 +213,8 @@ RunnerSettings settings = RunnerSettings.builder()
 Runner runner0 = RunnerUtil.parse("@Objects.toString('juejin shequ')");
 Runner runner1 = RunnerUtil.parse("@Objects.toString('juejin shequ')", settings);
 
-Object result0 = runner0.apply(); // "juejin shequ"
-Object result1 = runner1.apply(); // "123"
+Object result0 = runner0.run(); // "juejin shequ"
+Object result1 = runner1.run(); // "123"
 ```
 
 综上，就是这个工具库所支持的字符串表达式运算了，以上所列举的运算可以嵌套、连接、但是不能交叉的进行运算。

@@ -4,7 +4,7 @@ package com.moon.enums;
  * @author 28678
  * @date 2018/9/11
  */
-public interface CharsEnum {
+public interface Chars {
     /**
      * 点号、句号
      */

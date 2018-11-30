@@ -1,6 +1,7 @@
 package com.moon.office.excel.core;
 
 import com.moon.office.excel.enums.ValueType;
+import com.moon.util.compute.Runner;
 import com.moon.util.compute.RunnerUtil;
 import com.moon.util.function.IntBiConsumer;
 
@@ -11,7 +12,7 @@ import java.lang.annotation.Annotation;
  */
 abstract class BaseCellRenderer<T extends Annotation> extends AbstractRenderer<T> {
 
-    private final String value;
+    private final Runner value;
     private final ValueType valueType;
     private final String skipCells;
     private final String colspan;
@@ -28,7 +29,7 @@ abstract class BaseCellRenderer<T extends Annotation> extends AbstractRenderer<T
     ) {
         super(annotation, children, var, delimiters);
 
-        this.value = value;
+        this.value = isZero() ? RunnerUtil.parse(value) : RunnerUtil.parse(value, getDelimiters());
         this.valueType = valueType;
         this.rowspan = rowspan;
         this.colspan = colspan;
@@ -82,9 +83,6 @@ abstract class BaseCellRenderer<T extends Annotation> extends AbstractRenderer<T
     }
 
     protected Object getValue(WorkCenterMap centerMap) {
-        Object data = isZero()
-            ? RunnerUtil.run(value, centerMap)
-            : RunnerUtil.parseRun(value, getDelimiters(), centerMap);
-        return valueType.apply(data);
+        return valueType.apply(value.run(centerMap));
     }
 }

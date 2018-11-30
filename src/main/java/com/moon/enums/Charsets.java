@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
  * @author benshaoye
  * @date 2018/9/16
  */
-public enum CharsetEnum {
+public enum Charsets {
     /**
      * 北美、西欧、拉丁美洲、加勒比海、加拿大、非洲
      */
@@ -77,7 +77,7 @@ public enum CharsetEnum {
 
     private final String text;
 
-    CharsetEnum(String text) {
+    Charsets(String text) {
         this.text = text;
     }
 

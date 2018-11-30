@@ -2,7 +2,7 @@ package com.moon.lang;
 
 import com.moon.enums.ArraysEnum;
 import com.moon.enums.Const;
-import com.moon.enums.PredicateEnum;
+import com.moon.enums.Predicates;
 import com.moon.io.IOUtil;
 import com.moon.lang.support.StringSupport;
 
@@ -114,11 +114,11 @@ public final class StringUtil {
      * @return
      */
     public static String concat(CharSequence... css) {
-        return concatHandler(PredicateEnum.TRUE, css);
+        return concatHandler(Predicates.TRUE, css);
     }
 
     public static String concatSkipNulls(CharSequence... css) {
-        return concatHandler(PredicateEnum.NON_NULL, css);
+        return concatHandler(Predicates.NON_NULL, css);
     }
 
     public static String concatSkipBlanks(CharSequence... css) {

@@ -1,7 +1,6 @@
 package com.moon.io;
 
-import com.moon.enums.CharsetEnum;
-import com.moon.lang.LongUtil;
+import com.moon.enums.Charsets;
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.LongAccessor;
 import com.moon.util.ResourceUtil;
@@ -25,7 +24,7 @@ public final class IOUtil {
         ThrowUtil.noInstanceError();
     }
 
-    public static final String DEFAULT_CHARSET = CharsetEnum.UTF_8.text();
+    public static final String DEFAULT_CHARSET = Charsets.UTF_8.text();
 
     /*
      * -----------------------------------------------------------------------

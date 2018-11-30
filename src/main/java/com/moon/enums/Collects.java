@@ -25,7 +25,7 @@ import java.util.function.*;
  * @author benshaoye
  * @date 2018/9/11
  */
-public enum CollectEnum implements Supplier<Collection>,
+public enum Collects implements Supplier<Collection>,
     IntFunction<Collection>, Function<Collection, Collection> {
 
     /*
@@ -260,7 +260,7 @@ public enum CollectEnum implements Supplier<Collection>,
      */
 
     /**
-     * TreeSet 是基于 TreeMap 实现的，详见：{@link TreeMap}、{@link MapEnum#TreeMap}
+     * TreeSet 是基于 TreeMap 实现的，详见：{@link TreeMap}、{@link Maps#TreeMap}
      * 继承结构：
      *
      * @see Iterable
@@ -302,7 +302,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * > 这个构造器中的第三个参数 dummy，并没有任何实际作用，
      * &nbsp;  只是用来标记通过此构造方法得到的是一个用{@link LinkedHashMap}维护数据而不是{@link HashMap}
      * &nbsp;  但这个构造器是用 default 修饰的，无法被外界调用，
-     * &nbsp;  详见：{@link LinkedHashSet}、{@link #LinkedHashSet}、{@link MapEnum#LinkedHashMap}
+     * &nbsp;  详见：{@link LinkedHashSet}、{@link #LinkedHashSet}、{@link Maps#LinkedHashMap}
      * <p>
      * 详解 {@link HashMap}
      * <p>
@@ -628,12 +628,12 @@ public enum CollectEnum implements Supplier<Collection>,
     };
 
     static final class CtorCached {
-        final static HashMap<Class, CollectEnum> CACHE = new HashMap();
+        final static HashMap<Class, Collects> CACHE = new HashMap();
     }
 
     private final Class type;
 
-    CollectEnum(Class type) {
+    Collects(Class type) {
         CtorCached.CACHE.put(this.type = type, this);
     }
 
@@ -647,7 +647,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param type 集合类
      * @return
      */
-    public static CollectEnum get(Class type) {
+    public static Collects get(Class type) {
         return CtorCached.CACHE.get(type);
     }
 
@@ -657,7 +657,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param object 集合对象
      * @return
      */
-    public static CollectEnum get(Object object) {
+    public static Collects get(Object object) {
         return object == null ? null : get(object.getClass());
     }
 
@@ -668,8 +668,8 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param type
      * @return
      */
-    public static CollectEnum getAsSuper(Class type) {
-        for (CollectEnum collect;
+    public static Collects getAsSuper(Class type) {
+        for (Collects collect;
              type != null;
              type = type.getSuperclass()) {
             if ((collect = get(type)) != null) {
@@ -686,7 +686,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static CollectEnum getAsSuper(Object object) {
+    public static Collects getAsSuper(Object object) {
         return object == null ? null : getAsSuper(object.getClass());
     }
 
@@ -697,7 +697,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectEnum getOrDefault(Class type, CollectEnum defaultType) {
+    public static Collects getOrDefault(Class type, Collects defaultType) {
         return CtorCached.CACHE.getOrDefault(type, defaultType);
     }
 
@@ -708,7 +708,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectEnum getOrDefault(Object object, CollectEnum defaultType) {
+    public static Collects getOrDefault(Object object, Collects defaultType) {
         return object == null ? defaultType : getOrDefault(object.getClass(), defaultType);
     }
 
@@ -720,8 +720,8 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectEnum getAsSuperOrDefault(Class type, CollectEnum defaultType) {
-        for (CollectEnum collect;
+    public static Collects getAsSuperOrDefault(Class type, Collects defaultType) {
+        for (Collects collect;
              type != null;
              type = type.getSuperclass()) {
             if ((collect = get(type)) != null) {
@@ -739,7 +739,7 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param defaultType 默认值
      * @return
      */
-    public static CollectEnum getAsSuperOrDefault(Object object, CollectEnum defaultType) {
+    public static Collects getAsSuperOrDefault(Object object, Collects defaultType) {
         return object == null ? defaultType : getAsSuperOrDefault(object.getClass(), defaultType);
     }
 
@@ -749,10 +749,10 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param type
      * @return
      */
-    public static CollectEnum getAsSuperOrDeduce(Class type) {
-        CollectEnum collect = getAsSuper(type);
+    public static Collects getAsSuperOrDeduce(Class type) {
+        Collects collect = getAsSuper(type);
         if (collect == null && type != null) {
-            return FilterUtil.nullableFirst(CollectEnum.values(),
+            return FilterUtil.nullableFirst(Collects.values(),
                 item -> item.type().isAssignableFrom(type));
         }
         return collect;
@@ -764,10 +764,10 @@ public enum CollectEnum implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static CollectEnum getAsSuperOrDeduce(Object object) {
-        CollectEnum collect = getAsSuper(object);
+    public static Collects getAsSuperOrDeduce(Object object) {
+        Collects collect = getAsSuper(object);
         if (collect == null && object != null) {
-            return FilterUtil.nullableFirst(CollectEnum.values(),
+            return FilterUtil.nullableFirst(Collects.values(),
                 item -> item.type().isInstance(object));
         }
         return collect;

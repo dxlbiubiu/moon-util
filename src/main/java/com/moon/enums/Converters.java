@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
  * @author benshaoye
  * @date 2018/9/11
  */
-public enum ConverterEnum implements
+public enum Converters implements
     BiFunction<Object, Class, Object> {
 
     toBooleanValue(boolean.class) {
@@ -214,10 +214,10 @@ public enum ConverterEnum implements
     public final Class TYPE;
 
     private static class Cached {
-        final static Map<Class, ConverterEnum> CACHE = new HashMap();
+        final static Map<Class, Converters> CACHE = new HashMap();
     }
 
-    ConverterEnum(Class type) {
+    Converters(Class type) {
         Cached.CACHE.put(this.TYPE = type, this);
     }
 

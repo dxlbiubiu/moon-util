@@ -4,7 +4,7 @@ package com.moon.enums;
  * @author benshaoye
  * @date 2018/9/11
  */
-public enum PropsEnum {
+public enum Props {
 
     sun_cpu_isalist,
     sun_desktop,
@@ -71,7 +71,7 @@ public enum PropsEnum {
     private final String key;
     private final String value;
 
-    PropsEnum() {
+    Props() {
         this.value = System.getProperty((this.key = this.name().replace('_', '.')));
     }
 

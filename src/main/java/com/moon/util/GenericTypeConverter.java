@@ -1,7 +1,7 @@
 package com.moon.util;
 
 import com.moon.beans.BeanInfoUtil;
-import com.moon.enums.ConverterEnum;
+import com.moon.enums.Converters;
 import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.WeakAccessor;
 import com.moon.lang.reflect.ConstructorUtil;
@@ -36,7 +36,7 @@ public class GenericTypeConverter implements TypeConverter {
      * 注册默认转换器
      */
     private void registerDefaultConverter() {
-        for (ConverterEnum value : ConverterEnum.values()) {
+        for (Converters value : Converters.values()) {
             BiFunction converter = value;
             add(value.TYPE, converter);
         }
