@@ -33,16 +33,16 @@ final class ParseParams {
         outer:
         for (int next = curr; ; curr = next) {
             switch (next) {
-                case YUAN_RIGHT:
+                case YUAN_R:
                     AsValuer[] runners = new AsValuer[params.size()];
                     return (AsValuer[]) params.toArray(runners);
-                case SINGLE_QUOTE:
-                case DOUBLE_QUOTE:
+                case SINGLE:
+                case DOUBLE:
                     runner = ParseConst.parseStr(chars, indexer, next);
                     break;
                 default:
-                    runner = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, YUAN_RIGHT);
-                    if ((next = chars[indexer.get() - 1]) == YUAN_RIGHT) {
+                    runner = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, YUAN_R);
+                    if ((next = chars[indexer.get() - 1]) == YUAN_R) {
                         params.add(runner);
                         continue outer;
                     }
@@ -50,7 +50,7 @@ final class ParseParams {
             }
             params.add(runner);
             next = ParseUtil.nextVal(chars, indexer, len);
-            if (next == COMMA && (runner != DataConst.NULL || (curr != COMMA && curr != YUAN_LEFT))) {
+            if (next == COMMA && (runner != DataConst.NULL || (curr != COMMA && curr != YUAN_L))) {
                 next = ParseUtil.nextVal(chars, indexer, len);
             }
         }

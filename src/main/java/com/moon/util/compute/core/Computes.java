@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * @author benshaoye
  */
-enum DataComputes implements AsCompute {
+enum Computes implements AsCompute {
     /**
      * 这个符号仅用于提升优先级的标记，没有计算意义
      */
@@ -13,44 +13,44 @@ enum DataComputes implements AsCompute {
 
     BIT_LEFT(ConstPriorities.BIT_LEFT) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() << ((Number) o2).intValue();
         }
     },
     UN_BIT_RIGHT(ConstPriorities.UN_BIT_RIGHT) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() >>> ((Number) o2).intValue();
         }
     },
     BIT_RIGHT(ConstPriorities.BIT_RIGHT) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() >> ((Number) o2).intValue();
         }
     },
     BIT_AND(ConstPriorities.BIT_AND) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() & ((Number) o2).intValue();
         }
     },
     BIT_OR(ConstPriorities.BIT_OR) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() | ((Number) o2).intValue();
         }
     },
     NOT_OR(ConstPriorities.NOT_OR) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             return ((Number) o1).intValue() ^ ((Number) o2).intValue();
         }
     },
 
     PLUS(ConstPriorities.PLUS) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 instanceof Number && o2 instanceof Number) {
                 if (o1 instanceof Integer && o2 instanceof Integer) {
                     return ((Number) o1).intValue() + ((Number) o2).intValue();
@@ -62,7 +62,7 @@ enum DataComputes implements AsCompute {
     },
     MINUS(ConstPriorities.MINUS) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 instanceof Double
                 || o2 instanceof Double
                 || o1 instanceof Float
@@ -74,7 +74,7 @@ enum DataComputes implements AsCompute {
     },
     MULTI(ConstPriorities.MULTI) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 instanceof Double
                 || o2 instanceof Double
                 || o1 instanceof Float
@@ -86,7 +86,7 @@ enum DataComputes implements AsCompute {
     },
     DIVIDE(ConstPriorities.DIVIDE) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 instanceof Double
                 || o2 instanceof Double
                 || o1 instanceof Float
@@ -98,7 +98,7 @@ enum DataComputes implements AsCompute {
     },
     MOD(ConstPriorities.MOD) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 instanceof Double
                 || o2 instanceof Double
                 || o1 instanceof Float
@@ -118,7 +118,7 @@ enum DataComputes implements AsCompute {
          * @return
          */
         @Override
-        public Object handle(AsRunner right, AsRunner left, Object data) {
+        public Object exe(AsRunner right, AsRunner left, Object data) {
             return (Boolean) left.run(data) && (Boolean) right.run(data);
         }
     },
@@ -132,13 +132,13 @@ enum DataComputes implements AsCompute {
          * @return
          */
         @Override
-        public Object handle(AsRunner right, AsRunner left, Object data) {
+        public Object exe(AsRunner right, AsRunner left, Object data) {
             return (Boolean) left.run(data) || (Boolean) right.run(data);
         }
     },
     NOT_EQ(ConstPriorities.NOT_EQ) {
         @Override
-        public Object handle(Object right, Object left) {
+        public Object exe(Object right, Object left) {
             if (right == left) {
                 return false;
             }
@@ -153,7 +153,7 @@ enum DataComputes implements AsCompute {
     },
     EQ(ConstPriorities.EQ) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 == o2) {
                 return true;
             }
@@ -168,7 +168,7 @@ enum DataComputes implements AsCompute {
     },
     GT(ConstPriorities.GT) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
                 return Boolean.FALSE;
             }
@@ -186,7 +186,7 @@ enum DataComputes implements AsCompute {
     },
     LT(ConstPriorities.LT) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
                 return Boolean.FALSE;
             }
@@ -204,7 +204,7 @@ enum DataComputes implements AsCompute {
     },
     GT_OR_EQ(ConstPriorities.GT_OR_EQ) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 == o2 || o2 == null) {
                 return Boolean.TRUE;
             }
@@ -222,7 +222,7 @@ enum DataComputes implements AsCompute {
     },
     LT_OR_EQ(ConstPriorities.LT_OR_EQ) {
         @Override
-        public Object handle(Object o2, Object o1) {
+        public Object exe(Object o2, Object o1) {
             if (o1 == o2 || o1 == null) {
                 return Boolean.TRUE;
             }
@@ -241,7 +241,7 @@ enum DataComputes implements AsCompute {
 
     private final int priority;
 
-    DataComputes(int priority) {
+    Computes(int priority) {
         this.priority = priority;
     }
 

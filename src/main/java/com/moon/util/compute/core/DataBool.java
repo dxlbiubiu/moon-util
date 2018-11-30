@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-enum DataConstBoolean implements AsConst, AsFlipable {
+enum DataBool implements AsConst, AsFlip {
     TRUE {
         @Override
         public Object run(Object data) {
@@ -11,7 +11,7 @@ enum DataConstBoolean implements AsConst, AsFlipable {
         }
 
         @Override
-        public DataConstBoolean flip() {
+        public DataBool flip() {
             return FALSE;
         }
     },
@@ -22,7 +22,7 @@ enum DataConstBoolean implements AsConst, AsFlipable {
         }
 
         @Override
-        public DataConstBoolean flip() {
+        public DataBool flip() {
             return TRUE;
         }
     };

@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-final class Constants {
+class Constants {
 
     final static char PLUS = '+';
     final static char MINUS = '-';
@@ -28,15 +28,21 @@ final class Constants {
     final static char COMMA = ',';
     final static char COLON = ':';
 
-    final static char SINGLE_QUOTE = '\'';
-    final static char DOUBLE_QUOTE = '"';
+    /**
+     * SINGLE_QUOTE
+     */
+    final static char SINGLE = '\'';
+    /**
+     * DOUBLE_QUOTE
+     */
+    final static char DOUBLE = '"';
 
-    final static char YUAN_LEFT = '(';
-    final static char YUAN_RIGHT = ')';
+    final static char YUAN_L = '(';
+    final static char YUAN_R = ')';
 
-    final static char HUA_LEFT = '{';
-    final static char HUA_RIGHT = '}';
+    final static char HUA_L = '{';
+    final static char HUA_R = '}';
 
-    final static char FANG_LEFT = '[';
-    final static char FANG_RIGHT = ']';
+    final static char FANG_L = '[';
+    final static char FANG_R = ']';
 }

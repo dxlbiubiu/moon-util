@@ -43,18 +43,18 @@ final class ParseCurly {
         for (int next = curr; ; curr = next) {
             inner:
             switch (next) {
-                case HUA_RIGHT:
+                case HUA_R:
                     return createAsGetter(creators, settings, CreateType.LIST);
                 case COMMA:
                     valuer = DataConst.NULL;
                     break inner;
-                case SINGLE_QUOTE:
-                case DOUBLE_QUOTE:
+                case SINGLE:
+                case DOUBLE:
                     valuer = ParseConst.parseStr(chars, indexer, next);
                     break inner;
                 default:
-                    valuer = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, HUA_RIGHT);
-                    if ((next = chars[indexer.get() - 1]) == HUA_RIGHT) {
+                    valuer = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, HUA_R);
+                    if ((next = chars[indexer.get() - 1]) == HUA_R) {
                         creators.add(new ListAdder(valuer));
                         continue outer;
                     }
@@ -62,7 +62,7 @@ final class ParseCurly {
             }
             creators.add(new ListAdder(valuer));
             next = ParseUtil.nextVal(chars, indexer, len);
-            if (next == COMMA && (valuer != DataConst.NULL || (curr != COMMA && curr != YUAN_LEFT))) {
+            if (next == COMMA && (valuer != DataConst.NULL || (curr != COMMA && curr != YUAN_L))) {
                 next = ParseUtil.nextVal(chars, indexer, len);
             }
         }
@@ -89,10 +89,10 @@ final class ParseCurly {
         AsRunner key;
         for (int next = curr, index; ; ) {
             switch (next) {
-                case HUA_RIGHT:
+                case HUA_R:
                     return createAsGetter(creators, settings, CreateType.MAP);
-                case SINGLE_QUOTE:
-                case DOUBLE_QUOTE:
+                case SINGLE:
+                case DOUBLE:
                     key = ParseConst.parseStr(chars, indexer, next);
                     break;
                 default:
@@ -117,14 +117,14 @@ final class ParseCurly {
             index = indexer.get();
             next = ParseUtil.nextVal(chars, indexer, len);
             ParseUtil.assertTrue(
-                next != COMMA && next != HUA_RIGHT, chars, indexer
+                next != COMMA && next != HUA_R, chars, indexer
             );
             indexer.set(index);
 
             creators.add(new MapPutter(
                 (AsConst) key,
                 ParseCore.parse(
-                    chars, indexer, len, settings, COMMA, HUA_RIGHT
+                    chars, indexer, len, settings, COMMA, HUA_R
                 )
             ));
             if ((next = chars[indexer.get() - 1]) == COMMA) {
@@ -152,7 +152,7 @@ final class ParseCurly {
         LinkedList<BiConsumer> creators, RunnerSettings settings, CreateType type
     ) {
         return creators.isEmpty() ? type
-            : new DataGetterCurly(
+            : new GetCurly(
             creators.toArray(new BiConsumer[creators.size()]),
             type.apply(settings));
     }
@@ -162,13 +162,13 @@ final class ParseCurly {
         CreateType type;
         switch (curr) {
             case COMMA:
-            case HUA_LEFT:
-            case FANG_LEFT:
-            case YUAN_LEFT:
+            case HUA_L:
+            case FANG_L:
+            case YUAN_L:
                 type = CreateType.LIST;
                 break;
-            case SINGLE_QUOTE:
-            case DOUBLE_QUOTE:
+            case SINGLE:
+            case DOUBLE:
                 ParseConst.parseStr(chars, indexer, curr);
                 type = doNext(chars, indexer, curr);
                 break;
@@ -198,9 +198,9 @@ final class ParseCurly {
     private final static AsRunner tryEmpty(char[] chars, IntAccessor indexer, int len, int curr) {
         if (curr == COLON) {
             int next = ParseUtil.nextVal(chars, indexer, len);
-            ParseUtil.assertTrue(next == HUA_RIGHT, chars, indexer);
+            ParseUtil.assertTrue(next == HUA_R, chars, indexer);
             return CreateType.MAP;
-        } else if (curr == HUA_RIGHT) {
+        } else if (curr == HUA_R) {
             return CreateType.LIST;
         }
         return null;

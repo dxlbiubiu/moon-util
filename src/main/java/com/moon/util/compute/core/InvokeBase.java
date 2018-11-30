@@ -8,13 +8,13 @@ import java.util.Objects;
 /**
  * @author benshaoye
  */
-abstract class DataInvokeBase implements AsInvoker {
+abstract class InvokeBase implements AsInvoker {
     final String methodName;
 
     private Method method;
     private Class declaringClass;
 
-    protected DataInvokeBase(String methodName) {
+    protected InvokeBase(String methodName) {
         Objects.requireNonNull(methodName);
         this.methodName = methodName;
     }

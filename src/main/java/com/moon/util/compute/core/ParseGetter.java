@@ -35,7 +35,7 @@ final class ParseGetter {
             case "false":
                 return DataConst.FALSE;
             default:
-                return new DataGetterOrdinary(str);
+                return new GetOrdinary(str);
         }
     }
 
@@ -54,32 +54,33 @@ final class ParseGetter {
     }
 
     final static AsRunner parseDot(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, RunnerSettings sets, AsRunner prev
     ) {
-        AsValuer prevValuer = (AsValuer) prevHandler;
+        AsValuer prevValuer = (AsValuer) prev;
         AsRunner handler = parseDot(chars, indexer, len);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        AsRunner invoker = ParseInvoker.tryParseInvoker(chars, indexer, len, settings, handler.toString(), prevValuer);
-        return invoker == null ? new DataGetterLinker(prevValuer, (AsValuer) handler) : invoker;
+        AsRunner invoker = ParseInvoker.tryParseInvoker(chars,
+            indexer, len, sets, handler.toString(), prevValuer);
+        return invoker == null ? new GetLink(prevValuer, (AsValuer) handler) : invoker;
     }
 
     final static AsRunner parseNot(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings
+        char[] chars, IntAccessor indexer, int len, RunnerSettings sets
     ) {
         AsRunner valuer, tryLinked;
         int curr = ParseUtil.nextVal(chars, indexer, len);
         switch (curr) {
-            case Constants.FANG_LEFT:
-                valuer = parseFang(chars, indexer, len, settings);
+            case Constants.FANG_L:
+                valuer = parseFang(chars, indexer, len, sets);
                 break;
-            case Constants.YUAN_LEFT:
-                valuer = parseYuan(chars, indexer, len, settings);
+            case Constants.YUAN_L:
+                valuer = parseYuan(chars, indexer, len, sets);
                 break;
-            case Constants.HUA_LEFT:
-                valuer = ParseCurly.parse(chars, indexer, len, settings);
+            case Constants.HUA_L:
+                valuer = ParseCurly.parse(chars, indexer, len, sets);
                 break;
             case Constants.CALLER:
-                valuer = ParseCaller.parse(chars, indexer, len, settings);
+                valuer = ParseCall.parse(chars, indexer, len, sets);
                 break;
             default:
                 if (ParseUtil.isVar(curr)) {
@@ -95,27 +96,27 @@ final class ParseGetter {
                 }
                 break;
         }
-        tryLinked = tryParseLinked(chars, indexer, len, settings, valuer);
+        tryLinked = tryParseLinked(chars, indexer, len, sets, valuer);
         return tryLinked == valuer && tryLinked.isConst() ? flip(chars, indexer, tryLinked)
-            : new DataGetterNot(tryLinked);
+            : new GetNot(tryLinked);
     }
 
     private static AsRunner flip(char[] chars, IntAccessor indexer, AsRunner valuer) {
-        ParseUtil.assertTrue(valuer instanceof DataConstBoolean, chars, indexer);
-        return ((DataConstBoolean) valuer).flip();
+        ParseUtil.assertTrue(valuer instanceof DataBool, chars, indexer);
+        return ((DataBool) valuer).flip();
     }
 
     final static AsRunner tryParseLinked(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner valuer
+        char[] chars, IntAccessor indexer, int len, RunnerSettings sets, AsRunner valuer
     ) {
         final int index = indexer.get();
         AsRunner next = valuer;
         for (int curr; ; ) {
             curr = ParseUtil.nextVal(chars, indexer, len);
             if (curr == Constants.DOT) {
-                next = parseDot(chars, indexer, len, settings, next);
-            } else if (curr == Constants.FANG_LEFT) {
-                next = parseFangToComplex(chars, indexer, len, settings, next);
+                next = parseDot(chars, indexer, len, sets, next);
+            } else if (curr == Constants.FANG_L) {
+                next = parseFangToComplex(chars, indexer, len, sets, next);
             } else {
                 if (next == valuer) {
                     indexer.set(index);
@@ -133,15 +134,15 @@ final class ParseGetter {
      * @param len
      * @return
      */
-    final static DataGetterFang parseFang(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
-        AsRunner handler = ParseCore.parse(chars, indexer, len, settings, Constants.FANG_RIGHT);
+    final static GetFang parseFang(char[] chars, IntAccessor indexer, int len, RunnerSettings sets) {
+        AsRunner handler = ParseCore.parse(chars, indexer, len, sets, Constants.FANG_R);
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-        return new DataGetterFang((AsValuer) handler);
+        return new GetFang((AsValuer) handler);
     }
 
     /**
      * 参考{@link ParseCore#core(char[], IntAccessor, int, RunnerSettings, int, LinkedList, LinkedList, AsRunner)}
-     * case FANG_LEFT: 的详细步骤
+     * case FANG_L: 的详细步骤
      *
      * @param chars
      * @param indexer
@@ -150,14 +151,14 @@ final class ParseGetter {
      * @return
      */
     private final static AsRunner parseFangToComplex(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, AsRunner prevHandler
+        char[] chars, IntAccessor indexer, int len, RunnerSettings sets, AsRunner prevHandler
     ) {
-        AsRunner handler = ParseGetter.parseFang(chars, indexer, len, settings);
+        AsRunner handler = ParseGetter.parseFang(chars, indexer, len, sets);
         ParseUtil.assertTrue(prevHandler.isValuer(), chars, indexer);
-        return ((DataGetterFang) handler).toComplex(prevHandler);
+        return ((GetFang) handler).toComplex(prevHandler);
     }
 
-    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, RunnerSettings settings) {
-        return ParseCore.parse(chars, indexer, len, settings, Constants.YUAN_RIGHT);
+    final static AsRunner parseYuan(char[] chars, IntAccessor indexer, int len, RunnerSettings sets) {
+        return ParseCore.parse(chars, indexer, len, sets, Constants.YUAN_R);
     }
 }

@@ -3,11 +3,11 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-final class DataGetterNot implements AsGetter {
+class GetNot implements AsGetter {
 
     final AsRunner valuer;
 
-    DataGetterNot(AsRunner valuer) {
+    GetNot(AsRunner valuer) {
         this.valuer = valuer;
     }
 

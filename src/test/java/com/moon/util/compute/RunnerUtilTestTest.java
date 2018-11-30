@@ -13,10 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.moon.util.assertions.Assertions.of;
@@ -380,15 +377,17 @@ class RunnerUtilTestTest {
         System.out.println(random.nextDouble(10, 20));
     }
 
+    Map vars = new HashMap() {{
+        put("i", 100);
+        put("pi", 3.14f);
+        put("d", -3.9);
+        put("b", (byte) 4);
+        put("bool", false);
+    }};
+
     @Test
     void testPerformance2() {
-        data = new HashMap() {{
-            put("i", 100);
-            put("pi", 3.14f);
-            put("d", -3.9);
-            put("b", (byte) 4);
-            put("bool", false);
-        }};
+        data = vars;
         str = "i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99 ==i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99";
         runner = RunnerUtil.parse(str);
 
@@ -407,6 +406,23 @@ class RunnerUtilTestTest {
         Console.out.time();
         for (int j = 0; j < count; j++) {
             res = er.run(data);
+        }
+        Console.out.timeEnd();
+    }
+
+    @Test
+    void testPerformance6() {
+
+        str = "i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99 ==i * @Math.PI + (d * b - 199) / (1 - d * @Math.PI) - (2 + 100 - i / @Math.PI) % 99";
+        runner = RunnerUtil.parse(str);
+        res = runner.run(vars);
+
+        System.out.println(res);
+
+        int count = 100000;
+        Console.out.time();
+        for (int c = 0; c < count; c++) {
+            runner.run(vars);
         }
         Console.out.timeEnd();
     }

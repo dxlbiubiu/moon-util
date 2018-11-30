@@ -7,11 +7,11 @@ import java.util.Objects;
  *
  * @author benshaoye
  */
-final class DataGetterLinker implements AsGetter {
+class GetLink implements AsGetter {
     final AsValuer prevGetter;
     final AsValuer valuer;
 
-    DataGetterLinker(AsValuer prevGetter, AsValuer key) {
+    GetLink(AsValuer prevGetter, AsValuer key) {
         this.prevGetter = Objects.requireNonNull(prevGetter);
         this.valuer = key;
     }

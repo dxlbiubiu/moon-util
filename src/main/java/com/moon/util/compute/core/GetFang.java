@@ -5,17 +5,17 @@ package com.moon.util.compute.core;
  *
  * @author benshaoye
  */
-final class DataGetterFang implements AsGetter {
+class GetFang implements AsGetter {
 
     final AsValuer valuer;
     IGetter getter;
 
-    DataGetterFang(AsValuer valuer) {
+    GetFang(AsValuer valuer) {
         this.valuer = valuer;
     }
 
     AsRunner toComplex(AsRunner beforeValuer) {
-        return new DataGetterComplex((AsValuer) beforeValuer, this.valuer);
+        return new GetComplex((AsValuer) beforeValuer, this.valuer);
     }
 
     public IGetter getGetter(Object data, Object innerData) {

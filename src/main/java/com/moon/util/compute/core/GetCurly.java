@@ -7,11 +7,11 @@ import java.util.function.Supplier;
 /**
  * @author benshaoye
  */
-final class DataGetterCurly implements AsGetter {
+class GetCurly implements AsGetter {
     final BiConsumer[] consumers;
     final Supplier creator;
 
-    DataGetterCurly(BiConsumer[] consumers, Supplier creator) {
+    GetCurly(BiConsumer[] consumers, Supplier creator) {
         this.consumers = consumers;
         this.creator = creator;
     }

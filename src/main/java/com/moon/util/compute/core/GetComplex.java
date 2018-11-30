@@ -3,14 +3,14 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-class DataGetterComplex implements AsGetter {
+class GetComplex implements AsGetter {
 
     final AsValuer beforeItem;
     final AsValuer afterItem;
 
     IGetter getter;
 
-    DataGetterComplex(AsValuer beforeItem, AsValuer afterItem) {
+    GetComplex(AsValuer beforeItem, AsValuer afterItem) {
         this.beforeItem = beforeItem;
         this.afterItem = afterItem;
     }

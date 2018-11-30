@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-enum DataConstNull implements AsConst {
+enum DataNull implements AsConst {
     NULL;
 
 

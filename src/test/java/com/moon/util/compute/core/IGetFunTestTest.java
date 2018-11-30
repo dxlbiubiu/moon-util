@@ -13,7 +13,7 @@ import static com.moon.util.compute.core.ParseUtil.parse;
 /**
  * @author benshaoye
  */
-class InnersTestTest {
+class IGetFunTestTest {
 
     static final Assertions assertions = Assertions.of();
 
@@ -36,7 +36,7 @@ class InnersTestTest {
     @Test
     void testFunctionsName() {
         toValue("@ str . indexOf (12,1)");
-        assertions.assertSame(runner.getClass(), DataConstNumber.class);
+        assertions.assertSame(runner.getClass(), DataNum.class);
         assertions.assertEquals(res, 0);
 
         data = new HashMap() {{

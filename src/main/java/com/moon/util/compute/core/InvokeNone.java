@@ -5,9 +5,9 @@ import com.moon.lang.reflect.MethodUtil;
 /**
  * @author benshaoye
  */
-final class DataInvokeEmpty extends DataInvokeBase {
+class InvokeNone extends InvokeBase {
 
-    DataInvokeEmpty(String methodName) {
+    InvokeNone(String methodName) {
         super(methodName);
     }
 

@@ -5,13 +5,13 @@ import java.util.Objects;
 /**
  * @author benshaoye
  */
-public class DataGetterThree implements AsGetter {
+public class GetThree implements AsGetter {
 
     private final AsRunner assertRunner;
     private final AsRunner falseRunner;
     private final AsRunner trueRunner;
 
-    public DataGetterThree(AsRunner assertRunner, AsRunner trueRunner, AsRunner falseRunner) {
+    public GetThree(AsRunner assertRunner, AsRunner trueRunner, AsRunner falseRunner) {
         this.assertRunner = assertRunner;
         this.falseRunner = falseRunner;
         this.trueRunner = trueRunner;
@@ -43,14 +43,14 @@ public class DataGetterThree implements AsGetter {
 
         public AsRunner build() {
             if (assertRunner.isConst()) {
-                if (assertRunner instanceof DataConstBoolean) {
+                if (assertRunner instanceof DataBool) {
                     return assertRunner == DataConst.TRUE
                         ? Objects.requireNonNull(trueRunner)
                         : Objects.requireNonNull(falseRunner);
                 }
                 throw new IllegalArgumentException("can not cast to boolean of value: " + assertRunner.toString());
             } else {
-                return new DataGetterThree(assertRunner, trueRunner, falseRunner);
+                return new GetThree(assertRunner, trueRunner, falseRunner);
             }
         }
     }

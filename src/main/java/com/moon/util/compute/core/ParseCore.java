@@ -86,7 +86,7 @@ class ParseCore {
         RunnerSettings settings, int end0, int end1, int end2, int end3, int end4
     ) {
         return parse(chars, indexer, len, settings,
-            end0, end1, end2, end3, end4, IntTesters.FALSE);
+            end0, end1, end2, end3, end4, v -> false);
     }
 
     final static AsRunner parse(
@@ -94,23 +94,23 @@ class ParseCore {
         int end0, int end1, int end2, int end3, int end4, IntPredicate tester
     ) {
         AsRunner runner = null;
-        DataGetterThree.Builder builder;
+        GetThree.Builder builder;
         LinkedList<AsRunner> values = new LinkedList<>(), methods = new LinkedList();
         for (int curr; indexer.get() < len; ) {
             curr = ParseUtil.nextVal(chars, indexer, len);
             if (curr == end0 || curr == end1 ||
                 curr == end2 || curr == end3 ||
                 curr == end4 || tester.test(curr)) {
-                if (curr == YUAN_RIGHT) {
-                    cleanMethodsTo(values, methods, DataComputes.YUAN_LEFT);
+                if (curr == YUAN_R) {
+                    cleanTo(values, methods, Computes.YUAN_LEFT);
                 }
                 break;
             } else if (curr == ASK) {
                 // ?
-                builder = new DataGetterThree.Builder(toRunner(values, methods));
+                builder = new GetThree.Builder(toRunner(values, methods));
                 builder.setTrueRunner(parse(chars, indexer, len, settings, COLON));
                 builder.setFalseRunner(parse(chars, indexer, len, settings,
-                    COLON, YUAN_RIGHT, HUA_RIGHT, FANG_RIGHT, COMMA));
+                    COLON, YUAN_R, HUA_R, FANG_R, COMMA));
                 return builder.build();
             } else {
                 runner = core(chars, indexer, len, settings,
@@ -123,149 +123,149 @@ class ParseCore {
     private final static AsRunner toRunner(
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods
     ) {
-        return DataGetterCalculator.valueOf(cleanMethodsTo(values, methods, null));
+        return GetCalc.valueOf(cleanTo(values, methods, null));
     }
 
     private final static AsRunner core(
         char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsRunner prevHandler
     ) {
-        AsRunner handler;
+        AsRunner run;
         if (ParseUtil.isStr(curr)) {
-            values.add(handler = ParseConst.parseStr(chars, indexer, curr));
+            values.add(run = ParseConst.parseStr(chars, indexer, curr));
         } else if (ParseUtil.isNum(curr)) {
-            values.add(handler = ParseConst.parseNum(chars, indexer, len, curr));
+            values.add(run = ParseConst.parseNum(chars, indexer, len, curr));
         } else if (ParseUtil.isVar(curr)) {
-            values.add(handler = ParseGetter.parseVar(chars, indexer, len, curr));
+            values.add(run = ParseGetter.parseVar(chars, indexer, len, curr));
         } else {
             switch (curr) {
                 case PLUS:
                     // +
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.PLUS);
+                    run = casSymbol(values, methods, Computes.PLUS);
                     break;
                 case MINUS:
                     // -
                     if (prevHandler == null || prevHandler.isHandler()) {
-                        values.add(handler = ParseOpposite.parse(chars, indexer, len, settings));
+                        values.add(run = ParseOpposite.parse(chars, indexer, len, settings));
                     } else {
-                        handler = compareAndSwapSymbol(values, methods, DataComputes.MINUS);
+                        run = casSymbol(values, methods, Computes.MINUS);
                     }
                     break;
                 case MULTI:
                     // *
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.MULTI);
+                    run = casSymbol(values, methods, Computes.MULTI);
                     break;
                 case DIVIDE:
                     // /
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.DIVIDE);
+                    run = casSymbol(values, methods, Computes.DIVIDE);
                     break;
                 case MOD:
                     // %
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.MOD);
+                    run = casSymbol(values, methods, Computes.MOD);
                     break;
                 case NOT_OR:
                     // ^
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.NOT_OR);
+                    run = casSymbol(values, methods, Computes.NOT_OR);
                     break;
                 case EQ:
                     // ==
                     ParseUtil.assertTrue(chars[indexer.getAndAdd()] == EQ, chars, indexer);
-                    handler = compareAndSwapSymbol(values, methods, DataComputes.EQ);
+                    run = casSymbol(values, methods, Computes.EQ);
                     break;
                 case GT:
                     // >、>=、>>、>>>
                     if (chars[indexer.get()] == GT) {
                         if (chars[indexer.addAndGet()] == GT) {
                             indexer.add();
-                            handler = compareAndSwapSymbol(values, methods, DataComputes.UN_BIT_RIGHT);
+                            run = casSymbol(values, methods, Computes.UN_BIT_RIGHT);
                         } else {
-                            handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_RIGHT);
+                            run = casSymbol(values, methods, Computes.BIT_RIGHT);
                         }
                     } else {
-                        handler = toGtLtAndOr(chars, indexer, values, methods,
-                            EQ, DataComputes.GT_OR_EQ, DataComputes.GT);
+                        run = toGtLtAndOr(chars, indexer, values, methods,
+                            EQ, Computes.GT_OR_EQ, Computes.GT);
                     }
                     break;
                 case LT:
                     // <、<=、<<
                     if (chars[indexer.get()] == LT) {
                         indexer.add();
-                        handler = compareAndSwapSymbol(values, methods, DataComputes.BIT_LEFT);
+                        run = casSymbol(values, methods, Computes.BIT_LEFT);
                     } else {
-                        handler = toGtLtAndOr(chars, indexer, values, methods,
-                            EQ, DataComputes.LT_OR_EQ, DataComputes.LT);
+                        run = toGtLtAndOr(chars, indexer, values, methods,
+                            EQ, Computes.LT_OR_EQ, Computes.LT);
                     }
                     break;
                 case AND:
                     // && 、&
-                    handler = toGtLtAndOr(chars, indexer, values, methods,
-                        AND, DataComputes.AND, DataComputes.BIT_AND);
+                    run = toGtLtAndOr(chars, indexer, values, methods,
+                        AND, Computes.AND, Computes.BIT_AND);
                     break;
                 case OR:
                     // || 、|
-                    handler = toGtLtAndOr(chars, indexer, values, methods,
-                        OR, DataComputes.OR, DataComputes.BIT_OR);
+                    run = toGtLtAndOr(chars, indexer, values, methods,
+                        OR, Computes.OR, Computes.BIT_OR);
                     break;
                 case NOT:
                     // !
                     if (chars[indexer.get()] == EQ) {
                         indexer.add();
-                        handler = compareAndSwapSymbol(values, methods, DataComputes.NOT_EQ);
+                        run = casSymbol(values, methods, Computes.NOT_EQ);
                     } else {
-                        values.add(handler = ParseGetter.parseNot(chars, indexer, len, settings));
+                        values.add(run = ParseGetter.parseNot(chars, indexer, len, settings));
                     }
                     break;
                 case CALLER:
                     // @
-                    values.add(handler = ParseCaller.parse(chars, indexer, len, settings));
+                    values.add(run = ParseCall.parse(chars, indexer, len, settings));
                     break;
                 case DOT:
                     // .
-                    values.add(handler = ParseGetter.parseDot(chars, indexer, len, settings, values.pollLast()));
+                    values.add(run = ParseGetter.parseDot(chars, indexer, len, settings, values.pollLast()));
                     break;
-                case HUA_LEFT:
+                case HUA_L:
                     // {
-                    values.add(handler = ParseCurly.parse(chars, indexer, len, settings));
+                    values.add(run = ParseCurly.parse(chars, indexer, len, settings));
                     break;
-                case FANG_LEFT:
+                case FANG_L:
                     // [
-                    handler = ParseGetter.parseFang(chars, indexer, len, settings);
+                    run = ParseGetter.parseFang(chars, indexer, len, settings);
                     if (prevHandler != null && prevHandler.isValuer()) {
-                        ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
-                        handler = ((DataGetterFang) handler).toComplex(prevHandler);
+                        ParseUtil.assertTrue(run.isValuer(), chars, indexer);
+                        run = ((GetFang) run).toComplex(prevHandler);
                         values.pollLast();
                     }
-                    values.add(handler);
+                    values.add(run);
                     break;
-                case YUAN_LEFT:
+                case YUAN_L:
                     // (
-                    values.add(handler = ParseGetter.parseYuan(chars, indexer, len, settings));
+                    values.add(run = ParseGetter.parseYuan(chars, indexer, len, settings));
                     break;
                 default:
                     // error
-                    handler = ParseUtil.throwErr(chars, indexer);
+                    run = ParseUtil.throwErr(chars, indexer);
                     break;
             }
         }
-        return handler;
+        return run;
     }
 
     private final static AsCompute toGtLtAndOr(
         char[] chars, IntAccessor indexer,
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods,
-        int testTarget, DataComputes matchType, DataComputes defaultType
+        int testTarget, Computes matchType, Computes defaultType
     ) {
-        DataComputes type;
+        Computes type;
         if (chars[indexer.get()] == testTarget) {
             indexer.add();
             type = matchType;
         } else {
             type = defaultType;
         }
-        return compareAndSwapSymbol(values, methods, type);
+        return casSymbol(values, methods, type);
     }
 
-    private final static AsCompute compareAndSwapSymbol(
+    private final static AsCompute casSymbol(
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsCompute computer
     ) {
         AsRunner prev = methods.peekFirst();
@@ -286,7 +286,7 @@ class ParseCore {
     }
 
 
-    private final static LinkedList<AsRunner> cleanMethodsTo(
+    private final static LinkedList<AsRunner> cleanTo(
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods, Object end
     ) {
         AsRunner computer;
@@ -297,7 +297,7 @@ class ParseCore {
     }
 
     private final static boolean isBoundary(AsRunner computer) {
-        return computer == null || computer == DataComputes.YUAN_LEFT;
+        return computer == null || computer == Computes.YUAN_LEFT;
     }
 
     private final static boolean isNotBoundary(AsRunner computer) {

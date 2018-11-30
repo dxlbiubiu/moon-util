@@ -15,26 +15,26 @@ interface IGetter extends BiFunction, Predicate {
         IGetter getter = null;
         if (afterData instanceof Number) {
             if (prevData instanceof List) {
-                getter = IGetValue.LIST;
+                getter = IGetVal.LIST;
             } else if (prevData instanceof Map) {
-                getter = IGetValue.MAP;
+                getter = IGetVal.MAP;
             } else if (prevData.getClass().isArray()) {
-                getter = new IGetArray();
+                getter = new IGetArr();
             }
         } else if (afterData instanceof CharSequence) {
             if (prevData instanceof Map) {
-                getter = IGetValue.MAP;
+                getter = IGetVal.MAP;
             } else {
                 Objects.requireNonNull(prevData);
-                getter = IGetValue.BEAN;
+                getter = IGetVal.BEAN;
             }
         } else if (prevData instanceof Map) {
-            getter = IGetValue.MAP;
+            getter = IGetVal.MAP;
         } else if (prevData instanceof List) {
-            getter = IGetValue.LIST;
+            getter = IGetVal.LIST;
         } else {
             Objects.requireNonNull(prevData);
-            getter = IGetValue.BEAN;
+            getter = IGetVal.BEAN;
         }
         Objects.requireNonNull(getter);
         return getter;

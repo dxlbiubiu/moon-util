@@ -22,7 +22,7 @@ interface AsValuer extends AsRunner {
      * @return
      */
     @Override
-    default Object handle(AsRunner left, AsRunner right, Object data) {
+    default Object exe(AsRunner left, AsRunner right, Object data) {
         throw new UnsupportedOperationException();
     }
 }

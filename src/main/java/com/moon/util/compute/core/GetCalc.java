@@ -8,10 +8,10 @@ import java.util.List;
 /**
  * @author benshaoye
  */
-class DataGetterCalculator implements AsGetter {
+class GetCalc implements AsGetter {
     final AsRunner[] runners;
 
-    private DataGetterCalculator(AsRunner[] runners) {
+    private GetCalc(AsRunner[] runners) {
         this.runners = runners;
     }
 
@@ -43,16 +43,16 @@ class DataGetterCalculator implements AsGetter {
                 right = result.pollFirst();
                 left = result.pollFirst();
                 result.offerFirst(
-                    DataConst.get(operator.handle(right, left, null))
+                    DataConst.get(operator.exe(right, left, null))
                 );
             } else {
                 if (result.isEmpty()) {
-                    return new DataGetterCalculator(runnerArr);
+                    return new GetCalc(runnerArr);
                 }
                 for (; i < length; i++) {
                     result.offerLast(runnerArr[i]);
                 }
-                return new DataGetterCalculator(toArr(result));
+                return new GetCalc(toArr(result));
             }
         }
         return result.pollFirst();
@@ -78,7 +78,7 @@ class DataGetterCalculator implements AsGetter {
                 left = result.pollFirst();
                 result.offerFirst(
                     DataConst.temp(
-                        operator.handle(right, left, data)
+                        operator.exe(right, left, data)
                     )
                 );
             } else {
@@ -104,7 +104,7 @@ class DataGetterCalculator implements AsGetter {
                 right = result.pollFirst();
                 left = result.pollFirst();
                 result.offerFirst(
-                    operator.handle(right, left)
+                    operator.exe(right, left)
                 );
             } else {
                 throw new IllegalArgumentException(

@@ -11,9 +11,9 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 abstract class DataConst<T> implements AsConst {
 
-    final static AsConst NULL = DataConstNull.NULL;
-    final static AsConst TRUE = DataConstBoolean.TRUE;
-    final static AsConst FALSE = DataConstBoolean.FALSE;
+    final static AsConst NULL = DataNull.NULL;
+    final static AsConst TRUE = DataBool.TRUE;
+    final static AsConst FALSE = DataBool.FALSE;
 
     private final static Map<Object, AsConst> CACHE = ReferenceUtil.manageMap();
     private final static ReentrantLock LOCK = new ReentrantLock();
@@ -67,10 +67,10 @@ abstract class DataConst<T> implements AsConst {
             return DataConst.NULL;
         }
         if (data instanceof CharSequence) {
-            return DataConstString.valueOf(data.toString());
+            return DataStr.valueOf(data.toString());
         }
         if (data instanceof Number) {
-            return DataConstNumber.valueOf((Number) data);
+            return DataNum.valueOf((Number) data);
         }
         if (Boolean.TRUE.equals(data)) {
             return DataConst.TRUE;
@@ -81,7 +81,7 @@ abstract class DataConst<T> implements AsConst {
         if (data instanceof AsConst) {
             return (AsConst) data;
         }
-        return DataConstObj.valueOf(data);
+        return DataObj.valueOf(data);
     }
 
     public static final AsConst temp(Object data){
@@ -89,10 +89,10 @@ abstract class DataConst<T> implements AsConst {
             return DataConst.NULL;
         }
         if (data instanceof CharSequence) {
-            return DataConstString.tempStr(data.toString());
+            return DataStr.tempStr(data.toString());
         }
         if (data instanceof Number) {
-            return DataConstNumber.tempNum((Number) data);
+            return DataNum.tempNum((Number) data);
         }
         if (Boolean.TRUE.equals(data)) {
             return DataConst.TRUE;
@@ -103,12 +103,12 @@ abstract class DataConst<T> implements AsConst {
         if (data instanceof AsConst) {
             return (AsConst) data;
         }
-        return DataConstObj.tempObj(data);
+        return DataObj.tempObj(data);
     }
 
     public static final AsConst getOpposite(DataConst data) {
-        BooleanUtil.requireTrue(data instanceof DataConstNumber);
-        Number num = (Number) data.run(), value;
+        BooleanUtil.requireTrue(data instanceof DataNum);
+        Number num = data.run(), value;
         if (num instanceof Double || num instanceof Float) {
             value = -num.doubleValue();
         } else if (num instanceof Long) {
@@ -116,6 +116,6 @@ abstract class DataConst<T> implements AsConst {
         } else {
             value = -num.intValue();
         }
-        return DataConstNumber.valueOf(value);
+        return DataNum.valueOf(value);
     }
 }

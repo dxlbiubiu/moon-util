@@ -6,7 +6,7 @@ import com.moon.enums.ArraysEnum;
 /**
  * @author benshaoye
  */
-class IGetArray implements IGetter {
+class IGetArr implements IGetter {
     ArrayOperators getter;
 
     public boolean sourceTest(Object data) {

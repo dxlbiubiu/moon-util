@@ -3,8 +3,8 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-class DataConstObj extends DataConst {
-    private DataConstObj(Object value) {
+class DataObj extends DataConst {
+    private DataObj(Object value) {
         super(value);
     }
 
@@ -16,12 +16,12 @@ class DataConstObj extends DataConst {
     final static AsConst valueOf(Object str) {
         AsConst CONST = getValue(str);
         if (CONST == null) {
-            CONST = putValue(str, new DataConstObj(str));
+            CONST = putValue(str, new DataObj(str));
         }
         return CONST;
     }
 
     final static AsConst tempObj(Object str) {
-        return new DataConstObj(str);
+        return new DataObj(str);
     }
 }

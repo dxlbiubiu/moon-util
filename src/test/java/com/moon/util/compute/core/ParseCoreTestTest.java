@@ -5,7 +5,6 @@ import com.moon.lang.StringUtil;
 import com.moon.util.Console;
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
-import com.moon.util.compute.RunnerSettings;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -34,16 +33,16 @@ class ParseCoreTestTest {
     @Test
     void testRunnerThree() {
         handler = running("true?'name':'age'");
-        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertTrue(handler instanceof DataStr);
         assertions.assertEquals(handler.run(), "name");
         handler = running("false?'name':'age'");
-        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertTrue(handler instanceof DataStr);
         assertions.assertEquals(handler.run(), "age");
         handler = running("1>2?'name':'age'");
-        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertTrue(handler instanceof DataStr);
         assertions.assertEquals(handler.run(), "age");
         handler = running("1<=2?'name':'age'");
-        assertions.assertTrue(handler instanceof DataConstString);
+        assertions.assertTrue(handler instanceof DataStr);
         assertions.assertEquals(handler.run(), "name");
     }
 

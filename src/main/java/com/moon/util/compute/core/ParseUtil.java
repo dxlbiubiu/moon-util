@@ -2,20 +2,13 @@ package com.moon.util.compute.core;
 
 import com.moon.lang.CharUtil;
 import com.moon.lang.SupportUtil;
-import com.moon.lang.ThrowUtil;
 import com.moon.lang.ref.IntAccessor;
 import com.moon.util.compute.Runner;
 import com.moon.util.compute.RunnerSettings;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-
 import static com.moon.lang.ThrowUtil.noInstanceError;
-import static com.moon.util.compute.core.Constants.DOUBLE_QUOTE;
-import static com.moon.util.compute.core.Constants.SINGLE_QUOTE;
+import static com.moon.util.compute.core.Constants.DOUBLE;
+import static com.moon.util.compute.core.Constants.SINGLE;
 
 /**
  * @author benshaoye
@@ -46,7 +39,7 @@ public class ParseUtil {
     }
 
     final static boolean isStr(int value) {
-        return value == SINGLE_QUOTE || value == DOUBLE_QUOTE;
+        return value == SINGLE || value == DOUBLE;
     }
 
     /**

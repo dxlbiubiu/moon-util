@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @author benshaoye
  */
-class DataGetterOrdinary implements AsGetter {
+class GetOrdinary implements AsGetter {
 
     final Object key;
     final String message;
@@ -27,7 +27,7 @@ class DataGetterOrdinary implements AsGetter {
 
     private AsGetter getter;
 
-    DataGetterOrdinary(Object key) {
+    GetOrdinary(Object key) {
         BooleanUtil.requireFalse(key instanceof AsRunner);
         this.key = key;
         this.message = "Variable of: " + String.valueOf(key);

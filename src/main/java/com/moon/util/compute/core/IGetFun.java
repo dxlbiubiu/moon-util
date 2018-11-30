@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author benshaoye
  */
-final class Inners {
+class IGetFun {
 
     private final static Map<String, RunnerFunction> CACHE = new HashMap<>();
 
@@ -152,46 +152,46 @@ final class Inners {
     }
 
     private enum NowFunctions implements RunnerFunction {
-        time_year {
+        now_year {
             @Override
             public Object apply() {
                 return LocalDate.now().getYear();
             }
         },
-        time_month {
+        now_month {
             @Override
             public Object apply() {
                 return LocalDate.now().getMonthValue();
             }
         },
-        time_day {
+        now_day {
             @Override
             public Object apply() {
                 return LocalDate.now().getDayOfMonth();
             }
         },
-        time_hour {
+        now_hour {
             @Override
             public Object apply() {
                 return LocalTime.now().getHour();
             }
         },
-        time_minute {
+        now_minute {
             @Override
             public Object apply() {
                 return LocalTime.now().getMinute();
             }
         },
-        time_second {
+        now_second {
             @Override
             public Object apply() {
                 return LocalTime.now().getSecond();
             }
         },
-        time {
+        now {
             @Override
             public Object apply() {
-                return TimeUtil.nowDateTime();
+                return System.currentTimeMillis();
             }
 
             @Override

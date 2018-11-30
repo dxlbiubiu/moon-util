@@ -5,7 +5,7 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 /**
  * @author benshaoye
  */
-final class ConstPriorities {
+class ConstPriorities {
     private ConstPriorities() {
         noInstanceError();
     }
@@ -24,7 +24,6 @@ final class ConstPriorities {
 
     final static int AND = 1;
     final static int OR = 1;
-    final static int NOT = 2;
 
     final static int EQ = 3;
     final static int NOT_EQ = 3;

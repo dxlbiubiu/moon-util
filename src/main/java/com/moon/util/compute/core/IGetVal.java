@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author benshaoye
  */
-enum IGetValue implements IGetter {
+enum IGetVal implements IGetter {
     MAP {
         @Override
         public boolean test(Object o) {

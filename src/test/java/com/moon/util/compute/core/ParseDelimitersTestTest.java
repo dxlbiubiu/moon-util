@@ -2,7 +2,6 @@ package com.moon.util.compute.core;
 
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
-import com.moon.util.compute.RunnerSettings;
 import com.moon.util.compute.RunnerUtil;
 import org.junit.jupiter.api.Test;
 
@@ -32,27 +31,27 @@ class ParseDelimitersTestTest {
     void testParse() {
         str = "本草纲目";
         handler = running(str);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), str);
 
         str = "本草纲目{{'好的'}}";
         handler = running(str);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的");
 
         str = "本草纲目{{'好的'}}  {{123}}";
         handler = running(str);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123");
 
         str = "本草纲目{{'好的'}}  {{123}}  ";
         handler = running(str);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123  ");
 
         str = "本草纲目{{'好的'}}  {{123}}  电脑 {{1+2+3+5+6}}";
         handler = running(str);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123  电脑 17");
     }
 
@@ -80,27 +79,27 @@ class ParseDelimitersTestTest {
         strs = new String[]{"${", "}}"};
         str = "本草纲目";
         handler = running(str, strs);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), str);
 
         str = "本草纲目${'好的'}}";
         handler = running(str, strs);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的");
 
         str = "本草纲目${'好的'}}  ${123}}";
         handler = running(str, strs);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123");
 
         str = "本草纲目${'好的'}}  ${123}}  ";
         handler = running(str, strs);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123  ");
 
         str = "本草纲目${'好的'}}  ${123}}  电脑 ${1+2+3+5+6}}";
         handler = running(str, strs);
-        assertions.assertInstanceOf(handler, DataConstString.class);
+        assertions.assertInstanceOf(handler, DataStr.class);
         assertions.assertEquals(handler.run(), "本草纲目好的  123  电脑 17");
     }
 

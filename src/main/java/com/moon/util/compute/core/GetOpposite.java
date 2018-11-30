@@ -3,10 +3,10 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-final class DataGetterOpposite implements AsGetter {
+class GetOpposite implements AsGetter {
     final AsRunner handler;
 
-    DataGetterOpposite(AsRunner handler) {
+    GetOpposite(AsRunner handler) {
         this.handler = handler;
     }
 

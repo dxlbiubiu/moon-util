@@ -8,15 +8,15 @@ import java.util.Objects;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.DOT;
-import static com.moon.util.compute.core.Constants.YUAN_LEFT;
+import static com.moon.util.compute.core.Constants.YUAN_L;
 import static com.moon.util.compute.core.ParseGetter.parseVar;
 import static com.moon.util.compute.core.ParseUtil.*;
 
 /**
  * @author benshaoye
  */
-final class ParseCaller {
-    private ParseCaller() {
+class ParseCall {
+    private ParseCall() {
         noInstanceError();
     }
 
@@ -53,7 +53,7 @@ final class ParseCaller {
         RunnerSettings settings, RunnerFunction fn
     ) {
         int curr = nextVal(chars, indexer, len);
-        assertTrue(curr == YUAN_LEFT, chars, indexer);
+        assertTrue(curr == YUAN_L, chars, indexer);
         AsRunner[] runs = ParseParams.parse(chars, indexer, len, settings);
         switch (runs.length) {
             case 0:
@@ -89,13 +89,13 @@ final class ParseCaller {
             curr = nextVal(chars, indexer, len);
             assertTrue(ParseUtil.isVar(curr), chars, indexer);
             String name = ParseGetter.parseVar(chars, indexer, len, curr).toString();
-            final String funcName = Inners.toName(fn.functionName(), name);
+            final String funcName = IGetFun.toName(fn.functionName(), name);
             Object caller = null;
             if (settings != null) {
                 caller = settings.getCaller(funcName);
             }
             if (caller == null) {
-                caller = Inners.tryLoad(funcName);
+                caller = IGetFun.tryLoad(funcName);
             }
             Objects.requireNonNull(caller);
             assertTrue(caller instanceof RunnerFunction, chars, indexer);
@@ -235,12 +235,12 @@ final class ParseCaller {
         if (curr == Constants.DOT) {
             curr = nextVal(chars, indexer, len);
             String name = parseVar(chars, indexer, len, curr).toString();
-            name = Inners.toName(runnerName, name);
+            name = IGetFun.toName(runnerName, name);
             if (settings != null) {
                 callerTemp = settings.getCaller(name);
             }
             if (callerTemp == null) {
-                callerTemp = Inners.tryLoad(name);
+                callerTemp = IGetFun.tryLoad(name);
             }
             assertTrue(callerTemp instanceof RunnerFunction, chars, indexer);
             return callerTemp;
@@ -280,7 +280,7 @@ final class ParseCaller {
         } else if (caller instanceof RunnerFunction) {
             return caller;
         } else if (caller instanceof Class) {
-            return new DataConstLoader((Class) caller);
+            return new DataLoader((Class) caller);
         }
         return throwErr(chars, indexer);
     }
@@ -292,13 +292,13 @@ final class ParseCaller {
      * @return
      */
     private static Object tryLoadDefault(String runnerName) {
-        Object caller = Inners.tryLoad(runnerName);
+        Object caller = IGetFun.tryLoad(runnerName);
         if (caller != null) {
             return caller;
         }
-        caller = ILoader.tryLoad(runnerName);
+        caller = IGetLoad.tryLoad(runnerName);
         if (caller != null) {
-            return new DataConstLoader((Class) caller);
+            return new DataLoader((Class) caller);
         }
         return null;
     }

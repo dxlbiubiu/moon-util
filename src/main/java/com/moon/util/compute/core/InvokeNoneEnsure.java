@@ -9,10 +9,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author benshaoye
  */
-final class EnsureInvokerEmpty  implements AsInvoker {
+class InvokeNoneEnsure implements AsInvoker {
     final Method method;
 
-    EnsureInvokerEmpty(Method method) {
+    InvokeNoneEnsure(Method method) {
         this.method = requireNonNull(method);
     }
 

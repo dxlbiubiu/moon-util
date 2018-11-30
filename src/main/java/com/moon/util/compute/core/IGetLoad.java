@@ -11,8 +11,8 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 /**
  * @author benshaoye
  */
-final class ILoader {
-    private ILoader() {
+class IGetLoad {
+    private IGetLoad() {
         noInstanceError();
     }
 

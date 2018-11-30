@@ -18,17 +18,17 @@ final class ParseOpposite {
         AsRunner handler, linked;
         int curr = ParseUtil.nextVal(chars, indexer, len);
         switch (curr) {
-            case YUAN_LEFT:
+            case YUAN_L:
                 handler = ParseGetter.parseYuan(chars, indexer, len, settings);
                 break;
-            case FANG_LEFT:
+            case FANG_L:
                 handler = ParseGetter.parseFang(chars, indexer, len, settings);
                 break;
-            case HUA_LEFT:
+            case HUA_L:
                 handler = ParseCurly.parse(chars, indexer, len, settings);
                 break;
             case CALLER:
-                handler = ParseCaller.parse(chars, indexer, len, settings);
+                handler = ParseCall.parse(chars, indexer, len, settings);
                 break;
             default:
                 if (ParseUtil.isNum(curr)) {
@@ -45,6 +45,6 @@ final class ParseOpposite {
         linked = ParseGetter.tryParseLinked(chars, indexer, len, settings, handler);
         return linked.isConst()
             ? DataConst.getOpposite((DataConst) linked)
-            : new DataGetterOpposite(linked);
+            : new GetOpposite(linked);
     }
 }

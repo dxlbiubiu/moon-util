@@ -25,7 +25,7 @@ interface AsRunner extends Runner {
      * @param right
      * @return
      */
-    default Object handle(Object right, Object left) {
+    default Object exe(Object right, Object left) {
         throw new UnsupportedOperationException();
     }
 
@@ -37,7 +37,7 @@ interface AsRunner extends Runner {
      * @param data
      * @return
      */
-    Object handle(AsRunner right, AsRunner left, Object data);
+    Object exe(AsRunner right, AsRunner left, Object data);
 
     /**
      * 运算符优先级

@@ -3,7 +3,7 @@ package com.moon.util.compute.core;
 /**
  * @author benshaoye
  */
-interface AsFlipable {
+interface AsFlip {
     /**
      * 翻转
      *

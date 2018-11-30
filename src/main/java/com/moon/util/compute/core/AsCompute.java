@@ -23,7 +23,7 @@ interface AsCompute extends AsRunner {
      * @return
      */
     @Override
-    default Object handle(AsRunner right, AsRunner left, Object data) {
-        return handle(right.run(data), left.run(data));
+    default Object exe(AsRunner right, AsRunner left, Object data) {
+        return exe(right.run(data), left.run(data));
     }
 }

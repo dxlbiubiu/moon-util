@@ -30,9 +30,9 @@ final class ParseInvoker {
         char[] chars, IntAccessor indexer, int len, RunnerSettings settings, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
-        final boolean isStatic = prevValuer instanceof DataConstLoader;
-        if (nextVal(chars, indexer, len) == YUAN_LEFT) {
-            if (nextVal(chars, indexer, len) == YUAN_RIGHT) {
+        final boolean isStatic = prevValuer instanceof DataLoader;
+        if (nextVal(chars, indexer, len) == YUAN_L) {
+            if (nextVal(chars, indexer, len) == YUAN_R) {
                 // 无参方法调用
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
@@ -80,11 +80,11 @@ final class ParseInvoker {
     ) {
         if (isStatic) {
             // 静态方法
-            Class sourceType = ((DataConstLoader) prev).getValue();
-            return EnsureInvokerOne.of(valuers[0], sourceType, name);
+            Class sourceType = ((DataLoader) prev).getValue();
+            return InvokeOneEnsure.of(valuers[0], sourceType, name);
         } else {
             // 成员方法
-            return new DataInvokeOne(prev, valuers[0], name);
+            return new InvokeOne(prev, valuers[0], name);
         }
     }
 
@@ -96,12 +96,12 @@ final class ParseInvoker {
     ) {
         if (isStatic) {
             // 静态方法
-            return new EnsureInvokerEmpty(
+            return new InvokeNoneEnsure(
                 matchOne(getPublicStaticMethods(
-                    ((DataConstLoader) prev).getValue(), name), NONE_PARAM));
+                    ((DataLoader) prev).getValue(), name), NONE_PARAM));
         } else {
             // 成员方法
-            return new DataGetterLinker(prev, new DataInvokeEmpty(name));
+            return new GetLink(prev, new InvokeNone(name));
         }
     }
 
@@ -113,7 +113,7 @@ final class ParseInvoker {
     ) {
         if (isStatic) {
             // 静态字段
-            Class sourceType = ((DataConstLoader) prevValuer).getValue();
+            Class sourceType = ((DataLoader) prevValuer).getValue();
             Field field = requireNonNull(getAccessibleField(sourceType, name));
             return DataConst.get(FieldUtil.getValue(field, sourceType));
         }
