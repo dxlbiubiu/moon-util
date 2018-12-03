@@ -42,7 +42,7 @@ final class ParseVar {
         int curr = nextChar(chars, indexer, len);
         switch (curr) {
             case LETTER_I:
-                BooleanUtil.requireTrue(chars[indexer.getAndAdd()] == LETTER_N);
+                BooleanUtil.requireTrue(chars[indexer.getAndIncrement()] == LETTER_N);
                 return COLON;
             case COLON:
             case EQ:

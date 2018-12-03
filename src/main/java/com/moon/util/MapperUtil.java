@@ -52,6 +52,7 @@ public final class MapperUtil {
 
     public final static <T, E> E override(T t, E e) {
         final Class targetType = e.getClass();
+
         getFieldDescriptorsMap(t.getClass()).forEach((name, srcDesc) ->
             BeanInfoUtil.ifSetterExecutorPresent(targetType, name, setDesc ->
                 setDesc.setValue(e, srcDesc.getValue(t, true), true)));
@@ -70,6 +71,14 @@ public final class MapperUtil {
         return result;
     }
 
+    /**
+     * type 必须有一个空构造器
+     *
+     * @param dataList
+     * @param type
+     * @param <T>
+     * @return
+     */
     public final static <T> List<T> forEachToInstance(List<Map<String, Object>> dataList, Class<T> type) {
         List<T> result = new ArrayList<>();
         IteratorUtil.forEach(dataList, itemMap -> result.add(toInstance(itemMap, type)));

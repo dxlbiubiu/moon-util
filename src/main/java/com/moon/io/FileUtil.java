@@ -177,9 +177,7 @@ public final class FileUtil {
             char DFT = Const.App_FileSeparatorChar;
             for (int i = 0, len = filePath.length(); i < len; i++) {
                 char ch = filePath.charAt(i);
-                if (!Character.isWhitespace(ch)) {
-                    chars = SupportUtil.setChar(chars, index++, ch == WIN ? DFT : ch);
-                }
+                chars = SupportUtil.setChar(chars, index++, ch == WIN ? DFT : ch);
             }
             return chars == null ? null : new String(chars, 0, index);
         }

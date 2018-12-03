@@ -6,7 +6,7 @@ import com.moon.lang.StringUtil;
  * @author benshaoye
  * @date 2018/9/11
  */
-public interface StringsEnum {
+public interface Strings {
     /**
      * 空字符串
      */

@@ -169,14 +169,14 @@ class ParseCore {
                     break;
                 case EQ:
                     // ==
-                    ParseUtil.assertTrue(chars[indexer.getAndAdd()] == EQ, chars, indexer);
+                    ParseUtil.assertTrue(chars[indexer.getAndIncrement()] == EQ, chars, indexer);
                     run = casSymbol(values, methods, Computes.EQ);
                     break;
                 case GT:
                     // >、>=、>>、>>>
                     if (chars[indexer.get()] == GT) {
-                        if (chars[indexer.addAndGet()] == GT) {
-                            indexer.add();
+                        if (chars[indexer.incrementAndGet()] == GT) {
+                            indexer.increment();
                             run = casSymbol(values, methods, Computes.UN_BIT_RIGHT);
                         } else {
                             run = casSymbol(values, methods, Computes.BIT_RIGHT);
@@ -189,7 +189,7 @@ class ParseCore {
                 case LT:
                     // <、<=、<<
                     if (chars[indexer.get()] == LT) {
-                        indexer.add();
+                        indexer.increment();
                         run = casSymbol(values, methods, Computes.BIT_LEFT);
                     } else {
                         run = toGtLtAndOr(chars, indexer, values, methods,
@@ -209,7 +209,7 @@ class ParseCore {
                 case NOT:
                     // !
                     if (chars[indexer.get()] == EQ) {
-                        indexer.add();
+                        indexer.increment();
                         run = casSymbol(values, methods, Computes.NOT_EQ);
                     } else {
                         values.add(run = ParseGetter.parseNot(chars, indexer, len, settings));
@@ -257,7 +257,7 @@ class ParseCore {
     ) {
         Computes type;
         if (chars[indexer.get()] == testTarget) {
-            indexer.add();
+            indexer.increment();
             type = matchType;
         } else {
             type = defaultType;

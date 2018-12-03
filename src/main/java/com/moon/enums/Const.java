@@ -19,7 +19,7 @@ public final class Const {
     /**
      * ","——英文逗号
      */
-    public static final String SEPARATOR_STRING = StringsEnum.COMMA;
+    public static final String SEPARATOR_STRING = Strings.COMMA;
 
     //==============================================================
     //for File Separator

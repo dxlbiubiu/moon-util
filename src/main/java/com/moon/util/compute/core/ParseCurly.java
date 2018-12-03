@@ -53,7 +53,7 @@ final class ParseCurly {
                     valuer = ParseConst.parseStr(chars, indexer, next);
                     break inner;
                 default:
-                    valuer = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, HUA_R);
+                    valuer = ParseCore.parse(chars, indexer.decrement(), len, settings, COMMA, HUA_R);
                     if ((next = chars[indexer.get() - 1]) == HUA_R) {
                         creators.add(new ListAdder(valuer));
                         continue outer;

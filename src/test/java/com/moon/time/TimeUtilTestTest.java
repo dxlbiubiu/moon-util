@@ -23,7 +23,7 @@ class TimeUtilTestTest {
         IntAccessor interDate = IntAccessor.of();
         TimeUtil.forEachYears(date, date.plusYears(3), (year, localDate) -> {
             assertions.assertEq(year, interDate.get() + yearValue);
-            assertions.assertEquals(localDate, LocalDate.of(yearValue + interDate.getAndAdd(), monthValue, dayValue));
+            assertions.assertEquals(localDate, LocalDate.of(yearValue + interDate.getAndIncrement(), monthValue, dayValue));
             return true;
         });
         LocalTime time = LocalTime.now();

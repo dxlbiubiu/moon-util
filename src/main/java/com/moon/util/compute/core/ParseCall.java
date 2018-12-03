@@ -101,7 +101,7 @@ class ParseCall {
             assertTrue(caller instanceof RunnerFunction, chars, indexer);
             return (RunnerFunction) caller;
         }
-        indexer.minus();
+        indexer.decrement();
         return fn;
     }
 

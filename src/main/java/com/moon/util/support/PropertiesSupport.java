@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
 
 import static java.lang.String.valueOf;
 
@@ -44,7 +43,7 @@ public final class PropertiesSupport {
         return hashMap;
     }
 
-    public static final HashMap<String, String> getOrCatch(String path) {
+    public static final HashMap<String, String> getOrNull(String path) {
         try {
             return getOrReload(path);
         } catch (Throwable t) {
@@ -58,7 +57,7 @@ public final class PropertiesSupport {
         Properties properties = new Properties();
         try {
             properties.load(stream);
-            HashMap<String, String> hashMap = syncToHashMap(properties);
+            HashMap<String, String> hashMap = toHashMap(properties);
             CACHE.put(path, hashMap);
             return hashMap;
         } catch (IOException e) {
@@ -66,7 +65,7 @@ public final class PropertiesSupport {
         }
     }
 
-    private static final HashMap<String, String> syncToHashMap(Map map) {
+    private static final HashMap<String, String> toHashMap(Map map) {
         HashMap<String, String> hashMap = new HashMap<>(map == null ? 16 : map.size());
         IteratorUtil.forEach(map, (key, value) -> hashMap.put(valueOf(key), valueOf(value)));
         return hashMap;

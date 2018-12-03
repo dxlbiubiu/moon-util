@@ -42,50 +42,50 @@ public class LongAccessor {
         return value;
     }
 
-    public long getAndAdd() {
+    public long getAndIncrement() {
         return value++;
     }
 
-    public long addAndGet() {
+    public long incrementAndGet() {
         return ++value;
     }
 
-    public long getAndAdd(long value) {
+    public long getAndIncrement(long value) {
         return this.value += value;
     }
 
-    public long addAndGet(long value) {
+    public long incrementAndGet(long value) {
         long now = this.value;
         this.value += value;
         return now;
     }
 
-    public LongAccessor minus(long value) {
+    public LongAccessor decrement(long value) {
         this.value -= value;
         return this;
     }
 
-    public LongAccessor minus() {
-        return minus(1);
+    public LongAccessor decrement() {
+        return decrement(1);
     }
 
-    public long minusAndGet() {
-        return minus().get();
+    public long decrementAndGet() {
+        return decrement().get();
     }
 
-    public long getAndMinus() {
+    public long getAndDecrement() {
         long num = get();
-        this.minus();
+        this.decrement();
         return num;
     }
 
-    public long minusAndGet(long value) {
-        return minus(value).get();
+    public long decrementAndGet(long value) {
+        return decrement(value).get();
     }
 
-    public long getAndMinus(long value) {
+    public long getAndDecrement(long value) {
         long num = get();
-        this.minus(value);
+        this.decrement(value);
         return num;
     }
 
@@ -95,11 +95,11 @@ public class LongAccessor {
      * ------------------------------------------------------------
      */
 
-    public LongAccessor add() {
-        return this.add(1);
+    public LongAccessor increment() {
+        return this.increment(1);
     }
 
-    public LongAccessor add(int value) {
+    public LongAccessor increment(int value) {
         this.value += value;
         return this;
     }

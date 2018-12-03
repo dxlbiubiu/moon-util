@@ -33,7 +33,7 @@ public final class ThrowUtil {
         if (e instanceof RuntimeException) {
             throw (RuntimeException) e;
         } else if (e instanceof Throwable) {
-            throw new IllegalArgumentException(e);
+            throw new WrappedException(e);
         }
         /*
          * 实际上这一步是不会执行的
@@ -42,7 +42,7 @@ public final class ThrowUtil {
     }
 
     public static <T> T wrapAndThrow(Throwable e, String msg) {
-        throw new IllegalArgumentException(msg, e);
+        throw new WrappedException(msg, e);
     }
 
     /**
@@ -74,6 +74,29 @@ public final class ThrowUtil {
         for (Throwable ex = t; ex != null; ex = ex.getCause()) {
             if (type.isInstance(ex)) {
                 return null;
+            }
+        }
+        throw new WrappedException(t);
+    }
+
+    /**
+     * 忽略指定类抛出的异常
+     *
+     * @param t
+     * @param targetClass
+     * @param <T>
+     * @return
+     */
+    public final static <T> T ignoreAssignPossion(Throwable t, Class targetClass) {
+        String name = targetClass.getName();
+        StackTraceElement element;
+        for (Throwable th = t; th != null; th = th.getCause()) {
+            StackTraceElement[] elements = th.getStackTrace();
+            for (int i = 0; i < elements.length; i++) {
+                element = elements[i];
+                if (name.equals(element.getClassName())) {
+                    return null;
+                }
             }
         }
         throw new WrappedException(t);

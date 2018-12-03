@@ -361,7 +361,7 @@ public final class IteratorUtil {
         if (bean != null) {
             IntAccessor indexer = IntAccessor.of();
             BeanInfoUtil.getFieldDescriptorsMap(bean.getClass()).forEach((name, desc) ->
-                consumer.accept(desc.getValueIfPresent(bean, true), indexer.getAndAdd()));
+                consumer.accept(desc.getValueIfPresent(bean, true), indexer.getAndIncrement()));
         }
     }
 

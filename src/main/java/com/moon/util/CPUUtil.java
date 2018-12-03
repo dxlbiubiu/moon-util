@@ -16,7 +16,7 @@ public final class CPUUtil {
      *
      * @return
      */
-    public static int coreCount() {
+    public static int getCoreCount() {
         return Runtime.getRuntime().availableProcessors();
     }
 }

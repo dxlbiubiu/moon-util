@@ -5,6 +5,7 @@ import java.util.Objects;
 /**
  * @author benshaoye
  */
+@Deprecated
 public class JSONSettings {
     /**
      * 是否忽略 null 值

@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 
 import static com.moon.lang.IntUtil.max;
 import static com.moon.lang.ThrowUtil.noInstanceError;
-import static com.moon.util.CPUUtil.coreCount;
+import static com.moon.util.CPUUtil.getCoreCount;
 
 /**
  * @author benshaoye
@@ -182,6 +182,6 @@ public final class ExecutorUtil {
     }
 
     private static int maxCount() {
-        return max(coreCount() * 2, 1);
+        return max(getCoreCount() * 2, 1);
     }
 }

@@ -52,6 +52,28 @@ public interface ArrayOperators extends IteratorAble, Predicate, Stringify {
     <T> T to(Object o);
 
     /**
+     * 包装类型数组转换为基本数据类型数组
+     *
+     * @param arr
+     * @param <T>
+     * @return
+     */
+    default <T> T toPrimitives(Object arr) {
+        return (T) arr;
+    }
+
+    /**
+     * 基本数据类型数组转换为包装类型数组
+     *
+     * @param arr
+     * @param <T>
+     * @return
+     */
+    default <T> T toObjects(Object arr) {
+        return (T) arr;
+    }
+
+    /**
      * 获取空数组对象
      *
      * @param <T>

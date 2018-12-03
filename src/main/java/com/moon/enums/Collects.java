@@ -38,9 +38,9 @@ public enum Collects implements Supplier<Collection>,
      * ArrayList 是基于数组实现的集合
      * 内部用数组保存所有集合项，初始容量为 10。也可自定义初始容量，最大容量为 Integer.MAX_VALUE - 8
      * 主动自定义初始容量在一定情况下有助于提升性能
-     * 每次添加（add）、获取（get）、删除（remove）、插入（insert）等操作均会检查位置或容量时候足够
+     * 每次添加（increment）、获取（get）、删除（remove）、插入（insert）等操作均会检查位置或容量时候足够
      * - 不够的情况会进行扩容，每次扩容大小为上一次容量的 1.5 倍
-     * - {@link java.util.ArrayList#grow(int)} 扩容具体执行方法
+     * - {@link ArrayList#grow(int)}扩容具体执行方法
      * - {@link ArrayList#ensureCapacity(int)} 一次性扩容至指定长度
      * - 扩容会影响性能，故推荐指定初始话大小
      * <p>
@@ -182,7 +182,7 @@ public enum Collects implements Supplier<Collection>,
      * Vector 与 ArrayList 有相同的继承关系，但是是一个线程安全的集合
      * 两者的区别主要有三点：
      * 1、Vector 所有读写方法均加了关键字 synchronized，保证了多线程下数据的安全性
-     * 2、Vector 有自己独有的对外接口：element，功能与 add、remove 等基本一致
+     * 2、Vector 有自己独有的对外接口：element，功能与 increment、remove 等基本一致
      * - 这些接口同样也加了关键字 synchronized 保证数据安全
      * 3、Vector 的扩容方式与 ArrayList 不同：
      * - ArrayList 每次扩容为员容量的 1.5 倍；

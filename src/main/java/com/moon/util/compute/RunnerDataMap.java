@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
  * 如果迭代每一个键值对，此对象会忠诚的返回每一对映射关系，
  * 但是如果计算 size 或者判断 isEmpty 等，如果存在后值键覆盖前值键的情况
  * size 将小于能迭代的项
- * 传入的参数是不可变的，故不能进行 reset 、add 、remove 等操作
+ * 传入的参数是不可变的，故不能进行 reset 、increment 、remove 等操作
  *
  * @author benshaoye
  */

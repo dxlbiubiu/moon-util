@@ -62,7 +62,7 @@ public class StringJoiner {
     }
 
     /*
-     * add
+     * increment
      */
 
     private StringJoiner addStr(String sequence) {

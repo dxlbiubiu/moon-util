@@ -34,7 +34,7 @@ public final class ResourceUtil {
         return ResourceSupport.getResourceAsInputStream(sourcePath);
     }
 
-    public static final void ifResourcePresent(String path, Consumer<InputStream> consumer) {
+    public static final void ifResourceExists(String path, Consumer<InputStream> consumer) {
         InputStream stream = ResourceSupport.getResourceStreamOrNull(path);
         if (stream != null) {
             consumer.accept(stream);

@@ -79,6 +79,7 @@ public @interface ConsoleControl {
      *
      * @return
      */
+    @Deprecated
     Classify[] classifies() default {};
 
     /**
@@ -94,6 +95,7 @@ public @interface ConsoleControl {
      *
      * @return
      */
+    @Deprecated
     String filenameFormat() default "yyyy-MM-dd-?level";
 
     /*
@@ -111,6 +113,7 @@ public @interface ConsoleControl {
      * @throws IllegalArgumentException 当如果指定类没有实现接口{@link ConsoleSettingsSupplier}或没有空构造器时
      * @see #value()
      */
+    @Deprecated
     Class fromImplement() default ConsoleSettingsSupplier.class;
 
     /**
@@ -127,6 +130,7 @@ public @interface ConsoleControl {
      *
      * @return
      */
+    @Deprecated
     String fromJson() default "";
 
     /*

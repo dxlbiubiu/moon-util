@@ -171,6 +171,34 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Boolean[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            boolean[] old = to(arr);
+            final int len = old.length;
+            Boolean[] now = new Boolean[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public boolean[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Boolean[] old = (Boolean[]) arr;
+            final int len = old.length;
+            boolean[] values = new boolean[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
+        }
+
+        @Override
         public Iterator iterator(Object o) {
             return of(to(o));
         }
@@ -250,6 +278,34 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Double[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            double[] old = to(arr);
+            final int len = old.length;
+            Double[] now = new Double[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public double[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Double[] old = (Double[]) arr;
+            final int len = old.length;
+            double[] values = new double[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
+        }
+
+        @Override
         public Iterator iterator(Object o) {
             return of(to(o));
         }
@@ -319,6 +375,34 @@ public enum ArraysEnum implements ArrayOperators {
         @Override
         public float[] to(Object o) {
             return (float[]) o;
+        }
+
+        @Override
+        public Float[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            float[] old = to(arr);
+            final int len = old.length;
+            Float[] now = new Float[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public float[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Float[] old = (Float[]) arr;
+            final int len = old.length;
+            float[] values = new float[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
         }
 
         @Override
@@ -394,6 +478,34 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Long[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            long[] old = to(arr);
+            final int len = old.length;
+            Long[] now = new Long[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public long[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Long[] old = (Long[]) arr;
+            final int len = old.length;
+            long[] values = new long[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
+        }
+
+        @Override
         public Iterator iterator(Object o) {
             return of(to(o));
         }
@@ -463,6 +575,34 @@ public enum ArraysEnum implements ArrayOperators {
         @Override
         public int[] to(Object o) {
             return (int[]) o;
+        }
+
+        @Override
+        public Integer[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            int[] old = to(arr);
+            final int len = old.length;
+            Integer[] now = new Integer[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public int[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Integer[] old = (Integer[]) arr;
+            final int len = old.length;
+            int[] values = new int[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
         }
 
         @Override
@@ -538,6 +678,34 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Short[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            short[] old = to(arr);
+            final int len = old.length;
+            Short[] now = new Short[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public short[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Short[] old = (Short[]) arr;
+            final int len = old.length;
+            short[] values = new short[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
+        }
+
+        @Override
         public Iterator iterator(Object o) {
             return of(to(o));
         }
@@ -610,6 +778,34 @@ public enum ArraysEnum implements ArrayOperators {
         }
 
         @Override
+        public Byte[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            byte[] old = to(arr);
+            final int len = old.length;
+            Byte[] now = new Byte[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public byte[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Byte[] old = (Byte[]) arr;
+            final int len = old.length;
+            byte[] values = new byte[len];
+            for (int i = 0; i < len; i++) {
+                values[i] = old[i];
+            }
+            return values;
+        }
+
+        @Override
         public Iterator iterator(Object o) {
             return of(to(o));
         }
@@ -679,6 +875,34 @@ public enum ArraysEnum implements ArrayOperators {
         @Override
         public char[] to(Object o) {
             return (char[]) o;
+        }
+
+        @Override
+        public Character[] toObjects(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            char[] old = to(arr);
+            final int len = old.length;
+            Character[] now = new Character[len];
+            for (int i = 0; i < len; i++) {
+                now[i] = old[i];
+            }
+            return now;
+        }
+
+        @Override
+        public char[] toPrimitives(Object arr) {
+            if (arr == null) {
+                return null;
+            }
+            Character[] characters = (Character[]) arr;
+            final int len = characters.length;
+            char[] chars = new char[len];
+            for (int i = 0; i < len; i++) {
+                chars[i] = characters[i];
+            }
+            return chars;
         }
 
         @Override

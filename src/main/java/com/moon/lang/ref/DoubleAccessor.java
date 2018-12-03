@@ -41,50 +41,50 @@ public class DoubleAccessor {
         return value;
     }
 
-    public double getAndAdd() {
+    public double getAndIncrement() {
         return value++;
     }
 
-    public double addAndGet() {
+    public double incrementAndGet() {
         return ++value;
     }
 
-    public double getAndAdd(double value) {
+    public double getAndIncrement(double value) {
         return this.value += value;
     }
 
-    public double addAndGet(double value) {
+    public double incrementAndGet(double value) {
         double now = this.value;
         this.value += value;
         return now;
     }
 
-    public DoubleAccessor minus(double value) {
+    public DoubleAccessor decrement(double value) {
         this.value -= value;
         return this;
     }
 
-    public DoubleAccessor minus() {
-        return minus(1);
+    public DoubleAccessor decrement() {
+        return decrement(1);
     }
 
-    public double minusAndGet() {
-        return minus().get();
+    public double decrementAndGet() {
+        return decrement().get();
     }
 
-    public double getAndMinus() {
+    public double getAndDecrement() {
         double num = get();
-        this.minus();
+        this.decrement();
         return num;
     }
 
-    public double minusAndGet(double value) {
-        return minus(value).get();
+    public double decrementAndGet(double value) {
+        return decrement(value).get();
     }
 
-    public double getAndMinus(double value) {
+    public double getAndDecrement(double value) {
         double num = get();
-        this.minus(value);
+        this.decrement(value);
         return num;
     }
 
@@ -94,11 +94,11 @@ public class DoubleAccessor {
      * ------------------------------------------------------------
      */
 
-    public DoubleAccessor add() {
-        return this.add(1);
+    public DoubleAccessor increment() {
+        return this.increment(1);
     }
 
-    public DoubleAccessor add(double value) {
+    public DoubleAccessor increment(double value) {
         this.value += value;
         return this;
     }

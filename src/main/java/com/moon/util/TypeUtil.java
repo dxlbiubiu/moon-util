@@ -54,7 +54,7 @@ public final class TypeUtil {
     }
 
     /**
-     * can not modify converter or add new converter
+     * can not modify converter or increment new converter
      */
     private final static class UnmodifiableTypeConverter extends GenericTypeConverter {
 

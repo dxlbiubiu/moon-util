@@ -37,7 +37,7 @@ final class ParseInvoker {
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
                 // 带有参数的方法调用
-                return parseHasParams(chars, indexer.minus(), len, settings, prevValuer, name, isStatic);
+                return parseHasParams(chars, indexer.decrement(), len, settings, prevValuer, name, isStatic);
             }
         } else {
             // 静态字段检测

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.TypeUtil.cast;
-import static com.moon.util.support.PropertiesSupport.getOrCatch;
+import static com.moon.util.support.PropertiesSupport.getOrNull;
 import static com.moon.util.support.PropertiesSupport.getOrReload;
 
 /**
@@ -70,30 +70,30 @@ public final class PropertiesUtil {
      */
 
     public static final String getOrDefault(String path, String key, String defaultVal) {
-        Map<String, String> map = getOrCatch(path);
+        Map<String, String> map = getOrNull(path);
         return (map != null && (key = map.get(key)) != null) ? key : defaultVal;
     }
 
     public static final int getOrDefault(String path, String key, int defaultVal) {
-        Map<String, String> map = getOrCatch(path);
+        Map<String, String> map = getOrNull(path);
         return (map != null && (key = map.get(key)) != null)
             ? cast().toIntValue(key) : defaultVal;
     }
 
     public static final long getOrDefault(String path, String key, long defaultVal) {
-        Map<String, String> map = getOrCatch(path);
+        Map<String, String> map = getOrNull(path);
         return (map != null && (key = map.get(key)) != null)
             ? cast().toLongValue(key) : defaultVal;
     }
 
     public static final double getOrDefault(String path, String key, double defaultVal) {
-        Map<String, String> map = getOrCatch(path);
+        Map<String, String> map = getOrNull(path);
         return (map != null && (key = map.get(key)) != null)
             ? cast().toDoubleValue(key) : defaultVal;
     }
 
     public static final boolean getOrDefault(String path, String key, boolean defaultVal) {
-        Map<String, String> map = getOrCatch(path);
+        Map<String, String> map = getOrNull(path);
         return (map != null && (key = map.get(key)) != null)
             ? cast().toBooleanValue(key) : defaultVal;
     }

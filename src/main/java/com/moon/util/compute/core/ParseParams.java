@@ -41,7 +41,7 @@ final class ParseParams {
                     runner = ParseConst.parseStr(chars, indexer, next);
                     break;
                 default:
-                    runner = ParseCore.parse(chars, indexer.minus(), len, settings, COMMA, YUAN_R);
+                    runner = ParseCore.parse(chars, indexer.decrement(), len, settings, COMMA, YUAN_R);
                     if ((next = chars[indexer.get() - 1]) == YUAN_R) {
                         params.add(runner);
                         continue outer;

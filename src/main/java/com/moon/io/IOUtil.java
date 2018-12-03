@@ -228,7 +228,7 @@ public final class IOUtil {
         byte[] buffer = new byte[10240];
         forEach(is, buffer, limit -> {
             write(stream, buffer, 0, limit);
-            accessor.add(limit);
+            accessor.increment(limit);
         });
         flush(stream);
         return accessor.get();
@@ -239,7 +239,7 @@ public final class IOUtil {
         char[] buffer = new char[5120];
         forEach(reader, buffer, limit -> {
             write(writer, buffer, 0, limit);
-            accessor.add(limit);
+            accessor.increment(limit);
         });
         flush(writer);
         return accessor.get();

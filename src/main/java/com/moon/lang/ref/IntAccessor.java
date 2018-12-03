@@ -42,50 +42,50 @@ public class IntAccessor {
         return value;
     }
 
-    public int getAndAdd() {
+    public int getAndIncrement() {
         return value++;
     }
 
-    public int addAndGet() {
+    public int incrementAndGet() {
         return ++value;
     }
 
-    public int getAndAdd(int value) {
+    public int getAndIncrement(int value) {
         return this.value += value;
     }
 
-    public int addAndGet(int value) {
+    public int incrementAndGet(int value) {
         int now = this.value;
         this.value += value;
         return now;
     }
 
-    public IntAccessor minus(int value) {
+    public IntAccessor decrement(int value) {
         this.value -= value;
         return this;
     }
 
-    public IntAccessor minus() {
-        return minus(1);
+    public IntAccessor decrement() {
+        return decrement(1);
     }
 
-    public int minusAndGet() {
-        return minus().get();
+    public int decrementAndGet() {
+        return decrement().get();
     }
 
-    public int getAndMinus() {
+    public int getAndDecrement() {
         int num = get();
-        this.minus();
+        this.decrement();
         return num;
     }
 
-    public int minusAndGet(int value) {
-        return minus(value).get();
+    public int decrementAndGet(int value) {
+        return decrement(value).get();
     }
 
-    public int getAndMinus(int value) {
+    public int getAndDecrement(int value) {
         int num = get();
-        this.minus(value);
+        this.decrement(value);
         return num;
     }
 
@@ -95,11 +95,11 @@ public class IntAccessor {
      * ------------------------------------------------------------
      */
 
-    public IntAccessor add() {
-        return this.add(1);
+    public IntAccessor increment() {
+        return this.increment(1);
     }
 
-    public IntAccessor add(int value) {
+    public IntAccessor increment(int value) {
         this.value += value;
         return this;
     }
