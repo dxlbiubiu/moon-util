@@ -899,11 +899,11 @@ public final class IteratorUtil {
      * @return
      */
     public static <K, E, L extends List<E>> Map<K, List<E>> groupBy(L list, Function<? super E, ? extends K> function) {
-        return GroupUtil.groupByAsList(list, function);
+        return GroupUtil.groupAsList(list, function);
     }
 
     public static <K, E, S extends Set<E>> Map<K, Set<E>> groupBy(S set, Function<? super E, ? extends K> function) {
-        return GroupUtil.groupByAsSet(set, function);
+        return GroupUtil.groupAsSet(set, function);
     }
 
     public static <K, E, C extends Collection<E>> Map<K, Collection<E>> groupBy(C collect, Function<? super E, ? extends K> function) {

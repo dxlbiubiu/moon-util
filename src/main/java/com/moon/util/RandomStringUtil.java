@@ -40,8 +40,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextChinese(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextChinese(nextInt(min, max));
     }
 
@@ -67,8 +67,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextUpper(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextUpper(nextInt(min, max));
     }
 
@@ -94,8 +94,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextLower(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextLower(nextInt(min, max));
     }
 
@@ -121,8 +121,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextLetter(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextLetter(nextInt(min, max));
     }
 
@@ -148,8 +148,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextControl(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextControl(nextInt(min, max));
     }
 
@@ -175,8 +175,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextDigit(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextDigit(nextInt(min, max));
     }
 
@@ -204,8 +204,8 @@ public final class RandomStringUtil {
     }
 
     public final static String nextSymbol(int min, int max) {
-        IntUtil.requireLtOrEq(min, 0);
-        IntUtil.requireLtOrEq(max, min);
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
         return nextSymbol(nextInt(min, max));
     }
 

@@ -17,4 +17,6 @@ public @interface MapperProperty {
     String propertyName();
 
     boolean useToReverse() default false;
+
+    String pattern() default "";
 }

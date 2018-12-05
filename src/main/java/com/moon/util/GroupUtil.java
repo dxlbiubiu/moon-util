@@ -15,12 +15,12 @@ public final class GroupUtil {
         ThrowUtil.noInstanceError();
     }
 
-    public static <K, E> Map<K, List<E>> groupByAsList(E[] arr, Function<? super E, ? extends K> function) {
+    public static <K, E> Map<K, List<E>> groupAsList(E[] arr, Function<? super E, ? extends K> function) {
         final Supplier supplier = Collects.ArrayList;
         return groupBy(arr, function, supplier);
     }
 
-    public static <K, E> Map<K, Set<E>> groupByAsSet(E[] arr, Function<? super E, ? extends K> function) {
+    public static <K, E> Map<K, Set<E>> groupAsSet(E[] arr, Function<? super E, ? extends K> function) {
         final Supplier supplier = Collects.HashSet;
         return groupBy(arr, function, supplier);
     }
@@ -36,12 +36,12 @@ public final class GroupUtil {
         return grouped;
     }
 
-    public static <K, E, L extends List<E>> Map<K, List<E>> groupByAsList(L list, Function<? super E, ? extends K> function) {
+    public static <K, E, L extends List<E>> Map<K, List<E>> groupAsList(L list, Function<? super E, ? extends K> function) {
         final Supplier supplier = Collects.getOrDefault(list, Collects.ArrayList);
         return groupBy(list, function, supplier);
     }
 
-    public static <K, E, S extends Set<E>> Map<K, Set<E>> groupByAsSet(S set, Function<? super E, ? extends K> function) {
+    public static <K, E, S extends Set<E>> Map<K, Set<E>> groupAsSet(S set, Function<? super E, ? extends K> function) {
         final Supplier supplier = Collects.getOrDefault(set, Collects.HashSet);
         return groupBy(set, function, supplier);
     }
