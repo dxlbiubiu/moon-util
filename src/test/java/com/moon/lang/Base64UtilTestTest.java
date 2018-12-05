@@ -35,8 +35,6 @@ class Base64UtilTestTest {
 
     @Test
     void testToString() {
-        String result = Base64Util.toString("a");
-        Console.out.println(new String(toBase64));
-        Console.out.println(new String(toBase64URL));
+        System.out.println(Base64Util.toBase64(""));
     }
 }

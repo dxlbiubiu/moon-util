@@ -398,7 +398,7 @@ public final class FilterUtil {
      * @param consumer
      * @param <T>
      */
-    public static <T> void forEachMatches(
+    public static <T> void forEachMatched(
         Collection<T> collect, Predicate<? super T> tester, Consumer<T> consumer) {
         if (collect != null) {
             for (T item : collect) {
@@ -417,7 +417,7 @@ public final class FilterUtil {
      * @param consumer
      * @param <T>
      */
-    public static <T> void forEachMatches(
+    public static <T> void forEachMatched(
         T[] ts, Predicate<? super T> tester, Consumer<T> consumer) {
         final int length = ts == null ? 0 : ts.length;
         for (int i = 0; i < length; i++) {

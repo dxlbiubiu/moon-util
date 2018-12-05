@@ -898,37 +898,22 @@ public final class IteratorUtil {
      * @param <L>      List 类型
      * @return
      */
-    public static <K, E, L extends List<E>> Map<K, List<E>> groupBy(L list, Function<E, K> function) {
-        final Supplier supplier = Collects.getOrDefault(list, Collects.ArrayList);
-        return groupBy(list, function, supplier);
+    public static <K, E, L extends List<E>> Map<K, List<E>> groupBy(L list, Function<? super E, ? extends K> function) {
+        return GroupUtil.groupByAsList(list, function);
     }
 
-    public static <K, E, S extends Set<E>> Map<K, Set<E>> groupBy(S set, Function<E, K> function) {
-        final Supplier supplier = Collects.getOrDefault(set, Collects.HashSet);
-        return groupBy(set, function, supplier);
+    public static <K, E, S extends Set<E>> Map<K, Set<E>> groupBy(S set, Function<? super E, ? extends K> function) {
+        return GroupUtil.groupByAsSet(set, function);
     }
 
-    public static <K, E, C extends Collection<E>> Map<K, Collection<E>> groupBy(C collect, Function<E, K> function) {
-        final Supplier supplier = Collects.getOrDefault(collect, Collects.HashSet);
-        return groupBy(collect, function, supplier);
+    public static <K, E, C extends Collection<E>> Map<K, Collection<E>> groupBy(C collect, Function<? super E, ? extends K> function) {
+        return GroupUtil.groupBy(collect, function);
     }
 
     public static <K, E, C extends Collection<E>, CR extends Collection<E>>
 
-    Map<K, CR> groupBy(C collect, Function<E, K> function, Supplier<CR> groupingSupplier) {
-        Map<K, CR> grouped = new HashMap<>();
-        if (collect != null) {
-            for (E item : collect) {
-
-                K key = function.apply(item);
-                CR grouping = grouped.get(key);
-                if (grouping == null) {
-                    grouped.put(key, grouping = groupingSupplier.get());
-                }
-                grouping.add(item);
-            }
-        }
-        return grouped;
+    Map<K, CR> groupBy(C collect, Function<? super E, ? extends K> function, Supplier<CR> groupingSupplier) {
+        return GroupUtil.groupBy(collect, function, groupingSupplier);
     }
 
     /*
@@ -944,11 +929,11 @@ public final class IteratorUtil {
      * @param <L>
      * @return
      */
-    public static <E, L extends List<E>> List<E> filter(L list, Predicate<E> tester) {
+    public static <E, L extends List<E>> List<E> filter(L list, Predicate<? super E> tester) {
         return FilterUtil.filter(list, tester);
     }
 
-    public static <E, S extends Set<E>> Set<E> filter(S set, Predicate<E> tester) {
+    public static <E, S extends Set<E>> Set<E> filter(S set, Predicate<? super E> tester) {
         return FilterUtil.filter(set, tester);
     }
 
@@ -963,7 +948,7 @@ public final class IteratorUtil {
      */
     public static <E, C extends Collection<E>, CR extends Collection<E>>
 
-    CR filter(C collect, Predicate<E> tester, Supplier<CR> resultContainerSupplier) {
+    CR filter(C collect, Predicate<? super E> tester, Supplier<CR> resultContainerSupplier) {
         return FilterUtil.filter(collect, tester, resultContainerSupplier);
     }
 
@@ -978,7 +963,7 @@ public final class IteratorUtil {
      */
     public static <E, C extends Collection<E>, CR extends Collection<E>>
 
-    CR filter(C collect, Predicate<E> tester, CR toResultContainer) {
+    CR filter(C collect, Predicate<? super E> tester, CR toResultContainer) {
         return FilterUtil.filter(collect, tester, toResultContainer);
     }
 

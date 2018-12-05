@@ -41,7 +41,7 @@ class FilterUtilTestTest {
             add("abcdefghijklmnopqrstuvwxyz");
         }};
 
-        FilterUtil.forEachMatches(list, str -> str.length() > 5, str -> {
+        FilterUtil.forEachMatched(list, str -> str.length() > 5, str -> {
             System.out.println(str);
         });
     }
