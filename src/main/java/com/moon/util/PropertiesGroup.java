@@ -1,68 +1,82 @@
 package com.moon.util;
 
-import com.moon.lang.ref.ReferenceUtil;
-
+import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
+import static com.moon.util.TypeUtil.cast;
 
 /**
  * @author benshaoye
  */
-public class PropertiesGroup {
+public class PropertiesGroup extends HashMap<String, Object> {
 
-    private final static Map<String, PropertiesGroup> CACHE = ReferenceUtil.manageMap();
-
-    private final String key;
+    private final PropertiesGroup all;
     private final PropertiesGroup parent;
-    private Map<String, PropertiesGroup> children;
-    private final Map<String, String> allProps;
 
-    /*
-     * -----------------------------------------------------------
-     * constructor
-     * -----------------------------------------------------------
-     */
-
-    public PropertiesGroup(String sourcePath) {
-        sourcePath = requireNonNull(sourcePath);
-        allProps = PropertiesUtil.get(sourcePath);
-        this.key = sourcePath;
+    public PropertiesGroup(Map<String, ?> source) {
         this.parent = null;
-        throw new UnsupportedOperationException();
+        final PropertiesGroup top = all = this;
+        source.forEach((key, value) -> {
+            PropertiesGroup group = top;
+            String[] keys = key.split("\\.");
+            for (int i = 0, len = keys.length - 1; ; i++) {
+                key = keys[i];
+                if (i < len) {
+                    group = findGroup(top, group, key);
+                } else {
+                    group.put(key, value);
+                    break;
+                }
+            }
+        });
     }
 
-    private PropertiesGroup(PropertiesGroup parent, Map<String, String> allProps, String key) {
-        this.key = requireNonNull(key);
-        this.parent = requireNonNull(parent);
-        this.allProps = requireNonNull(allProps);
-        throw new UnsupportedOperationException();
+    private PropertiesGroup(PropertiesGroup all, PropertiesGroup parent) {
+        this.parent = parent;
+        this.all = all;
     }
 
-    /*
-     * -----------------------------------------------------------
-     * static constructor
-     * -----------------------------------------------------------
-     */
-
-    static PropertiesGroup of(String path) {
-        return CACHE.computeIfAbsent(path, PropertiesGroup::new);
+    private PropertiesGroup findGroup(PropertiesGroup root, PropertiesGroup parent, String namespace) {
+        PropertiesGroup group = (PropertiesGroup) parent.get(namespace);
+        if (group == null) {
+            parent.put(namespace, group = new PropertiesGroup(root, parent));
+        }
+        return group;
     }
 
-    public Map<String, String> getAll() {
-        return allProps;
+    public boolean isRoot() {
+        return all == this;
+    }
+
+    public PropertiesGroup getAll() {
+        return all;
     }
 
     public PropertiesGroup getParent() {
         return parent;
     }
 
-    public PropertiesGroup reload() {
-        if (parent == null) {
+    public PropertiesGroup getSubGroup(String namespace) {
+        return (PropertiesGroup) get(namespace);
+    }
 
-        } else {
-            parent.reload();
-        }
-        return this;
+    public int getInt(String key) {
+        return cast().toIntValue(get(key));
+    }
+
+    public long getLong(String key) {
+        return cast().toLongValue(get(key));
+    }
+
+    public double getDouble(String key) {
+        return cast().toDoubleValue(get(key));
+    }
+
+    public boolean getBoolean(String key) {
+        return cast().toBooleanValue(get(key));
+    }
+
+    public String getString(String key) {
+        return String.valueOf(get(key));
     }
 }

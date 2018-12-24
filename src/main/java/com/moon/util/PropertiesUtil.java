@@ -34,7 +34,7 @@ public final class PropertiesUtil {
 
     @Deprecated
     public final static PropertiesGroup getGroup(String path) {
-        return PropertiesGroup.of(path);
+        return new PropertiesGroup(get(path));
     }
 
     /*

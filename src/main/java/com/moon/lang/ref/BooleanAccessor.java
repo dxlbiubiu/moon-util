@@ -1,8 +1,8 @@
 package com.moon.lang.ref;
 
 import com.moon.lang.Executable;
-import com.moon.lang.ThrowUtil;
 import com.moon.util.function.BooleanConsumer;
+import com.moon.util.function.BooleanFunction;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -44,6 +44,10 @@ public class BooleanAccessor {
      * sets
      * ----------------------------------------------------------------------------
      */
+
+    public boolean get() {
+        return value;
+    }
 
     public BooleanAccessor set(boolean value) {
         this.value = value;
@@ -139,6 +143,10 @@ public class BooleanAccessor {
 
     public <T> T ifFalseOrThrow(Supplier<T> supplier) {
         return isFalse() ? supplier.get() : throwRuntime(toString());
+    }
+
+    public <R> R apply(BooleanFunction<R> function) {
+        return function.apply(value);
     }
 
     @Override

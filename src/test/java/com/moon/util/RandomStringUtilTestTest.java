@@ -1,5 +1,6 @@
 package com.moon.util;
 
+import com.moon.lang.CharUtil;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,18 +19,78 @@ class RandomStringUtilTestTest {
 
     @Test
     void testInitCommonChinese() {
+        int len = 5;
+        s = RandomStringUtil.nextLower(len);
+        assertions.assertEq(s.length(), len);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isLowerCase(s.charAt(i)));
+        }
+
+        int min = 5, max = 10;
+        s = RandomStringUtil.nextLower(min, max);
+        len = s.length();
+        assertions.assertTrue(s.length() <= max);
+        assertions.assertTrue(s.length() >= min);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isLowerCase(s.charAt(i)));
+        }
     }
 
     @Test
     void testNextChinese() {
+        int len = 5;
+        s = RandomStringUtil.nextChinese(len);
+        assertions.assertEq(s.length(), len);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isChinese(s.charAt(i)));
+        }
+
+        int min = 5, max = 10;
+        s = RandomStringUtil.nextChinese(min, max);
+        len = s.length();
+        assertions.assertTrue(s.length() <= max);
+        assertions.assertTrue(s.length() >= min);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isChinese(s.charAt(i)));
+        }
     }
 
     @Test
     void testNextUpper() {
+        int len = 5;
+        s = RandomStringUtil.nextUpper(len);
+        assertions.assertEq(s.length(), len);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isUpperCase(s.charAt(i)));
+        }
+
+        int min = 5, max = 10;
+        s = RandomStringUtil.nextUpper(min, max);
+        len = s.length();
+        assertions.assertTrue(s.length() <= max);
+        assertions.assertTrue(s.length() >= min);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isUpperCase(s.charAt(i)));
+        }
     }
 
     @Test
     void testNextLetter() {
+        int len = 5;
+        s = RandomStringUtil.nextLetter(len);
+        assertions.assertEq(s.length(), len);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isLetter(s.charAt(i)));
+        }
+
+        int min = 5, max = 10;
+        s = RandomStringUtil.nextLetter(min, max);
+        len = s.length();
+        assertions.assertTrue(s.length() <= max);
+        assertions.assertTrue(s.length() >= min);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isLetter(s.charAt(i)));
+        }
     }
 
     @Test
@@ -38,6 +99,21 @@ class RandomStringUtilTestTest {
 
     @Test
     void testNextDigit() {
+        int len = 5;
+        s = RandomStringUtil.nextDigit(len);
+        assertions.assertEq(s.length(), len);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isDigit(s.charAt(i)));
+        }
+
+        int min = 5, max = 10;
+        s = RandomStringUtil.nextDigit(min, max);
+        len = s.length();
+        assertions.assertTrue(s.length() <= max);
+        assertions.assertTrue(s.length() >= min);
+        for (int i = 0; i < len; i++) {
+            assertions.assertTrue(CharUtil.isDigit(s.charAt(i)));
+        }
     }
 
     @Test

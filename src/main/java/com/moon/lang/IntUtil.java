@@ -21,11 +21,25 @@ public final class IntUtil {
         throw new NumberException(String.format("Expected: %d, Actual: %d", expect, value));
     }
 
+    public static int requireEq(int value, int expect, String errorMsg) {
+        if (value == expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
     public static int requireGt(int value, int expect) {
         if (value > expect) {
             return value;
         }
         throw new NumberException(String.format("Expected great than %d, Actual: %d", expect, value));
+    }
+
+    public static int requireGt(int value, int expect, String errorMsg) {
+        if (value > expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static int requireLt(int value, int expect) {
@@ -35,6 +49,13 @@ public final class IntUtil {
         throw new NumberException(String.format("Expected less than %d, Actual: %d", expect, value));
     }
 
+    public static int requireLt(int value, int expect, String errorMsg) {
+        if (value < expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
     public static int requireGtOrEq(int value, int expect) {
         if (value >= expect) {
             return value;
@@ -42,11 +63,65 @@ public final class IntUtil {
         throw new NumberException(String.format("Expected not less than %d, Actual: %d", expect, value));
     }
 
+    public static int requireGtOrEq(int value, int expect, String errorMsg) {
+        if (value >= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
     public static int requireLtOrEq(int value, int expect) {
         if (value <= expect) {
             return value;
         }
         throw new NumberException(String.format("Expected not great than %d, Actual: %d", expect, value));
+    }
+
+    public static int requireLtOrEq(int value, int expect, String errorMsg) {
+        if (value <= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
+    /**
+     * 要求期望值在指定范围里，不包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static int requireInRange(int value, int min, int max) {
+        requireGt(value, min);
+        requireLt(value, max);
+        return value;
+    }
+
+    public static int requireInRange(int value, int min, int max, String errorMsg) {
+        requireGt(value, min, errorMsg);
+        requireLt(value, max, errorMsg);
+        return value;
+    }
+
+    /**
+     * 要求期望值在指定范围里，包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static int requireBetween(int value, int min, int max) {
+        requireGtOrEq(value, min);
+        requireLtOrEq(value, max);
+        return value;
+    }
+
+    public static int requireBetween(int value, int min, int max, String errorMsg) {
+        requireGtOrEq(value, min, errorMsg);
+        requireLtOrEq(value, max, errorMsg);
+        return value;
     }
 
 

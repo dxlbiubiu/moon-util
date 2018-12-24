@@ -31,7 +31,7 @@ public final class GroupUtil {
         Map<K, CR> grouped = new HashMap<>();
         final int len = arr == null ? 0 : arr.length;
         for (int i = 0; i < len; i++) {
-            doGrouping(arr[i], grouped, function, groupingSupplier);
+            grouping(arr[i], grouped, function, groupingSupplier);
         }
         return grouped;
     }
@@ -57,20 +57,20 @@ public final class GroupUtil {
         Map<K, CR> grouped = new HashMap<>();
         if (collect != null) {
             for (E item : collect) {
-                doGrouping(item, grouped, function, groupingSupplier);
+                grouping(item, grouped, function, groupingSupplier);
             }
         }
         return grouped;
     }
 
-    private final static <E, K, CR extends Collection<E>> void doGrouping(
+    private final static <E, K, CR extends Collection<E>> void grouping(
         E item, Map<K, CR> grouped, Function<? super E, ? extends K> function, Supplier<CR> groupingSupplier
     ) {
         K key = function.apply(item);
-        CR grouping = grouped.get(key);
-        if (grouping == null) {
-            grouped.put(key, grouping = groupingSupplier.get());
+        CR group = grouped.get(key);
+        if (group == null) {
+            grouped.put(key, group = groupingSupplier.get());
         }
-        grouping.add(item);
+        group.add(item);
     }
 }
