@@ -4,6 +4,7 @@ import com.moon.exception.NumberException;
 import com.moon.util.DetectUtil;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.lang.String.format;
 
 /**
  * @author benshaoye
@@ -19,35 +20,111 @@ public final class DoubleUtil {
         if (value == expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected: %f, Actual: %f", expect, value));
+        throw new NumberException(format("Expected: %f, Actual: %f", expect, value));
+    }
+
+
+    public static double requireEq(double value, double expect, String errorMsg) {
+        if (value == expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static double requireGt(double value, double expect) {
         if (value > expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected great than %f, Actual: %f", expect, value));
+        throw new NumberException(format("Expected great than %f, Actual: %f", expect, value));
+    }
+
+    public static double requireGt(double value, double expect, String errorMsg) {
+        if (value > expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static double requireLt(double value, double expect) {
         if (value < expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected less than %f, Actual: %f", expect, value));
+        throw new NumberException(format("Expected less than %f, Actual: %f", expect, value));
+    }
+
+    public static double requireLt(double value, double expect, String errorMsg) {
+        if (value < expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static double requireGtOrEq(double value, double expect) {
         if (value >= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not less than %f, Actual: %f", expect, value));
+        throw new NumberException(format("Expected not less than %f, Actual: %f", expect, value));
+    }
+
+    public static double requireGtOrEq(double value, double expect, String errorMsg) {
+        if (value >= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static double requireLtOrEq(double value, double expect) {
         if (value <= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not great than %f, Actual: %f", expect, value));
+        throw new NumberException(format("Expected not great than %f, Actual: %f", expect, value));
+    }
+
+    public static double requireLtOrEq(double value, double expect, String errorMsg) {
+        if (value <= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
+    /**
+     * 要求期望值在指定范围里，不包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static double requireInRange(double value, double min, double max) {
+        requireGt(value, min);
+        requireLt(value, max);
+        return value;
+    }
+
+    public static double requireInRange(double value, double min, double max, String errorMsg) {
+        requireGt(value, min, errorMsg);
+        requireLt(value, max, errorMsg);
+        return value;
+    }
+
+    /**
+     * 要求期望值在指定范围里，包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static double requireBetween(double value, double min, double max) {
+        requireGtOrEq(value, min);
+        requireLtOrEq(value, max);
+        return value;
+    }
+
+    public static double requireBetween(double value, double min, double max, String errorMsg) {
+        requireGtOrEq(value, min, errorMsg);
+        requireLtOrEq(value, max, errorMsg);
+        return value;
     }
 
     public static boolean isDouble(Object obj) {
@@ -153,7 +230,7 @@ public final class DoubleUtil {
         try {
             return toDouble(SupportUtil.onlyOneItemOrSize(value));
         } catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Can not cast to double of: %s", value), e);
+            throw new IllegalArgumentException(format("Can not cast to double of: %s", value), e);
         }
     }
 

@@ -4,6 +4,7 @@ import com.moon.exception.NumberException;
 import com.moon.util.DetectUtil;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.lang.String.format;
 
 /**
  * @author benshaoye
@@ -18,7 +19,7 @@ public final class IntUtil {
         if (value == expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected: %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected: %d, Actual: %d", expect, value));
     }
 
     public static int requireEq(int value, int expect, String errorMsg) {
@@ -32,7 +33,7 @@ public final class IntUtil {
         if (value > expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected great than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected great than %d, Actual: %d", expect, value));
     }
 
     public static int requireGt(int value, int expect, String errorMsg) {
@@ -46,7 +47,7 @@ public final class IntUtil {
         if (value < expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected less than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected less than %d, Actual: %d", expect, value));
     }
 
     public static int requireLt(int value, int expect, String errorMsg) {
@@ -60,7 +61,7 @@ public final class IntUtil {
         if (value >= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not less than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected not less than %d, Actual: %d", expect, value));
     }
 
     public static int requireGtOrEq(int value, int expect, String errorMsg) {
@@ -74,7 +75,7 @@ public final class IntUtil {
         if (value <= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not great than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected not great than %d, Actual: %d", expect, value));
     }
 
     public static int requireLtOrEq(int value, int expect, String errorMsg) {
@@ -340,7 +341,7 @@ public final class IntUtil {
         try {
             return toIntValue(SupportUtil.onlyOneItemOrSize(o));
         } catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Can not cast to int of: %s", o), e);
+            throw new IllegalArgumentException(format("Can not cast to int of: %s", o), e);
         }
     }
 }

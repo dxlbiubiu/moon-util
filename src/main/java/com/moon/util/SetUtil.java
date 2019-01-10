@@ -2,6 +2,7 @@ package com.moon.util;
 
 import com.moon.lang.ThrowUtil;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +53,16 @@ public final class SetUtil extends CollectUtil {
             set.add(value);
         }
         return set;
+    }
+
+    public static <T> HashSet<T> ofHashSet(Collection<T> collect) {
+        return collect == null ? new HashSet<>() : new HashSet<>(collect);
+    }
+
+    public static <T> HashSet<T> ofHashSet(Iterable<T> iterable) {
+        return iterable == null ? new HashSet<>()
+            : (iterable instanceof Collection ? new HashSet((Collection) iterable)
+            : addAll(new HashSet<>(), iterable));
     }
 
     public static <T> Set<T> concat(Set<T> set, Set<T>... sets) {

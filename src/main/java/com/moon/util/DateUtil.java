@@ -57,7 +57,7 @@ public final class DateUtil {
         return new Date();
     }
 
-    public final static Date nowSqlDate() {
+    public final static java.sql.Date nowSqlDate() {
         return new java.sql.Date(now());
     }
 
@@ -599,7 +599,6 @@ public final class DateUtil {
     public static Calendar toCalendar(String... arguments) {
         int size = arguments.length;
         int length = PARSE_FIELD_OF_CALENDAR.length;
-
         size = size > length ? length : size;
         Calendar calendar = Calendar.getInstance();
         calendar.clear();

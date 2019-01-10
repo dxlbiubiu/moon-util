@@ -10,17 +10,21 @@ import static com.moon.lang.ThrowUtil.throwRuntime;
  * @author benshaoye
  * @date 2018/9/17
  */
-public final class InetUtil {
+public final class InternetUtil {
 
-    private InetUtil() {
+    private InternetUtil() {
         noInstanceError();
     }
 
-    public static String getLocalIP4() {
+    public final static InetAddress getLocalhost() {
         try {
-            return InetAddress.getLocalHost().getHostAddress();
+            return InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             return throwRuntime(e);
         }
+    }
+
+    public static String getLocalIP4() {
+        return getLocalhost().getHostAddress();
     }
 }

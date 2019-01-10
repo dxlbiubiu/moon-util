@@ -19,19 +19,19 @@ public class CollectUtil extends BaseCollectUtil {
         noInstanceError();
     }
 
-    public static <E, C extends Collection<E>> int size(C collect) {
+    public final static <E, C extends Collection<E>> int size(C collect) {
         return collect == null ? 0 : collect.size();
     }
 
-    public static int sizeByObject(Object collect) {
+    public final static int sizeByObject(Object collect) {
         return collect == null ? 0 : ((Collection) collect).size();
     }
 
-    public static <E, C extends Collection<E>> boolean isEmpty(C collect) {
-        return collect == null ? true : collect.isEmpty();
+    public final static <E, C extends Collection<E>> boolean isEmpty(C collect) {
+        return collect == null || collect.isEmpty();
     }
 
-    public static <E, C extends Collection<E>> boolean isNotEmpty(C collect) {
+    public final static <E, C extends Collection<E>> boolean isNotEmpty(C collect) {
         return !isEmpty(collect);
     }
 
@@ -41,14 +41,14 @@ public class CollectUtil extends BaseCollectUtil {
      * ---------------------------------------------------------------------------------
      */
 
-    public static <E, C extends Collection<E>> C add(C collect, E element) {
+    public final static <E, C extends Collection<E>> C add(C collect, E element) {
         if (collect != null) {
             collect.add(element);
         }
         return collect;
     }
 
-    public static <E, C extends Collection<E>> C add(C collect, E element1, E element2) {
+    public final static <E, C extends Collection<E>> C add(C collect, E element1, E element2) {
         if (collect != null) {
             collect.add(element1);
             collect.add(element2);
@@ -56,7 +56,7 @@ public class CollectUtil extends BaseCollectUtil {
         return collect;
     }
 
-    public static <E, C extends Collection<E>> C addAll(C collect, E... elements) {
+    public final static <E, C extends Collection<E>> C addAll(C collect, E... elements) {
         if (collect != null) {
             for (E element : elements) {
                 collect.add(element);
@@ -65,17 +65,66 @@ public class CollectUtil extends BaseCollectUtil {
         return collect;
     }
 
-    public static <E, C extends Collection<E>> C addAll(C collect, Collection<E> collection) {
+    public final static <E, C extends Collection<E>> C addAll(C collect, Collection<E> collection) {
         if (collect != null) {
             collect.addAll(collection);
         }
         return collect;
     }
 
-    public static <E, C extends Collection<E>> C addAll(C collect, Iterable<E> iterable) {
+    public final static <E, C extends Collection<E>> C addAll(C collect, Iterable<E> iterable) {
         if (collect != null) {
             for (E elem : iterable) {
                 collect.add(elem);
+            }
+        }
+        return collect;
+    }
+
+    /*
+     * ---------------------------------------------------------------------------------
+     * add if non null, 只有当带插入项非空时才执行插入操作
+     * ---------------------------------------------------------------------------------
+     */
+
+
+    public final static <E, C extends Collection<E>> C addIfNonNull(C collect, E item) {
+        if (collect != null && item != null) {
+            collect.add(item);
+        }
+        return collect;
+    }
+
+    public final static <E, C extends Collection<E>> C addIfNonNull(C collect, E item1, E item2) {
+        if (collect != null) {
+            if (item1 != null) {
+                collect.add(item1);
+            }
+            if (item2 != null) {
+                collect.add(item2);
+            }
+        }
+        return collect;
+    }
+
+    public final static <E, C extends Collection<E>> C addIfNonNull(C collect, E... items) {
+        if (collect != null) {
+            E item;
+            for (int i = 0; i < items.length; i++) {
+                if ((item = items[i]) != null) {
+                    collect.add(item);
+                }
+            }
+        }
+        return collect;
+    }
+
+    public final static <E, C extends Collection<E>> C addIfNonNull(C collect, Iterable<E> iterable) {
+        if (collect != null) {
+            for (E elem : iterable) {
+                if (elem != null) {
+                    collect.add(elem);
+                }
             }
         }
         return collect;
@@ -87,7 +136,7 @@ public class CollectUtil extends BaseCollectUtil {
      * ---------------------------------------------------------------------------------
      */
 
-    public static <T, O, C1 extends Collection<T>> Collection<O> map(C1 src, Function<T, O> function) {
+    public final static <T, O, C1 extends Collection<T>> Collection<O> map(C1 src, Function<T, O> function) {
         return IteratorUtil.map(src, function);
     }
 
@@ -158,24 +207,19 @@ public class CollectUtil extends BaseCollectUtil {
         if (collect1 == collect2) {
             return true;
         }
-        if (collect1.size() > collect2.size()) {
-            for (T collect : collect1) {
-                if (collect2.contains(collect)) {
-                    return true;
-                }
-            }
-        } else {
-            for (T collect : collect2) {
-                if (collect1.contains(collect)) {
-                    return true;
-                }
+        int size1 = collect1.size(), size2 = collect2.size();
+        Collection<T> large = size1 > size2 ? collect1 : collect2;
+        Collection<T> small = size1 > size2 ? collect2 : collect1;
+        for (T item : large) {
+            if (small.contains(item)) {
+                return true;
             }
         }
         return false;
     }
 
-    public final static <T> boolean containsAll(Collection<T> collection1, Collection<T> collection2) {
-        return collection1 == collection2 ? true : (collection1 != null && collection2.containsAll(collection2));
+    public final static <T> boolean containsAll(Collection<T> collect1, Collection<T> collect2) {
+        return collect1 == collect2 ? true : (collect1 != null && collect1.containsAll(collect2));
     }
 
     /*

@@ -20,7 +20,7 @@ public final class RandomUtil {
         return r == null ? next() : r;
     }
 
-    public final static ThreadLocalRandom next() {
+    public final static synchronized ThreadLocalRandom next() {
         return random = current();
     }
 

@@ -6,6 +6,7 @@ import com.moon.lang.ThrowUtil;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static com.moon.lang.NumberComparator.*;
 import static com.moon.lang.ThrowUtil.wrapAndThrow;
 
 /**
@@ -78,5 +79,29 @@ public final class BigDecimalUtil {
         } catch (Exception e) {
             return wrapAndThrow(e, String.format("Can not cast to BigDecimal of: %s", value));
         }
+    }
+
+    public final static boolean gt(BigDecimal value1, BigDecimal value2) {
+        return GT.compare(value1, value2);
+    }
+
+    public final static boolean lt(BigDecimal value1, BigDecimal value2) {
+        return LT.compare(value1, value2);
+    }
+
+    public final static boolean ge(BigDecimal value1, BigDecimal value2) {
+        return GE.compare(value1, value2);
+    }
+
+    public final static boolean le(BigDecimal value1, BigDecimal value2) {
+        return LE.compare(value1, value2);
+    }
+
+    public final static boolean eq(BigDecimal value1, BigDecimal value2) {
+        return EQ.compare(value1, value2);
+    }
+
+    public final static boolean ne(BigDecimal value1, BigDecimal value2) {
+        return NE.compare(value1, value2);
     }
 }

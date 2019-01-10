@@ -6,6 +6,8 @@ import com.moon.lang.ThrowUtil;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import static com.moon.lang.NumberComparator.*;
+
 /**
  * @author benshaoye
  * @date 2018/9/11
@@ -73,5 +75,30 @@ public final class BigIntegerUtil {
         } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Can not cast to BigInteger of: %s", value), e);
         }
+    }
+
+
+    public final static boolean gt(BigInteger value1, BigInteger value2) {
+        return GT.compare(value1, value2);
+    }
+
+    public final static boolean lt(BigInteger value1, BigInteger value2) {
+        return LT.compare(value1, value2);
+    }
+
+    public final static boolean ge(BigInteger value1, BigInteger value2) {
+        return GE.compare(value1, value2);
+    }
+
+    public final static boolean le(BigInteger value1, BigInteger value2) {
+        return LE.compare(value1, value2);
+    }
+
+    public final static boolean eq(BigInteger value1, BigInteger value2) {
+        return EQ.compare(value1, value2);
+    }
+
+    public final static boolean ne(BigInteger value1, BigInteger value2) {
+        return NE.compare(value1, value2);
     }
 }

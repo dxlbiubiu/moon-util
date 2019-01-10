@@ -331,7 +331,7 @@ public final class StringUtil {
         return isEmpty(cs) ? null : cs;
     }
 
-    public static <T extends CharSequence> T defaultIfNull(T cs, T defaultValue) {
+    public static <T> T defaultIfNull(T cs, T defaultValue) {
         return cs == null ? defaultValue : cs;
     }
 

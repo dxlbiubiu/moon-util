@@ -177,6 +177,9 @@ public final class SupportUtil {
         if (o instanceof Map) {
             return (size = ((Map) o).size()) == 1 ? ((Map) o).values().iterator().next() : size;
         }
+        if (o instanceof Iterable) {
+            return ((Iterable) o).iterator().next();
+        }
         throw new IllegalArgumentException();
     }
 

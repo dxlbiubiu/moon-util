@@ -1,7 +1,6 @@
 package com.moon.net;
 
 import com.moon.lang.JoinerUtil;
-import com.moon.util.IteratorUtil;
 import org.junit.jupiter.api.Test;
 
 import java.net.Inet6Address;
@@ -12,11 +11,11 @@ import java.net.UnknownHostException;
  * @author benshaoye
  * @date 2018/9/17
  */
-class InetUtilTestTest {
+class InternetUtilTestTest {
 
     @Test
     void testGetLocalIP() throws UnknownHostException {
-        System.out.println(InetUtil.getLocalIP4());
+        System.out.println(InternetUtil.getLocalIP4());
 
         InetAddress address = InetAddress.getLocalHost();
 

@@ -1,7 +1,6 @@
 package com.moon.lang.support;
 
 import com.moon.enums.ArraysEnum;
-import com.moon.lang.ArrayUtil;
 import com.moon.lang.CharUtil;
 import com.moon.util.function.IntBiFunction;
 
@@ -125,7 +124,7 @@ public class StringSupport {
             currIndex = CharUtil.indexOf(template, marks, currIndex);
             if (currIndex < 0) {
                 currIndex = tempLen;
-                chars = ArrayUtil.copyOfRangeTo(template, lastIndex, currIndex, chars, charIndex);
+                chars = copyOfRangeTo(template, lastIndex, tempLen, chars, charIndex, chars.length, true);
                 charIndex = currIndex - lastIndex + charIndex;
 
                 for (; valueIndex < valuesLen; valueIndex++) {
@@ -135,7 +134,7 @@ public class StringSupport {
                 }
                 return function.apply(charIndex, chars);
             } else {
-                chars = ArrayUtil.copyOfRangeTo(template, lastIndex, currIndex, chars, charIndex);
+                chars = copyOfRangeTo(template, lastIndex, tempLen, chars, charIndex, chars.length, true);
                 charIndex = currIndex - lastIndex + charIndex;
 
                 temp = String.valueOf(values[valueIndex++]);
@@ -146,8 +145,36 @@ public class StringSupport {
                 lastIndex = currIndex;
             }
         } while (valueIndex < valuesLen);
-        chars = ArrayUtil.copyOfRangeTo(template, lastIndex, tempLen, chars, charIndex);
+        chars = copyOfRangeTo(template, lastIndex, tempLen, chars, charIndex, chars.length, true);
         return function.apply(tempLen - lastIndex + charIndex, chars);
+    }
+
+    private static char[] copyOfRangeTo(
+        Object chars,
+        int fromIndex,
+        int toIndex,
+        char[] to,
+        int distPos,
+        int toLen,
+        boolean newIfNeed) {
+
+        if (newIfNeed) {
+            to = to == null ? new char[0] : to;
+        }
+
+        final int l1 = toIndex - fromIndex, l3 = l1 + distPos;
+        if (l3 > toLen) {
+            if (newIfNeed) {
+                char[] now = new char[l3];
+                System.arraycopy(to, 0, now, 0, distPos);
+                to = now;
+            } else {
+                String msg = "new length: " + l3 + ", current length: " + toLen;
+                throw new ArrayIndexOutOfBoundsException(msg);
+            }
+        }
+        System.arraycopy(chars, fromIndex, to, distPos, l1);
+        return to;
     }
 
     public static <T> T format0(IntBiFunction<char[], T> function, String template, Object... values) {

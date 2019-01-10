@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.lang.String.format;
 
 /**
  * @author benshaoye
@@ -22,35 +23,110 @@ public final class LongUtil {
         if (value == expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected: %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected: %d, Actual: %d", expect, value));
+    }
+
+    public static long requireEq(long value, long expect, String errorMsg) {
+        if (value == expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static long requireGt(long value, long expect) {
         if (value > expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected great than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected great than %d, Actual: %d", expect, value));
+    }
+
+    public static long requireGt(long value, long expect, String errorMsg) {
+        if (value > expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static long requireLt(long value, long expect) {
         if (value < expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected less than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected less than %d, Actual: %d", expect, value));
+    }
+
+    public static long requireLt(long value, long expect, String errorMsg) {
+        if (value < expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static long requireGtOrEq(long value, long expect) {
         if (value >= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not less than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected not less than %d, Actual: %d", expect, value));
+    }
+
+    public static long requireGtOrEq(long value, long expect, String errorMsg) {
+        if (value >= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
     }
 
     public static long requireLtOrEq(long value, long expect) {
         if (value <= expect) {
             return value;
         }
-        throw new NumberException(String.format("Expected not great than %d, Actual: %d", expect, value));
+        throw new NumberException(format("Expected not great than %d, Actual: %d", expect, value));
+    }
+
+    public static long requireLtOrEq(long value, long expect, String errorMsg) {
+        if (value <= expect) {
+            return value;
+        }
+        throw new NumberException(errorMsg);
+    }
+
+    /**
+     * 要求期望值在指定范围里，不包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static long requireInRange(long value, long min, long max) {
+        requireGt(value, min);
+        requireLt(value, max);
+        return value;
+    }
+
+    public static long requireInRange(long value, long min, long max, String errorMsg) {
+        requireGt(value, min, errorMsg);
+        requireLt(value, max, errorMsg);
+        return value;
+    }
+
+    /**
+     * 要求期望值在指定范围里，包含范围边界
+     *
+     * @param value
+     * @param min
+     * @param max
+     * @return
+     */
+    public static long requireBetween(long value, long min, long max) {
+        requireGtOrEq(value, min);
+        requireLtOrEq(value, max);
+        return value;
+    }
+
+    public static long requireBetween(long value, long min, long max, String errorMsg) {
+        requireGtOrEq(value, min, errorMsg);
+        requireLtOrEq(value, max, errorMsg);
+        return value;
     }
 
     public static boolean isLong(Object o) {
@@ -170,7 +246,7 @@ public final class LongUtil {
             Object firstItem = SupportUtil.onlyOneItemOrSize(object);
             return toLong(firstItem);
         } catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Can not cast to int of: %s", String.valueOf(object)), e);
+            throw new IllegalArgumentException(format("Can not cast to int of: %s", String.valueOf(object)), e);
         }
     }
 

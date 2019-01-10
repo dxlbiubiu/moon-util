@@ -44,6 +44,16 @@ public final class ListUtil extends CollectUtil {
         return addAll(ofArrayList(values.length), values);
     }
 
+    public static <T> ArrayList<T> ofArrayList(Collection<T> collect) {
+        return collect == null ? new ArrayList<>() : new ArrayList<>(collect);
+    }
+
+    public static <T> ArrayList<T> ofArrayList(Iterable<T> iterable) {
+        return iterable == null ? new ArrayList<>()
+            : (iterable instanceof Collection ? new ArrayList((Collection) iterable)
+            : addAll(new ArrayList<>(), iterable));
+    }
+
     /*
      * ---------------------------------------------------------------------------------
      * of linked valuesList
@@ -68,6 +78,17 @@ public final class ListUtil extends CollectUtil {
 
     public static <T> LinkedList<T> ofLinkedList(T... values) {
         return addAll(ofLinkedList(), values);
+    }
+
+
+    public static <T> LinkedList<T> ofLinkedList(Collection<T> collect) {
+        return collect == null ? new LinkedList<>() : new LinkedList<>(collect);
+    }
+
+    public static <T> LinkedList<T> ofLinkedList(Iterable<T> iterable) {
+        return iterable == null ? new LinkedList<>()
+            : (iterable instanceof Collection ? new LinkedList((Collection) iterable)
+            : addAll(new LinkedList<>(), iterable));
     }
 
     /*

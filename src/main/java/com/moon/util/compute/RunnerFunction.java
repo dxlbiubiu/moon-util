@@ -11,7 +11,7 @@ package com.moon.util.compute;
  * <p>
  * 所以此情况下可能存在返回值不符合预期，甚至抛出异常
  * <p>
- * 故，自定义函数的命名空间建议全部小写，参考内置自定义函数{@link com.moon.util.compute.core.Inners}
+ * 故，自定义函数的命名空间建议全部小写
  *
  * @author benshaoye
  */

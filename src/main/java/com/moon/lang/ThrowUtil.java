@@ -17,28 +17,23 @@ public final class ThrowUtil {
     }
 
     public static <T> T throwRuntime(Object reason) {
+        if (reason == null) {
+            throw new NullPointerException();
+        }
         if (reason instanceof RuntimeException) {
             throw (RuntimeException) reason;
-        } else if (reason instanceof Throwable) {
-            throw new IllegalArgumentException((Throwable) reason);
-        } else {
-            throw new IllegalArgumentException(String.valueOf(reason));
         }
+        if (reason instanceof Error) {
+            throw (Error) reason;
+        }
+        if (reason instanceof Throwable) {
+            throw new WrappedException((Throwable) reason);
+        }
+        throw new WrappedException(String.valueOf(reason));
     }
 
     public static <T> T wrapAndThrow(Throwable e) {
-        if (e == null) {
-            throw new NullPointerException();
-        }
-        if (e instanceof RuntimeException) {
-            throw (RuntimeException) e;
-        } else if (e instanceof Throwable) {
-            throw new WrappedException(e);
-        }
-        /*
-         * 实际上这一步是不会执行的
-         */
-        return null;
+        return throwRuntime(e);
     }
 
     public static <T> T wrapAndThrow(Throwable e, String msg) {
@@ -58,7 +53,7 @@ public final class ThrowUtil {
         if (type.isInstance(t)) {
             return null;
         }
-        throw new WrappedException(t);
+        return throwRuntime(t);
     }
 
     /**
@@ -76,7 +71,7 @@ public final class ThrowUtil {
                 return null;
             }
         }
-        throw new WrappedException(t);
+        return throwRuntime(t);
     }
 
     /**
@@ -99,7 +94,7 @@ public final class ThrowUtil {
                 }
             }
         }
-        throw new WrappedException(t);
+        return throwRuntime(t);
     }
 
     /**
@@ -123,7 +118,7 @@ public final class ThrowUtil {
                 }
             }
         }
-        throw new WrappedException(t);
+        return throwRuntime(t);
     }
 
     /**

@@ -24,7 +24,7 @@ public final class ThreadPoolSupport {
     public final static void set(ThreadPoolExecutor executor) {
         Objects.requireNonNull(executor);
         FinalAccessor<ThreadPoolExecutor> oldExecutor = FinalAccessor.of();
-        synchronized (ThreadPool.SINGLETON) {
+        synchronized (ThreadPool.class) {
             oldExecutor.set(ThreadPool.SINGLETON);
             ThreadPool.SINGLETON = executor;
         }
