@@ -11,6 +11,8 @@ import java.util.function.Supplier;
 
 /**
  * 本地线程可见的 Map
+ * <p>
+ * 依赖{@link ThreadLocal}实现的当前线程 Map
  *
  * @author benshaoye
  */

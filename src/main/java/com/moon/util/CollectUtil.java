@@ -136,7 +136,7 @@ public class CollectUtil extends BaseCollectUtil {
      * ---------------------------------------------------------------------------------
      */
 
-    public final static <T, O, C1 extends Collection<T>> Collection<O> map(C1 src, Function<T, O> function) {
+    public final static <T, O, C1 extends Collection<T>> Collection<O> map(C1 src, Function<? super T, O> function) {
         return IteratorUtil.map(src, function);
     }
 

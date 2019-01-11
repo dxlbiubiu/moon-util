@@ -8,6 +8,7 @@ import static com.moon.util.TypeUtil.cast;
 /**
  * @author benshaoye
  */
+@Deprecated
 public class PropertiesGroup extends HashMap<String, Object> {
 
     private final PropertiesGroup all;

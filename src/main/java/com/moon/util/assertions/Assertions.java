@@ -1,6 +1,8 @@
 package com.moon.util.assertions;
 
 /**
+ * 不推荐使用，测试有很多现成的框架，而且以后这个模块（assertions）很可能移除
+ *
  * @author benshaoye
  */
 public interface Assertions extends

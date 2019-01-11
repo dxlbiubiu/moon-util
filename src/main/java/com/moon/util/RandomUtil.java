@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * 随机数工具，线程安全
+ *
  * @author benshaoye
  */
 public final class RandomUtil {
@@ -13,7 +15,7 @@ public final class RandomUtil {
         ThrowUtil.noInstanceError();
     }
 
-    private static ThreadLocalRandom random = current();
+    private volatile static ThreadLocalRandom random = current();
 
     public final static ThreadLocalRandom get() {
         ThreadLocalRandom r = random;

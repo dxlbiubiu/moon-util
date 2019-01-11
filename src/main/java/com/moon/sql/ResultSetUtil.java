@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static com.moon.lang.ThrowUtil.wrapAndThrow;
 
 /**
  * @author benshaoye
@@ -37,7 +38,7 @@ public final class ResultSetUtil {
             }
             return ret;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -66,7 +67,7 @@ public final class ResultSetUtil {
             }
             return ret;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -85,7 +86,7 @@ public final class ResultSetUtil {
             }
             return ret;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -108,7 +109,7 @@ public final class ResultSetUtil {
             }
             return ret;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -162,7 +163,7 @@ public final class ResultSetUtil {
             }
             return ret;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -186,7 +187,7 @@ public final class ResultSetUtil {
             }
             return arr;
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -200,7 +201,7 @@ public final class ResultSetUtil {
         try {
             return set.getMetaData().getColumnCount();
         } catch (Exception e) {
-            return ThrowUtil.wrapAndThrow(e);
+            return wrapAndThrow(e);
         }
     }
 
@@ -209,7 +210,7 @@ public final class ResultSetUtil {
             try {
                 desc.setValue(bean, set.getObject(desc.getName()));
             } catch (SQLException e) {
-                ThrowUtil.wrapAndThrow(e);
+                wrapAndThrow(e);
             }
         };
     }

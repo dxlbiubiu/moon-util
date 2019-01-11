@@ -1,5 +1,6 @@
 package com.moon.enums;
 
+import com.moon.lang.ObjectUtil;
 import com.moon.util.FilterUtil;
 
 import java.util.*;
@@ -298,7 +299,7 @@ public enum Collects implements Supplier<Collection>,
      * - {@link HashMap#put(Object, Object)}
      * - {@link HashSet#add(Object)}
      * <p>
-     * - 实际上 HashSet 自身也能实现一个有序的集合{@link HashSet#HashSet(int, float, boolean)}
+     * - 实际上 HashSet 自身也能实现一个有序的集合{@link HashSet#(int, float, boolean)}
      * > 这个构造器中的第三个参数 dummy，并没有任何实际作用，
      * &nbsp;  只是用来标记通过此构造方法得到的是一个用{@link LinkedHashMap}维护数据而不是{@link HashMap}
      * &nbsp;  但这个构造器是用 default 修饰的，无法被外界调用，
@@ -769,6 +770,21 @@ public enum Collects implements Supplier<Collection>,
         if (collect == null && object != null) {
             return FilterUtil.nullableFirst(Collects.values(),
                 item -> item.type().isInstance(object));
+        }
+        return collect;
+    }
+
+    /**
+     * 可以自动推断
+     *
+     * @param object
+     * @return
+     */
+    public static Collects getAsSuperOrDeduce(Object object, Collects type) {
+        Collects collect = getAsSuper(object);
+        if (collect == null && object != null) {
+            return ObjectUtil.defaultIfNull(FilterUtil.nullableFirst(Collects.values(),
+                item -> item.type().isInstance(object)), type);
         }
         return collect;
     }

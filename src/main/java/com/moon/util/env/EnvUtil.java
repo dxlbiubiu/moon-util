@@ -8,6 +8,10 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
  * 通过一个系统参数 moon.production 控制
  * <p>
  * 默认是生产模式，设置 -Dmoon.production=false 后开启开发模式
+ * <p>
+ * 写这个工具的起因是在开发中，登录时通常会有验证码验证，但是开发就没必要验证了，节省时间精力;
+ * 又如：开发和生产有些配置文件和参数是不同的，spring 本身是会支持，但是难免还是会有例外的场景
+ * 有时候开发和生产使用的业务逻辑都是不一样（怎么会有这情况？我怎么知道，但是就是遇到了）
  *
  * @author benshaoye
  */

@@ -11,7 +11,6 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 public final class ExcelUtil extends RendererUtil {
     private ExcelUtil() {
         super();
-        noInstanceError();
     }
 
     public final static Workbook render(Object... data) {

@@ -1,396 +1,308 @@
 package com.moon.util.validator;
 
 import com.moon.util.CollectUtil;
+import com.moon.util.FilterUtil;
 import com.moon.util.GroupUtil;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
  * 集合验证器：
- * 首先请参考{@link Validator}文档。
+ * 首先请参考{@link Validator}文档。CollectValidator 继承了 Validator；具备基本的对象验证功能。
  * <p>
- * 集合验证器可用于验证一个集合里面的项应该满足什么样的约束，
- * 比如，
- * 符合某些条件的项最多只能有多少项或最少只能有多少项目；
- * 必须包含些什么项，或不能包含什么项等。
+ * 前置条件：{@link #condition(Predicate)}，以{@link #end()}结束
  * <p>
- * 为什么会想到写这个工具呢？
- * 在一次验证家人关系的业务中，企业的员工所关联的家属都会分配自己的角色，
- * 如：
- * 配偶要求只能有一位{@link #requireAtMostOne(Predicate)}
- * 同一个人不能购买相同产品{@link #requireOnGrouped(Function, Consumer)}
+ * 分组验证：{@link #groupBy(Function)}，先按条件分组然后分别验证，以{@link #end()}结束
+ * <p>
+ * 过滤验证：{@link #filter(Predicate)}，对过滤后的集合进行验证，以{@link #end()}结束
  *
  * @author benshaoye
  */
-public class CollectValidator<C extends Collection<E>, E> extends Validator<C> {
+public class CollectValidator<C extends Collection<E>, E>
+    extends BaseValidator<C, CollectValidator<C, E>, CollectValidator<C, E>>
+    implements ICollectValidator<C, E, CollectValidator<C, E>> {
 
-    public CollectValidator(C collect) {
-        super(collect);
+    public CollectValidator(C value) {
+        this(value, null, SEPARATOR, false);
     }
 
-    CollectValidator(C collect, CollectValidator<C, E> prevValidator,
-                     List<String> messages, String separator, boolean immediate) {
-        super(collect, prevValidator, messages, separator, immediate);
+    CollectValidator(C value, List<String> messages, String separator, boolean immediate) {
+        super(value, messages, separator, immediate);
     }
 
-    public static <C extends Collection<E>, E> CollectValidator<C, E> of(C collect) {
+    public final static <C extends Collection<E>, E> CollectValidator<C, E> of(C collect) {
         return new CollectValidator<>(collect);
     }
 
     @Override
-    public CollectValidator<C, E> transform(Function<C, C> transformer) {
-        return CollectValidator.of(transformer.apply(value));
+    public CollectValidator<C, E> defaultIfNull(Supplier<C> defaultSupplier) {
+        return value == null ? new CollectValidator<>(defaultSupplier.get()) : this;
     }
 
-    @Override
-    public CollectValidator<C, E> defaultIfNull(C defaultValue) {
-        return value == null ? CollectValidator.of(defaultValue) : this;
-    }
-
-    @Override
-    public CollectValidator<C, E> defaultIfNull(Supplier<C> supplier) {
-        return value == null ? CollectValidator.of(supplier.get()) : this;
-    }
-
-    @Override
-    public CollectValidator<C, E> preset(Consumer<C> consumer) {
-        super.preset(consumer);
-        return this;
-    }
-
-    @Override
-    public CollectValidator<C, E> setImmediate(boolean immediate) {
-        super.setImmediate(immediate);
-        return this;
-    }
-
-    @Override
-    public CollectValidator<C, E> setSeparator(String separator) {
-        super.setSeparator(separator);
-        return this;
-    }
-
-    @Override
-    public CollectValidator<C, E> condition(Predicate<C> tester) {
-        return tester.test(value)
-            ? new CollectValidator<>(value, this, messages, separator, immediate)
-            : new NonValidator<>(value, this, messages, separator, immediate);
-    }
-
-    static final class NonValidator<C extends Collection<E>, E> extends CollectValidator<C, E> {
-        NonValidator(C c, CollectValidator<C, E> v, List<String> ms, String s, boolean i) {
-            super(c, v, ms, s, i);
-        }
-
-        @Override
-        public CollectValidator<C, E> requireNonNull() {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireNonNull(String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> require(Predicate<C> t, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireEvery(Predicate<E> t) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireEvery(Predicate<E> t, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtLeastOne(Predicate<E> t) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtLeastOne(Predicate<E> t, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtLeastCountOf(Predicate<E> t, int c) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtLeastCountOf(Predicate<E> t, int c, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtMostOne(Predicate<E> t) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtMostOne(Predicate<E> t, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtMostCountOf(Predicate<E> t, int c) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireAtMostCountOf(Predicate<E> t, int c, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireNone(Predicate<E> t) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireNone(Predicate<E> t, String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireUnique() {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireUnique(String m) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireCountOf(Predicate<E> t, int c) {
-            return this;
-        }
-
-        @Override
-        public CollectValidator<C, E> requireCountOf(Predicate<E> t, int c, String m) {
-            return this;
-        }
-
-        @Override
-        public <K> CollectValidator<C, E> requireOnGrouped(Function<? super E, ? extends K> g, Consumer<CollectValidator<C, E>> c) {
-            return this;
-        }
-    }
-
-    @Override
-    public CollectValidator<C, E> end() {
-        return (CollectValidator<C, E>) super.end();
-    }
-
-    @Override
-    public CollectValidator<C, E> requireNonNull() {
-        super.requireNonNull();
-        return this;
-    }
-
-    @Override
-    public CollectValidator<C, E> requireNonNull(String message) {
-        super.requireNonNull(message);
-        return this;
-    }
-
-    @Override
-    public CollectValidator<C, E> require(Predicate<C> checker, String message) {
-        super.require(checker, message);
-        return this;
-    }
-
-    /**
-     * 根据条件分组，分组后的每一个列表要单独验证
-     *
-     * @param grouper
-     * @param consumer
-     * @param <K>
-     * @return
+    /*
+     * -----------------------------------------------------
+     * requires
+     * -----------------------------------------------------
      */
-    public <K> CollectValidator<C, E> requireOnGrouped(
-        Function<? super E, ? extends K> grouper, Consumer<CollectValidator<C, E>> consumer
-    ) {
-        final List<String> messages = this.ensureMessages();
-        GroupUtil.groupBy(value, grouper).forEach((key, item) -> consumer.accept(
-            new CollectValidator(item, this, messages, separator, immediate)
-        ));
-        return this;
+
+    @Override
+    public CollectValidator<C, E> requireEvery(Predicate<? super E> tester, String message) {
+        return requireAtLeastCountOf(tester, value.size(), message);
     }
 
-    /**
-     * 要求没有重复项
-     *
-     * @return
-     */
-    public CollectValidator<C, E> requireUnique() {
-        return requireUnique(DEFAULT_MSG);
-    }
-
-    public CollectValidator<C, E> requireUnique(String message) {
-        if (new HashSet<>(value).size() < value.size()) {
-            createMsg(message);
+    @Override
+    public CollectValidator<C, E> requireAtLeastCountOf(Predicate<? super E> tester, int count, String message) {
+        int amount = 0;
+        for (E item : value) {
+            if (tester.test(item) && (++amount >= count)) {
+                return this;
+            }
         }
-        return this;
+        return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
     }
 
-    /**
-     * 要求有指定数目的项匹配
-     *
-     * @param tester
-     * @param count
-     * @return
+    @Override
+    public CollectValidator<C, E> requireAtMostCountOf(Predicate<? super E> tester, int count, String message) {
+        int amount = 0;
+        for (E item : value) {
+            if (tester.test(item) && (++amount > count)) {
+                return createMsg(formatMsg(message, count, QuantityType.AtMost));
+            }
+        }
+        return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
+    }
+
+    /*
+     * -----------------------------------------------------
+     * transform
+     * -----------------------------------------------------
      */
-    public CollectValidator<C, E> requireCountOf(Predicate<E> tester, int count) {
-        return this.requireCountOf(tester, count, DEFAULT_MSG);
+
+    public <O> CollectValidator<Collection<O>, O> transform(Function<? super E, O> transformer) {
+        CollectValidator<Collection<O>, O> v = CollectValidator.of(CollectUtil.map(value, transformer));
+        v.validator = this;
+        return v;
     }
 
-    public CollectValidator<C, E> requireCountOf(Predicate<E> tester, int count, String message) {
-        int i = 0;
-        if (value != null) {
-            for (E item : value) {
-                if (tester.test(item) && (++i > count)) {
-                    createMsg(message);
+    /*
+     * -----------------------------------------------------
+     * group
+     * -----------------------------------------------------
+     */
+
+    public <K> GroupedValidator<Map<K, Collection<E>>, K> groupBy(Function<? super E, ? extends K> grouper) {
+        return new GroupedValidator<>(GroupUtil.groupBy(value, grouper),
+            ensureMessages(), getSeparator(), isImmediate());
+    }
+
+    public class GroupedValidator<M extends Map<K, Collection<E>>, K>
+        extends BaseValidator<M, GroupedValidator<M, K>, CollectValidator<C, E>>
+        implements IKeyedValidator<M, Collection<E>, K, E, GroupedValidator<M, K>> {
+
+        GroupedValidator(M value, List<String> messages, String separator, boolean immediate) {
+            super(value, messages, separator, immediate);
+        }
+
+        @Override
+        GroupedValidator<M, K> defaultIfNull(Supplier<M> defaultSupplier) {
+            return value == null ? new GroupedValidator<>(defaultSupplier.get(),
+                ensureMessages(), getSeparator(), isImmediate()) : this;
+        }
+
+        @Override
+        public GroupedValidator<M, K> requireEvery(
+            BiPredicate<? super K, CollectValidator<Collection<E>, E>> tester, String message) {
+            return requireAtLeastCountOf(tester, value.size(), message);
+        }
+
+        @Override
+        public GroupedValidator<M, K> requireAtLeastCountOf(
+            BiPredicate<? super K, CollectValidator<Collection<E>, E>> tester, final int count, String message
+        ) {
+            int amount = 0;
+            for (Map.Entry<K, Collection<E>> item : value.entrySet()) {
+                if (tester.test(item.getKey(), new CollectValidator<>(
+                    item.getValue(), CollectValidator.this.ensureMessages(),
+                    CollectValidator.this.getSeparator(), CollectValidator.this.isImmediate()
+                )) && (++amount >= count)) {
                     return this;
                 }
             }
+            return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
         }
-        if (i < count) {
-            createMsg(message);
+
+        @Override
+        public GroupedValidator<M, K> requireAtMostCountOf(
+            BiPredicate<? super K, CollectValidator<Collection<E>, E>> tester, final int count, String message
+        ) {
+            int amount = 0;
+            for (Map.Entry<K, Collection<E>> item : value.entrySet()) {
+                if (tester.test(item.getKey(), new CollectValidator<>(
+                    item.getValue(), CollectValidator.this.ensureMessages(),
+                    CollectValidator.this.getSeparator(), CollectValidator.this.isImmediate()
+                )) && (++amount > count)) {
+                    return createMsg(formatMsg(message, count, QuantityType.AtMost));
+                }
+            }
+            return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
         }
-        return this;
+
+        @Override
+        public CollectValidator<C, E> end() {
+            return CollectValidator.this;
+        }
     }
 
-    /**
-     * 要求集合内每一项均符合条件
-     *
-     * @param tester
-     * @return
+    /*
+     * -----------------------------------------------------
+     * filter
+     * -----------------------------------------------------
      */
-    public CollectValidator<C, E> requireEvery(Predicate<E> tester) {
-        return requireEvery(tester, DEFAULT_MSG);
+
+    public <C1 extends Collection<E>> FilterCollectValidator<C1, E> filter(Predicate<? super E> tester) {
+        ArrayList<E> filtered = FilterUtil.filter(value, tester, new ArrayList<>());
+        return new FilterCollectValidator(filtered, ensureMessages(), getSeparator(), isImmediate());
     }
 
-    public CollectValidator<C, E> requireEvery(Predicate<E> tester, String message) {
-        return requireAtLeastCountOf(tester, CollectUtil.size(value), message);
-    }
+    public class FilterCollectValidator<C1 extends Collection<E1>, E1>
+        extends BaseValidator<C1, FilterCollectValidator<C1, E1>, CollectValidator<C, E>>
+        implements ICollectValidator<C1, E1, FilterCollectValidator<C1, E1>> {
 
-    /**
-     * 要求集合内至少有一项符合条件
-     *
-     * @param tester
-     * @return
-     */
-    public CollectValidator<C, E> requireAtLeastOne(Predicate<E> tester) {
-        return requireAtLeastCountOf(tester, 1);
-    }
+        private FilterCollectValidator(C1 value, List<String> messages, String separator, boolean immediate) {
+            super(value, messages, separator, immediate);
+        }
 
-    public CollectValidator<C, E> requireAtLeastOne(Predicate<E> tester, String message) {
-        return requireAtLeastCountOf(tester, 1, message);
-    }
+        @Override
+        FilterCollectValidator<C1, E1> defaultIfNull(Supplier<C1> defaultSupplier) {
+            return value == null ? new FilterCollectValidator<>(defaultSupplier.get(),
+                ensureMessages(), getSeparator(), isImmediate()) : this;
+        }
 
-    /**
-     * 要求集合内至少有指定项符合条件
-     *
-     * @param tester
-     * @param count
-     * @return
-     */
-    public CollectValidator<C, E> requireAtLeastCountOf(Predicate<E> tester, int count) {
-        return requireAtLeastCountOf(tester, count, DEFAULT_MSG);
-    }
+        @Override
+        public FilterCollectValidator<C1, E1> requireEvery(
+            Predicate<? super E1> tester, String message) {
+            return requireAtLeastCountOf(tester, value.size(), message);
+        }
 
-    public CollectValidator<C, E> requireAtLeastCountOf(Predicate<E> tester, int count, String message) {
-        int i = 0;
-        if (value != null) {
-            for (E item : value) {
-                if (tester.test(item) && (++i >= count)) {
+        @Override
+        public FilterCollectValidator<C1, E1> requireAtLeastCountOf(
+            Predicate<? super E1> tester, int count, String message) {
+            int amount = 0;
+            for (E1 item : value) {
+                if (tester.test(item) && (++amount >= count)) {
                     return this;
                 }
             }
+            return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
         }
-        if (i < count) {
-            createMsg(formatMsg(message, count, QuantityType.AtLeast));
-        }
-        return this;
-    }
 
-    /**
-     * 要求集合内最多有一项符合条件
-     *
-     * @param tester
-     * @return
-     */
-    public CollectValidator<C, E> requireAtMostOne(Predicate<E> tester) {
-        return requireAtMostCountOf(tester, 1);
-    }
-
-    public CollectValidator<C, E> requireAtMostOne(Predicate<E> tester, String message) {
-        return requireAtMostCountOf(tester, 1, message);
-    }
-
-    /**
-     * 要求集合内最多有指定项符合条件
-     *
-     * @param tester
-     * @param count
-     * @return
-     */
-    public CollectValidator<C, E> requireAtMostCountOf(Predicate<E> tester, int count) {
-        return requireAtMostCountOf(tester, count, DEFAULT_MSG);
-    }
-
-    public CollectValidator<C, E> requireAtMostCountOf(Predicate<E> tester, int count, String message) {
-        int i = 0;
-        if (value != null) {
-            for (E item : value) {
-                if (tester.test(item) && (++i > count)) {
-                    createMsg(formatMsg(message, count, QuantityType.AtMost));
-                    return this;
+        @Override
+        public FilterCollectValidator<C1, E1> requireAtMostCountOf(
+            Predicate<? super E1> tester, int count, String message) {
+            int amount = 0;
+            for (E1 item : value) {
+                if (tester.test(item) && (++amount > count)) {
+                    return createMsg(formatMsg(message, count, QuantityType.AtMost));
                 }
             }
+            return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
         }
-        if (i > count) {
-            createMsg(formatMsg(message, count, QuantityType.AtMost));
+
+        @Override
+        public CollectValidator<C, E> end() {
+            return CollectValidator.this;
         }
-        return this;
     }
 
-    /**
-     * 要求集合内任何一项均不能符合条件
-     *
-     * @param tester
-     * @return
+    /*
+     * -----------------------------------------------------
+     * condition
+     * -----------------------------------------------------
      */
-    public CollectValidator<C, E> requireNone(Predicate<E> tester) {
-        return requireAtMostCountOf(tester, 0);
+
+    public final CollectValidator<C, E> condition(Predicate<C> tester) {
+        return tester.test(value) ? this : new NonValidator(value);
     }
 
-    public CollectValidator<C, E> requireNone(Predicate<E> tester, String message) {
-        return requireAtMostCountOf(tester, 0, message);
+    private final class NonValidator extends CollectValidator<C, E> {
+        NonValidator(C value) {
+            super(value, null, null, false);
+        }
+
+        @Override
+        public <K> GroupedValidator<Map<K, Collection<E>>, K> groupBy(Function<? super E, ? extends K> grouper) {
+            return new NonGroupedValidator<>(Collections.EMPTY_MAP);
+        }
+
+        @Override
+        public <C1 extends Collection<E>> FilterCollectValidator<C1, E> filter(Predicate<? super E> tester) {
+            return new NonFilterCollectValidator(value instanceof List ? Collections.EMPTY_LIST : Collections.EMPTY_SET);
+        }
+
+        @Override
+        public CollectValidator<C, E> requireEvery(Predicate t, String m) {
+            return this;
+        }
+
+        @Override
+        public CollectValidator<C, E> requireAtLeastCountOf(Predicate t, int c, String m) {
+            return this;
+        }
+
+        @Override
+        public CollectValidator<C, E> requireAtMostCountOf(Predicate t, int c, String m) {
+            return this;
+        }
+
+        @Override
+        public CollectValidator<C, E> end() {
+            return CollectValidator.this;
+        }
     }
 
-    @Override
-    public CollectValidator<C, E> ifValid(Consumer<C> consumer) {
-        super.ifValid(consumer);
-        return this;
+    private final class NonGroupedValidator<M extends Map<K, Collection<E>>, K> extends GroupedValidator<M, K> {
+        NonGroupedValidator(M value) {
+            super(value, null, null, false);
+        }
+
+        @Override
+        public GroupedValidator<M, K> requireEvery(BiPredicate t, String m) {
+            return this;
+        }
+
+        @Override
+        public GroupedValidator<M, K> requireAtLeastCountOf(BiPredicate t, final int c, String m) {
+            return this;
+        }
+
+        @Override
+        public GroupedValidator<M, K> requireAtMostCountOf(BiPredicate t, final int c, String m) {
+            return this;
+        }
     }
 
-    @Override
-    public CollectValidator<C, E> ifInvalid(Consumer<C> consumer) {
-        super.ifInvalid(consumer);
-        return this;
+    public final class NonFilterCollectValidator<C1 extends Collection<E1>, E1> extends FilterCollectValidator<C1, E1> {
+        private NonFilterCollectValidator(C1 value) {
+            super(value, null, null, false);
+        }
+
+        @Override
+        public FilterCollectValidator<C1, E1> requireEvery(Predicate t, String m) {
+            return this;
+        }
+
+        @Override
+        public FilterCollectValidator<C1, E1> requireAtLeastCountOf(Predicate t, int c, String m) {
+            return this;
+        }
+
+        @Override
+        public FilterCollectValidator<C1, E1> requireAtMostCountOf(Predicate t, int c, String m) {
+            return this;
+        }
     }
 }

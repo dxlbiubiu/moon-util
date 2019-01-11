@@ -21,18 +21,18 @@ class ValidatorTestTest {
         assertions.assertThrows(IllegalArgumentException.class,
             () -> validator.get(IllegalArgumentException::new));
 
-        Employee employee = Validator.of(new Employee())
+        Validator<Employee> employeeValidator = Validator.of(new Employee());
+        Employee employee = employeeValidator
             .setImmediate(false)
-            .condition(emp -> emp == null)
             .requireNonNull("员工不能为空")
             .require(item -> item.age > 18, "未成年人不行")
-            .end()
             .require(item -> item.id != null, "ID 不能为空")
             .require(item -> item.name != null, "name 不能为空")
             .require(item -> item.account != null, "账号不能为空")
             .require(item -> item.address != null, "地址不能为空")
             .nullIfInvalid();
         System.out.println(employee);
+        employeeValidator.get();
 
         // new 一个对象根本没有时间成本嘛...
         // new Integer.MAX_VALUE 个对象，花费时间 0 ms，完全可忽略

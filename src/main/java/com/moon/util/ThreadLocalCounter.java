@@ -4,6 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 本地线程计数器
+ * <p>
+ * (当时是遇到什么需求呢？忘了)这个类的目的是在当前线程实现一个计数
  *
  * @author benshaoye
  */

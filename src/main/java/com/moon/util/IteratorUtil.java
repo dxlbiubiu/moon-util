@@ -973,30 +973,30 @@ public final class IteratorUtil {
      * ----------------------------------------------------------------------------
      */
 
-    public static <E, T, L extends List<E>> List<T> map(L list, Function<E, T> function) {
-        final IntFunction supplier = Collects.getOrDefault(list, Collects.ArrayList);
+    public static <E, T, L extends List<E>> List<T> map(L list, Function<? super E, T> function) {
+        final IntFunction supplier = Collects.getAsSuperOrDeduce(list, Collects.ArrayList);
         return (List) mapTo(list, function, supplier);
     }
 
-    public static <E, T, S extends Set<E>> Set<T> map(S set, Function<E, T> function) {
-        final IntFunction supplier = Collects.getOrDefault(set, Collects.HashSet);
+    public static <E, T, S extends Set<E>> Set<T> map(S set, Function<? super E, T> function) {
+        final IntFunction supplier = Collects.getAsSuperOrDeduce(set, Collects.HashSet);
         return (Set) mapTo(set, function, supplier);
     }
 
-    public static <E, T, C extends Collection<E>> Collection<T> map(C collect, Function<E, T> function) {
-        final IntFunction supplier = Collects.getOrDefault(collect, Collects.HashSet);
+    public static <E, T, C extends Collection<E>> Collection<T> map(C collect, Function<? super E, T> function) {
+        final IntFunction supplier = Collects.getAsSuperOrDeduce(collect, Collects.ArrayList);
         return mapTo(collect, function, supplier);
     }
 
     public static <E, T, C extends Collection<E>, CR extends Collection<T>>
 
-    CR mapTo(C collect, Function<E, T> function, IntFunction<CR> containerSupplier) {
+    CR mapTo(C collect, Function<? super E, T> function, IntFunction<CR> containerSupplier) {
         return mapTo(collect, function, containerSupplier.apply(collect == null ? 0 : collect.size()));
     }
 
     public static <E, T, C extends Collection<E>, CR extends Collection<T>>
 
-    CR mapTo(C collect, Function<E, T> function, CR container) {
+    CR mapTo(C collect, Function<? super E, T> function, CR container) {
         if (collect != null) {
             for (E item : collect) {
                 container.add(function.apply(item));

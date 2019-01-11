@@ -6,6 +6,7 @@ import com.moon.util.IteratorUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -31,7 +32,7 @@ public final class PropertiesSupport {
         }));
     }
 
-    public static final HashMap<String, String> getOrReload(String path) {
+    public static final Map<String, String> getOrReload(String path) {
         HashMap<String, String> hashMap = CACHE.get(path);
         if (hashMap == null) {
             synchronized (PropertiesSupport.class) {
@@ -40,10 +41,10 @@ public final class PropertiesSupport {
                 }
             }
         }
-        return hashMap;
+        return Collections.unmodifiableMap(hashMap);
     }
 
-    public static final HashMap<String, String> getOrNull(String path) {
+    public static final Map<String, String> getOrNull(String path) {
         try {
             return getOrReload(path);
         } catch (Throwable t) {

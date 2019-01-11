@@ -1,231 +1,35 @@
 package com.moon.util.validator;
 
-import com.moon.enums.Const;
-import com.moon.lang.JoinerUtil;
-import com.moon.lang.ObjectUtil;
-import com.moon.lang.StringUtil;
-import com.moon.util.CollectUtil;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
- * 对象多条件验证器
+ * 对象多条件验证器：
  * <p>
- * 业务中有时候会需要对一个对象进行多字段、多条件验证，
- * 然后统一返回验证异常或通过验证，而不是验证一个不通过条件便立即返回对应异常
+ * 有时候在验证对象时，需要统一验证后，统一返回，而不是某个条件不符合便立即返回，
+ * 此工具便是针对这样的场景设计的。
  * <p>
- * 此类便是针对这样的场景设计的，通过{@link #require(Predicate, String)}方法添加验证规则和错误信息
+ * 非空：{@link #requireNonNull(String)}
  * <p>
- * {@link #get()}方法会在验证通过的时候返回这个对象，否则抛出没有通过验证的异常，也可以自定义异常信息
- * <p>
- * 此外，此类还设置了前置条件验证{@link #condition(Predicate)}，介于前置条件和{@link #end()}之间
- * 的验证规则只在前置条件成立时才执行验证，否则将跳过中间的所有验证，
- * 另外，一个前置条件必须要{@link #end()}结束，虽然在某些“取巧”的情况下，可以不结束也不影响结果；
- * 但为了统一，哪怕没有任何多余的操作也建议以{@link #end()}结束.
+ * 前置条件：{@link #condition(Predicate)}，前置条件会为紧接在后面的一系列验证规则
+ * 添加一个“拦截器”，只有在前置条件成立的情况下，后续的条件（直到{@link #end()}之间）才会执行验证，
+ * 否则将跳过{@link #condition(Predicate)}与{@link #end()}之间的验证。
  *
  * @author benshaoye
  */
-public class Validator<T> implements Cloneable, Serializable {
-
-    static final long serialVersionUID = 1L;
-    /**
-     * 默认错误信息分隔符
-     */
-    private final static String SEPARATOR = ", ";
-
-    /**
-     * 默认错误信息
-     */
-    final static String DEFAULT_MSG = Const.EMPTY;
-    /**
-     * 是否在验证错误时立即终止
-     */
-    boolean immediate;
-    /**
-     * 错误信息分隔符
-     */
-    String separator;
-    /**
-     * 错误信息
-     */
-    List<String> messages;
-    /**
-     * 待验证对象
-     */
-    final T value;
-
-    final Validator<T> prevValidator;
+public class Validator<T> extends BaseValidator<T, Validator<T>, Validator<T>> {
 
     public Validator(T value) {
-        this(value, null, null, SEPARATOR, false);
+        this(value, null, SEPARATOR, false);
     }
 
-    Validator(T value, Validator<T> prevValidator, List<String> messages, String separator, boolean immediate) {
-        this.prevValidator = prevValidator;
-        this.immediate = immediate;
-        this.separator = separator;
-        this.messages = messages;
-        this.value = value;
+    Validator(T value, List<String> messages, String separator, boolean immediate) {
+        super(value, messages, separator, immediate);
     }
 
     public final static <T> Validator<T> of(T object) {
         return new Validator<>(object);
-    }
-
-    /**
-     * 获取错误信息
-     *
-     * @return
-     */
-    public final List<String> getMessages() {
-        return Collections.unmodifiableList(ensureMessages());
-    }
-
-    final List<String> ensureMessages() {
-        return messages == null ? (messages = new ArrayList<>()) : messages;
-    }
-
-    /**
-     * 获取错误信息，用默认分隔符
-     *
-     * @return
-     */
-    public final String getMessage() {
-        return getMessage(StringUtil.defaultIfNull(separator, SEPARATOR));
-    }
-
-    /**
-     * 获取错误信息，用指定分隔符分割
-     *
-     * @param separator
-     * @return
-     */
-    public final String getMessage(String separator) {
-        return messages == null ? "" : JoinerUtil.join(messages, separator);
-    }
-
-    /**
-     * 设置是否立即终止
-     *
-     * @param immediate
-     * @return
-     */
-    public Validator<T> setImmediate(boolean immediate) {
-        this.immediate = immediate;
-        return this;
-    }
-
-    /**
-     * 设置错误信息分隔符，不能为 null
-     *
-     * @param separator
-     * @return
-     */
-    public Validator<T> setSeparator(String separator) {
-        this.separator = separator;
-        return this;
-    }
-
-    /**
-     * 添加一条错误信息，如果设置了立即结束将抛出异常
-     *
-     * @param message
-     * @return
-     */
-    Validator<T> createMsg(String message) {
-        if (immediate) {
-            throw new IllegalArgumentException(message);
-        } else {
-            ensureMessages().add(message);
-        }
-        return this;
-    }
-
-    /**
-     * 验证通过，返回该对象，否则返回 null
-     *
-     * @return
-     */
-    public final T nullIfInvalid() {
-        return defaultIfInvalid(null);
-    }
-
-    /**
-     * 验证通过，返回该对象，否则返回指定的默认值
-     *
-     * @param defaultValue
-     * @return
-     */
-    public final T defaultIfInvalid(T defaultValue) {
-        return isEmpty() ? value : defaultValue;
-    }
-
-    /**
-     * 验证通过，返回该对象，否则抛出异常
-     *
-     * @return
-     */
-    public final T get() {
-        if (isEmpty()) {
-            return value;
-        }
-        throw new IllegalStateException(getMessage());
-    }
-
-    /**
-     * 验证通过，返回该对象，否则抛出指定信息异常
-     *
-     * @param errorMessage
-     * @return
-     */
-    public final T get(String errorMessage) {
-        if (isEmpty()) {
-            return value;
-        }
-        throw new IllegalStateException(errorMessage);
-    }
-
-    /**
-     * 验证通过，返回该对象，否则抛出指定异常
-     *
-     * @param exception
-     * @param <EX>
-     * @return
-     * @throws EX
-     */
-    public final <EX extends Throwable> T get(Function<String, EX> exception) throws EX {
-        if (isEmpty()) {
-            return value;
-        }
-        throw exception.apply(toString());
-    }
-
-    /**
-     * 转换
-     *
-     * @param transformer
-     * @return
-     */
-    public Validator<T> transform(Function<T, T> transformer) {
-        return Validator.of(transformer.apply(value));
-    }
-
-    /**
-     * 当待验证对象为 null 时，返回默认值的新对象
-     *
-     * @param defaultValue
-     * @return
-     */
-    public Validator<T> defaultIfNull(T defaultValue) {
-        return value == null ? Validator.of(defaultValue) : this;
     }
 
     /**
@@ -234,19 +38,9 @@ public class Validator<T> implements Cloneable, Serializable {
      * @param defaultSupplier
      * @return
      */
+    @Override
     public Validator<T> defaultIfNull(Supplier<T> defaultSupplier) {
         return value == null ? Validator.of(defaultSupplier.get()) : this;
-    }
-
-    /**
-     * 可用于在后面条件验证前预先设置一部分默认值
-     *
-     * @param consumer
-     * @return
-     */
-    public Validator<T> preset(Consumer<T> consumer) {
-        consumer.accept(value);
-        return this;
     }
 
     /**
@@ -265,19 +59,28 @@ public class Validator<T> implements Cloneable, Serializable {
      * @param tester
      * @return
      */
-    public Validator<T> condition(Predicate<T> tester) {
-        return tester.test(value)
-            ? new Validator<>(value, this, messages, separator, immediate)
-            : new NonValidator<>(value, this, messages, separator, immediate);
+    public final Validator<T> condition(Predicate<T> tester) {
+        return tester.test(value) ? this : new NonValidator(value);
     }
 
-    static final class NonValidator<T> extends Validator<T> {
-        NonValidator(T value, Validator<T> prevValidator, List<String> messages, String separator, boolean immediate) {
-            super(value, prevValidator, messages, separator, immediate);
+    /*
+     * -----------------------------------------------------
+     * condition
+     * -----------------------------------------------------
+     */
+
+    private final class NonValidator extends Validator<T> {
+        NonValidator(T value) {
+            super(value, null, null, false);
         }
 
         @Override
-        public Validator<T> require(Predicate<T> checker, String message) {
+        public Validator<T> require(Predicate t, String m) {
+            return this;
+        }
+
+        @Override
+        public Validator<T> require(Predicate t) {
             return this;
         }
 
@@ -287,69 +90,13 @@ public class Validator<T> implements Cloneable, Serializable {
         }
 
         @Override
-        public Validator<T> requireNonNull(String message) {
+        public Validator<T> requireNonNull(String m) {
             return this;
         }
-    }
 
-    /**
-     * 清除前置条件
-     *
-     * @return
-     */
-    public Validator<T> end() {
-        return ObjectUtil.defaultIfNull(prevValidator, this);
-    }
-
-    public Validator<T> requireNonNull() {
-        return requireNonNull(Const.EMPTY);
-    }
-
-    public Validator<T> requireNonNull(String message) {
-        return value == null ? createMsg(message) : this;
-    }
-
-    public Validator<T> require(Predicate<T> checker, String message) {
-        return checker.test(value) ? this : createMsg(message);
-    }
-
-    public Validator<T> ifValid(Consumer<T> consumer) {
-        if (isEmpty()) {
-            consumer.accept(value);
+        @Override
+        public Validator<T> end() {
+            return Validator.this;
         }
-        return this;
-    }
-
-    public Validator<T> ifInvalid(Consumer<T> consumer) {
-        if (!isEmpty()) {
-            consumer.accept(value);
-        }
-        return this;
-    }
-
-    @Override
-    public final String toString() {
-        return getMessage();
-    }
-
-    @Override
-    public final int hashCode() {
-        return Objects.hashCode(value);
-    }
-
-    @Override
-    public final boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != getClass()) {
-            return false;
-        }
-        return Objects.equals(value, ((Validator) obj).value);
-    }
-
-    final String formatMsg(String message, int count, QuantityType type) {
-        return message == null ? new StringBuilder(type.str).append(count).append(" 项符合条件").toString() : message;
-    }
-
-    final boolean isEmpty() {
-        return CollectUtil.isEmpty(messages);
     }
 }
