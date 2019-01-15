@@ -1,5 +1,7 @@
 package com.moon.util.validator;
 
+import com.moon.util.MapUtil;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -9,6 +11,8 @@ import java.util.function.BiPredicate;
  */
 public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K, E, IMPL>
     extends IValidator<M, IMPL> {
+
+    M getValue();
 
     /*
      * -----------------------------------------------------
@@ -23,7 +27,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireEvery(BiPredicate<? super K, CollectValidator<C, E>> tester) {
-        return requireEvery(tester, Value.EMPTY);
+        return requireEvery(tester, Value.NONE);
     }
 
     /**
@@ -33,7 +37,9 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @param message
      * @return
      */
-    IMPL requireEvery(BiPredicate<? super K, CollectValidator<C, E>> tester, String message);
+    default IMPL requireEvery(BiPredicate<? super K, CollectValidator<C, E>> tester, String message) {
+        return requireAtLeastCountOf(tester, MapUtil.size(getValue()), message);
+    }
 
     /**
      * 要求至少一项符合验证
@@ -42,7 +48,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireAtLeastOne(BiPredicate<? super K, CollectValidator<C, E>> tester) {
-        return requireAtLeastOne(tester, Value.EMPTY);
+        return requireAtLeastOne(tester, Value.NONE);
     }
 
     /**
@@ -64,7 +70,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireAtLeastCountOf(BiPredicate<? super K, CollectValidator<C, E>> tester, int count) {
-        return requireAtLeastCountOf(tester, count, Value.EMPTY);
+        return requireAtLeastCountOf(tester, count, Value.NONE);
     }
 
     /**
@@ -90,7 +96,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireNone(BiPredicate<? super K, CollectValidator<C, E>> tester) {
-        return requireNone(tester, Value.EMPTY);
+        return requireNone(tester, Value.NONE);
     }
 
     /**
@@ -111,7 +117,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireAtMostOne(BiPredicate<? super K, CollectValidator<C, E>> tester) {
-        return requireAtMostOne(tester, Value.EMPTY);
+        return requireAtMostOne(tester, Value.NONE);
     }
 
     /**
@@ -133,7 +139,7 @@ public interface IKeyedValidator<M extends Map<K, C>, C extends Collection<E>, K
      * @return
      */
     default IMPL requireAtMostCountOf(BiPredicate<? super K, CollectValidator<C, E>> tester, int count) {
-        return requireAtMostCountOf(tester, count, Value.EMPTY);
+        return requireAtMostCountOf(tester, count, Value.NONE);
     }
 
     /**

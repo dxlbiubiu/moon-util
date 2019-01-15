@@ -25,8 +25,6 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
 
     final static String SEPARATOR = ", ";
 
-    private final Predicate<T> NON_NULL = Predicates.NON_NULL;
-
     private List<String> messages;
 
     private boolean immediate;
@@ -39,6 +37,12 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
         this.immediate = immediate;
         this.messages = messages;
     }
+
+    /*
+     * -----------------------------------------------------------------
+     * inner methods
+     * -----------------------------------------------------------------
+     */
 
     /**
      * 添加一条错误信息，如果设置了立即结束将抛出异常
@@ -55,8 +59,12 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
         return (O) this;
     }
 
-    final String formatMsg(String message, int count, QuantityType type) {
-        return message == null ? new StringBuilder(type.str).append(count).append(" 项符合条件").toString() : message;
+    final <O> O createMsgAtMost(String message, int count) {
+        return createMsg(message == null ? StringUtil.format("最多只能有 {} 项符合条件", count) : message);
+    }
+
+    final <O> O createMsgAtLeast(String message, int count) {
+        return createMsg(message == null ? StringUtil.format("至少需要有 {} 项符合条件", count) : message);
     }
 
     final <O> O createMsg(boolean tested, String message) {
@@ -70,6 +78,12 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
     final List<String> ensureMessages() {
         return messages == null ? (messages = new ArrayList<>()) : messages;
     }
+
+    /*
+     * -----------------------------------------------------------------
+     * public info methods
+     * -----------------------------------------------------------------
+     */
 
     public final List<String> getMessages() {
         return new ArrayList<>(ensureMessages());
@@ -264,20 +278,5 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
     @Override
     public IMPL require(Predicate<? super T> tester, String message) {
         return createMsg(tester.test(value), message);
-    }
-
-    @Override
-    public IMPL require(Predicate<? super T> tester) {
-        return require(tester, EMPTY);
-    }
-
-    @Override
-    public IMPL requireNonNull() {
-        return requireNonNull(EMPTY);
-    }
-
-    @Override
-    public IMPL requireNonNull(String message) {
-        return require(NON_NULL, message);
     }
 }

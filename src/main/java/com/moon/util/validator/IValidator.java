@@ -1,8 +1,8 @@
 package com.moon.util.validator;
 
-import com.moon.enums.Predicates;
-
 import java.util.function.Predicate;
+
+import static com.moon.enums.Predicates.NON_NULL;
 
 /**
  * @author benshaoye
@@ -23,7 +23,9 @@ interface IValidator<T, IMPL> {
      * @param message
      * @return
      */
-    IMPL requireNonNull(String message);
+    default IMPL requireNonNull(String message) {
+        return (IMPL) require(NON_NULL, message);
+    }
 
     /**
      * 要求符合指定验证规则
@@ -32,7 +34,7 @@ interface IValidator<T, IMPL> {
      * @return
      */
     default IMPL require(Predicate<? super T> tester) {
-        return require(tester, Value.EMPTY);
+        return require(tester, Value.NONE);
     }
 
     /**
@@ -41,6 +43,6 @@ interface IValidator<T, IMPL> {
      * @return
      */
     default IMPL requireNonNull() {
-        return (IMPL) require(Predicates.NON_NULL, Value.EMPTY);
+        return requireNonNull(Value.NONE);
     }
 }

@@ -974,17 +974,17 @@ public final class IteratorUtil {
      */
 
     public static <E, T, L extends List<E>> List<T> map(L list, Function<? super E, T> function) {
-        final IntFunction supplier = Collects.getAsSuperOrDeduce(list, Collects.ArrayList);
+        final IntFunction supplier = Collects.getAsDeduceOrDefault(list, Collects.ArrayList);
         return (List) mapTo(list, function, supplier);
     }
 
     public static <E, T, S extends Set<E>> Set<T> map(S set, Function<? super E, T> function) {
-        final IntFunction supplier = Collects.getAsSuperOrDeduce(set, Collects.HashSet);
+        final IntFunction supplier = Collects.getAsDeduceOrDefault(set, Collects.HashSet);
         return (Set) mapTo(set, function, supplier);
     }
 
     public static <E, T, C extends Collection<E>> Collection<T> map(C collect, Function<? super E, T> function) {
-        final IntFunction supplier = Collects.getAsSuperOrDeduce(collect, Collects.ArrayList);
+        final IntFunction supplier = Collects.getAsDeduce(collect);
         return mapTo(collect, function, supplier);
     }
 

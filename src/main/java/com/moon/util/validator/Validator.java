@@ -80,21 +80,6 @@ public class Validator<T> extends BaseValidator<T, Validator<T>, Validator<T>> {
         }
 
         @Override
-        public Validator<T> require(Predicate t) {
-            return this;
-        }
-
-        @Override
-        public Validator<T> requireNonNull() {
-            return this;
-        }
-
-        @Override
-        public Validator<T> requireNonNull(String m) {
-            return this;
-        }
-
-        @Override
         public Validator<T> end() {
             return Validator.this;
         }

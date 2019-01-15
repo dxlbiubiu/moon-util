@@ -11,6 +11,9 @@ public final class Const {
     public static final boolean TRUE = true;
     public static final boolean FALSE = false;
 
+    public static final String TRUE_STR = String.valueOf(TRUE);
+    public static final String FALSE_STR = String.valueOf(FALSE);
+
     public static final int ERROR_NUMBER = -1;
     /**
      * ","——英文逗号
@@ -22,7 +25,7 @@ public final class Const {
     public static final String SEPARATOR_STRING = Strings.COMMA;
 
     //==============================================================
-    //for File Separator
+    //File Separator
     //==============================================================
 
     public static final char SYS_FileSeparator_Char = File.separatorChar;
@@ -45,8 +48,6 @@ public final class Const {
      * empty string
      */
     public static final String EMPTY = new String();
-    public static final String FALSE_STR = Boolean.FALSE.toString();
-    public static final String TRUE_STR = Boolean.TRUE.toString();
-    public static final String UNDEFINED_STR = "undefined";
     public static final String NULL_STR = "null";
+    public static final String UNDEFINED_STR = "undefined";
 }

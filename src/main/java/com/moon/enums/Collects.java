@@ -1,11 +1,11 @@
 package com.moon.enums;
 
-import com.moon.lang.ObjectUtil;
-import com.moon.util.FilterUtil;
-
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
+
+import static com.moon.lang.ObjectUtil.defaultIfNull;
+import static com.moon.util.FilterUtil.nullableFirst;
 
 /**
  * 这个类列出了常用集合、队列等，包括特性介绍、关键点的实现以及有限的能测试
@@ -722,9 +722,7 @@ public enum Collects implements Supplier<Collection>,
      * @return
      */
     public static Collects getAsSuperOrDefault(Class type, Collects defaultType) {
-        for (Collects collect;
-             type != null;
-             type = type.getSuperclass()) {
+        for (Collects collect; type != null; type = type.getSuperclass()) {
             if ((collect = get(type)) != null) {
                 return collect;
             }
@@ -750,11 +748,11 @@ public enum Collects implements Supplier<Collection>,
      * @param type
      * @return
      */
-    public static Collects getAsSuperOrDeduce(Class type) {
+    public static Collects getAsDeduce(Class type) {
         Collects collect = getAsSuper(type);
         if (collect == null && type != null) {
-            return FilterUtil.nullableFirst(Collects.values(),
-                item -> item.type().isAssignableFrom(type));
+            collect = nullableFirst(values(), item -> item.type().isAssignableFrom(type));
+            return collect != null ? collect : (List.class.isAssignableFrom(type) ? ArrayList : HashSet);
         }
         return collect;
     }
@@ -765,11 +763,11 @@ public enum Collects implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static Collects getAsSuperOrDeduce(Object object) {
+    public static Collects getAsDeduce(Object object) {
         Collects collect = getAsSuper(object);
         if (collect == null && object != null) {
-            return FilterUtil.nullableFirst(Collects.values(),
-                item -> item.type().isInstance(object));
+            collect = nullableFirst(values(), item -> item.type().isInstance(object));
+            return (collect != null) ? collect : (object instanceof List ? ArrayList : HashSet);
         }
         return collect;
     }
@@ -780,10 +778,10 @@ public enum Collects implements Supplier<Collection>,
      * @param object
      * @return
      */
-    public static Collects getAsSuperOrDeduce(Object object, Collects type) {
+    public static Collects getAsDeduceOrDefault(Object object, Collects type) {
         Collects collect = getAsSuper(object);
         if (collect == null && object != null) {
-            return ObjectUtil.defaultIfNull(FilterUtil.nullableFirst(Collects.values(),
+            return defaultIfNull(nullableFirst(Collects.values(),
                 item -> item.type().isInstance(object)), type);
         }
         return collect;

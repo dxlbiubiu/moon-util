@@ -1,5 +1,7 @@
 package com.moon.util.validator;
 
+import com.moon.util.CollectUtil;
+
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -8,6 +10,12 @@ import java.util.function.Predicate;
  */
 public interface ICollectValidator<C extends Collection<E>, E, IMPL>
     extends IValidator<C, IMPL> {
+    /**
+     * 返回对象
+     *
+     * @return
+     */
+    C getValue();
 
     /*
      * -----------------------------------------------------
@@ -22,7 +30,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireEvery(Predicate<? super E> tester) {
-        return requireEvery(tester, Value.EMPTY);
+        return requireEvery(tester, Value.NONE);
     }
 
     /**
@@ -32,7 +40,9 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @param message
      * @return
      */
-    IMPL requireEvery(Predicate<? super E> tester, String message);
+    default IMPL requireEvery(Predicate<? super E> tester, String message) {
+        return requireAtLeastCountOf(tester, CollectUtil.size(getValue()), message);
+    }
 
     /**
      * 要求至少一项符合验证
@@ -41,7 +51,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireAtLeastOne(Predicate<? super E> tester) {
-        return requireAtLeastOne(tester, Value.EMPTY);
+        return requireAtLeastOne(tester, Value.NONE);
     }
 
     /**
@@ -63,7 +73,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireAtLeastCountOf(Predicate<? super E> tester, int count) {
-        return requireAtLeastCountOf(tester, count, Value.EMPTY);
+        return requireAtLeastCountOf(tester, count, Value.NONE);
     }
 
     /**
@@ -89,7 +99,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireNone(Predicate<? super E> tester) {
-        return requireNone(tester, Value.EMPTY);
+        return requireNone(tester, Value.NONE);
     }
 
     /**
@@ -110,7 +120,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireAtMostOne(Predicate<? super E> tester) {
-        return requireAtMostOne(tester, Value.EMPTY);
+        return requireAtMostOne(tester, Value.NONE);
     }
 
     /**
@@ -132,7 +142,7 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
      * @return
      */
     default IMPL requireAtMostCountOf(Predicate<? super E> tester, int count) {
-        return requireAtMostCountOf(tester, count, Value.EMPTY);
+        return requireAtMostCountOf(tester, count, Value.NONE);
     }
 
     /**

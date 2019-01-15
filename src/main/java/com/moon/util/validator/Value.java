@@ -7,7 +7,7 @@ import com.moon.enums.Const;
  */
 abstract class Value<T> {
 
-    final static String EMPTY = Const.EMPTY;
+    final static String NONE = Const.EMPTY;
 
     final T value;
 

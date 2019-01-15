@@ -50,30 +50,13 @@ public class CollectValidator<C extends Collection<E>, E>
      */
 
     @Override
-    public CollectValidator<C, E> requireEvery(Predicate<? super E> tester, String message) {
-        return requireAtLeastCountOf(tester, value.size(), message);
-    }
-
-    @Override
     public CollectValidator<C, E> requireAtLeastCountOf(Predicate<? super E> tester, int count, String message) {
-        int amount = 0;
-        for (E item : value) {
-            if (tester.test(item) && (++amount >= count)) {
-                return this;
-            }
-        }
-        return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
+        return ValidUtil.requireAtLeastCountOf(this, tester, count, message);
     }
 
     @Override
     public CollectValidator<C, E> requireAtMostCountOf(Predicate<? super E> tester, int count, String message) {
-        int amount = 0;
-        for (E item : value) {
-            if (tester.test(item) && (++amount > count)) {
-                return createMsg(formatMsg(message, count, QuantityType.AtMost));
-            }
-        }
-        return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
+        return ValidUtil.requireAtMostCountOf(this, tester, count, message);
     }
 
     /*
@@ -114,12 +97,6 @@ public class CollectValidator<C extends Collection<E>, E>
         }
 
         @Override
-        public GroupedValidator<M, K> requireEvery(
-            BiPredicate<? super K, CollectValidator<Collection<E>, E>> tester, String message) {
-            return requireAtLeastCountOf(tester, value.size(), message);
-        }
-
-        @Override
         public GroupedValidator<M, K> requireAtLeastCountOf(
             BiPredicate<? super K, CollectValidator<Collection<E>, E>> tester, final int count, String message
         ) {
@@ -132,7 +109,7 @@ public class CollectValidator<C extends Collection<E>, E>
                     return this;
                 }
             }
-            return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
+            return amount < count ? createMsgAtLeast(message, count) : this;
         }
 
         @Override
@@ -145,10 +122,10 @@ public class CollectValidator<C extends Collection<E>, E>
                     item.getValue(), CollectValidator.this.ensureMessages(),
                     CollectValidator.this.getSeparator(), CollectValidator.this.isImmediate()
                 )) && (++amount > count)) {
-                    return createMsg(formatMsg(message, count, QuantityType.AtMost));
+                    return createMsgAtMost(message, count);
                 }
             }
-            return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
+            return amount > count ? createMsgAtMost(message, count) : this;
         }
 
         @Override
@@ -183,12 +160,6 @@ public class CollectValidator<C extends Collection<E>, E>
         }
 
         @Override
-        public FilterCollectValidator<C1, E1> requireEvery(
-            Predicate<? super E1> tester, String message) {
-            return requireAtLeastCountOf(tester, value.size(), message);
-        }
-
-        @Override
         public FilterCollectValidator<C1, E1> requireAtLeastCountOf(
             Predicate<? super E1> tester, int count, String message) {
             int amount = 0;
@@ -197,7 +168,7 @@ public class CollectValidator<C extends Collection<E>, E>
                     return this;
                 }
             }
-            return amount < count ? createMsg(formatMsg(message, count, QuantityType.AtLeast)) : this;
+            return amount < count ? createMsgAtLeast(message, count) : this;
         }
 
         @Override
@@ -206,10 +177,10 @@ public class CollectValidator<C extends Collection<E>, E>
             int amount = 0;
             for (E1 item : value) {
                 if (tester.test(item) && (++amount > count)) {
-                    return createMsg(formatMsg(message, count, QuantityType.AtMost));
+                    return createMsgAtMost(message, count);
                 }
             }
-            return amount > count ? createMsg(formatMsg(message, count, QuantityType.AtMost)) : this;
+            return amount > count ? createMsgAtMost(message, count) : this;
         }
 
         @Override
@@ -244,11 +215,6 @@ public class CollectValidator<C extends Collection<E>, E>
         }
 
         @Override
-        public CollectValidator<C, E> requireEvery(Predicate t, String m) {
-            return this;
-        }
-
-        @Override
         public CollectValidator<C, E> requireAtLeastCountOf(Predicate t, int c, String m) {
             return this;
         }
@@ -270,11 +236,6 @@ public class CollectValidator<C extends Collection<E>, E>
         }
 
         @Override
-        public GroupedValidator<M, K> requireEvery(BiPredicate t, String m) {
-            return this;
-        }
-
-        @Override
         public GroupedValidator<M, K> requireAtLeastCountOf(BiPredicate t, final int c, String m) {
             return this;
         }
@@ -288,11 +249,6 @@ public class CollectValidator<C extends Collection<E>, E>
     public final class NonFilterCollectValidator<C1 extends Collection<E1>, E1> extends FilterCollectValidator<C1, E1> {
         private NonFilterCollectValidator(C1 value) {
             super(value, null, null, false);
-        }
-
-        @Override
-        public FilterCollectValidator<C1, E1> requireEvery(Predicate t, String m) {
-            return this;
         }
 
         @Override

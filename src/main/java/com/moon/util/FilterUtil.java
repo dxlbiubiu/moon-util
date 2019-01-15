@@ -82,7 +82,7 @@ public final class FilterUtil {
                 return ts[i];
             }
         }
-        throw new NoSuchItemException();
+        throw new NullPointerException();
     }
 
     public static <T> T requireLast(T[] ts, Predicate<? super T> tester) {
@@ -91,7 +91,7 @@ public final class FilterUtil {
                 return ts[i];
             }
         }
-        throw new NoSuchItemException();
+        throw new NullPointerException();
     }
 
     /**
@@ -138,7 +138,7 @@ public final class FilterUtil {
                 return item;
             }
         }
-        throw new NoSuchItemException();
+        throw new NullPointerException();
     }
 
     /**
@@ -175,7 +175,7 @@ public final class FilterUtil {
                 return item;
             }
         }
-        throw new NoSuchItemException();
+        throw new NullPointerException();
     }
 
     /**
