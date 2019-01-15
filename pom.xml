@@ -100,7 +100,7 @@
     <groupId>moon-util</groupId>
     <artifactId>moon-util</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>0.0.1</version>
     <build>
         <plugins>
             <plugin>
