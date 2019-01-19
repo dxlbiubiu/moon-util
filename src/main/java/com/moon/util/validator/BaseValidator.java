@@ -1,8 +1,6 @@
 package com.moon.util.validator;
 
-import com.moon.enums.Predicates;
 import com.moon.lang.JoinerUtil;
-import com.moon.lang.ObjectUtil;
 import com.moon.lang.StringUtil;
 import com.moon.util.CollectUtil;
 
@@ -18,7 +16,7 @@ import java.util.function.Supplier;
 /**
  * @author benshaoye
  */
-abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseValidator>
+abstract class BaseValidator<T, IMPL extends BaseValidator>
     extends Value<T> implements Cloneable, Serializable, IValidator<T, IMPL>, Supplier<T> {
 
     static final long serialVersionUID = 1L;
@@ -31,11 +29,14 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
 
     private String separator;
 
+    private boolean condition;
+
     BaseValidator(T value, List<String> messages, String separator, boolean immediate) {
         super(value);
         this.separator = separator;
         this.immediate = immediate;
         this.messages = messages;
+        this.end();
     }
 
     /*
@@ -50,25 +51,29 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
      * @param message
      * @return
      */
-    final <O> O createMsg(String message) {
+    final IMPL createMsg(String message) {
         if (immediate) {
             throw new IllegalArgumentException(message);
         } else {
             ensureMessages().add(message);
         }
-        return (O) this;
+        return current();
     }
 
-    final <O> O createMsgAtMost(String message, int count) {
+    final IMPL createMsgOfCount(String message, int count) {
+        return createMsg(message == null ? StringUtil.format("必须有 {} 项符合条件", count) : message);
+    }
+
+    final IMPL createMsgAtMost(String message, int count) {
         return createMsg(message == null ? StringUtil.format("最多只能有 {} 项符合条件", count) : message);
     }
 
-    final <O> O createMsgAtLeast(String message, int count) {
+    final IMPL createMsgAtLeast(String message, int count) {
         return createMsg(message == null ? StringUtil.format("至少需要有 {} 项符合条件", count) : message);
     }
 
-    final <O> O createMsg(boolean tested, String message) {
-        return tested ? (O) this : createMsg(message);
+    final IMPL createMsg(boolean tested, String message) {
+        return tested ? current() : createMsg(message);
     }
 
     final boolean isEmpty() {
@@ -77,6 +82,18 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
 
     final List<String> ensureMessages() {
         return messages == null ? (messages = new ArrayList<>()) : messages;
+    }
+
+    final boolean isTrueCondition() {
+        return condition;
+    }
+
+    final IMPL ifCondition(Function<T, IMPL> handler) {
+        return isTrueCondition() ? handler.apply(value) : current();
+    }
+
+    final IMPL current() {
+        return (IMPL) this;
     }
 
     /*
@@ -210,8 +227,6 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
      * -----------------------------------------------------------------
      */
 
-    abstract IMPL defaultIfNull(Supplier<T> defaultSupplier);
-
     /**
      * 可用于在后面条件验证前预先设置一部分默认值
      *
@@ -259,14 +274,24 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
         return current();
     }
 
-    final IMPL current() {
-        return (IMPL) this;
+    @Override
+    public final IMPL ifWhen(Consumer<T> consumer) {
+        if (isTrueCondition()) {
+            consumer.accept(value);
+        }
+        return current();
     }
 
-    BaseValidator validator;
+    @Override
+    public final IMPL when(Predicate<T> tester) {
+        condition = tester.test(value);
+        return current();
+    }
 
-    public IMPL1 end() {
-        return (IMPL1) ObjectUtil.defaultIfNull(validator, this);
+    @Override
+    public final IMPL end() {
+        condition = true;
+        return current();
     }
 
     /*
@@ -277,6 +302,6 @@ abstract class BaseValidator<T, IMPL extends BaseValidator, IMPL1 extends BaseVa
 
     @Override
     public IMPL require(Predicate<? super T> tester, String message) {
-        return createMsg(tester.test(value), message);
+        return ifCondition(value -> createMsg(tester.test(value), message));
     }
 }

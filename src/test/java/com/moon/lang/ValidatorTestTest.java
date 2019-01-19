@@ -19,19 +19,28 @@ class ValidatorTestTest {
             .require(item -> item.contains("a"), "必须包含字母‘a’");
 
         assertions.assertThrows(IllegalArgumentException.class,
-            () -> validator.get(IllegalArgumentException::new));
+            () -> validator.get(str -> new IllegalArgumentException(str)));
 
         Validator<Employee> employeeValidator = Validator.of(new Employee());
         Employee employee = employeeValidator
             .setImmediate(false)
-            .requireNonNull("员工不能为空")
+            .when(val -> false)
             .require(item -> item.age > 18, "未成年人不行")
             .require(item -> item.id != null, "ID 不能为空")
             .require(item -> item.name != null, "name 不能为空")
             .require(item -> item.account != null, "账号不能为空")
             .require(item -> item.address != null, "地址不能为空")
+            .end()
+            .when(val -> false)
+            .require(item -> item.age > 18, "1111")
+            .require(item -> item.id != null, "2222")
+            .require(item -> item.name != null, "3333")
+            .require(item -> item.account != null, "4444")
+            .require(item -> item.address != null, "5555")
+            .end()
             .nullIfInvalid();
         System.out.println(employee);
+
         employeeValidator.get();
 
         // new 一个对象根本没有时间成本嘛...

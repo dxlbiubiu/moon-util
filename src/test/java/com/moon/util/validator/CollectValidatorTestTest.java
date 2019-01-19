@@ -25,26 +25,10 @@ class CollectValidatorTestTest {
         collect.add("dsfgsdfgasdf");
         collect.add("sdfbhdfhnrththn");
 
-        CollectValidator<List<String>, String> validator1 = CollectValidator.of(collect);
-        CollectValidator<List<String>, String> validator2 = validator1.groupBy(str -> DetectUtil.isNumeric(str)).end();
-        CollectValidator<List<String>, String> validator3 = validator1.filter(str -> true).end();
+        CollectValidator<List<String>, String> validator = CollectValidator.of(collect);
 
-        assertions.assertTrue(validator1 == validator2);
-        assertions.assertTrue(validator1 == validator3);
-
-        validator1
-            .condition(strList -> strList == null)
-            .end()
-            .groupBy(str -> str.length() > 6)
-            .requireEvery((key, v) -> {
-                System.out.println(v.getValue());
-                return true;
-            })
-            .end()
-            .transform(str -> str.substring(0, 2))
-            .requireEvery(str -> {
-                System.out.println(str);
-                return DetectUtil.isNumeric(str);
-            }, "所有项都应该是数字").get();
+        validator.when(item -> true)
+            .requireEvery(str -> str != null, "不能包含 null 值")
+        ;
     }
 }

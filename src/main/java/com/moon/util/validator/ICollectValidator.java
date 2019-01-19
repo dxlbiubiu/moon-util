@@ -10,12 +10,42 @@ import java.util.function.Predicate;
  */
 public interface ICollectValidator<C extends Collection<E>, E, IMPL>
     extends IValidator<C, IMPL> {
+
     /**
-     * 返回对象
+     * 要求包含指定数目项符合验证，使用指定错误信息
      *
+     * @param tester
+     * @param count
+     * @param message
      * @return
      */
-    C getValue();
+    IMPL requireCountOf(Predicate<? super E> tester, int count, String message);
+
+    /**
+     * 要求至少指定数目项符合验证，使用指定错误信息
+     *
+     * @param tester
+     * @param count
+     * @param message
+     * @return
+     */
+    IMPL requireAtLeastCountOf(Predicate<? super E> tester, int count, String message);
+
+    /**
+     * 要求最多指定数目项符合验证，使用指定错误信息
+     *
+     * @param tester
+     * @param count
+     * @param message
+     * @return
+     */
+    IMPL requireAtMostCountOf(Predicate<? super E> tester, int count, String message);
+
+    /*
+     * -----------------------------------------------------
+     * implemented
+     * -----------------------------------------------------
+     */
 
     /*
      * -----------------------------------------------------
@@ -76,16 +106,6 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
         return requireAtLeastCountOf(tester, count, Value.NONE);
     }
 
-    /**
-     * 要求至少指定数目项符合验证，使用指定错误信息
-     *
-     * @param tester
-     * @param count
-     * @param message
-     * @return
-     */
-    IMPL requireAtLeastCountOf(Predicate<? super E> tester, int count, String message);
-
     /*
      * -----------------------------------------------------
      * at most
@@ -145,13 +165,41 @@ public interface ICollectValidator<C extends Collection<E>, E, IMPL>
         return requireAtMostCountOf(tester, count, Value.NONE);
     }
 
+    /*
+     * -----------------------------------------------------
+     * count of
+     * -----------------------------------------------------
+     */
+
     /**
-     * 要求最多指定数目项符合验证，使用指定错误信息
+     * 要求包含唯一项符合验证
      *
      * @param tester
-     * @param count
+     * @return
+     */
+    default IMPL requireOnly(Predicate<? super E> tester) {
+        return requireOnly(tester, Value.NONE);
+    }
+
+    /**
+     * 要求包含唯一项符合验证，使用指定错误信息
+     *
+     * @param tester
      * @param message
      * @return
      */
-    IMPL requireAtMostCountOf(Predicate<? super E> tester, int count, String message);
+    default IMPL requireOnly(Predicate<? super E> tester, String message) {
+        return requireCountOf(tester, 1, message);
+    }
+
+    /**
+     * 要求包含指定数目项符合验证
+     *
+     * @param tester
+     * @param count
+     * @return
+     */
+    default IMPL requireCountOf(Predicate<? super E> tester, int count) {
+        return requireCountOf(tester, count, Value.NONE);
+    }
 }
