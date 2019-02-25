@@ -3,14 +3,15 @@ package com.moon.util.validator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 /**
  * @author benshaoye
  */
-public final class GroupValidator<M extends Map<K, C>, C extends Collection<E>, K, E>
-    extends BaseValidator<M, GroupValidator<M, C, K, E>>
-    implements IKeyedValidator<M, K, C, GroupValidator<M, C, K, E>, CollectValidator<C, E>> {
+public final class GroupValidator<M extends Map<K, C>, K, C extends Collection<E>, E>
+    extends BaseValidator<M, GroupValidator<M, K, C, E>>
+    implements IGroupValidator<M, C, K, E, GroupValidator<M, K, C, E>> {
 
     public GroupValidator(M value) {
         super(value, null, SEPARATOR, false);
@@ -20,9 +21,8 @@ public final class GroupValidator<M extends Map<K, C>, C extends Collection<E>, 
         super(value, messages, separator, immediate);
     }
 
-    public final static <M extends Map<K, C>, C extends Collection<E>, K, E> GroupValidator<M, C, K, E> of(M map) {
-        return new GroupValidator<>(map);
-    }
+    public final static <M extends Map<K, C>, K, C extends Collection<E>, E>
+    GroupValidator<M, K, C, E> of(M map) { return new GroupValidator<>(map); }
 
     /*
      * -----------------------------------------------------
@@ -31,53 +31,29 @@ public final class GroupValidator<M extends Map<K, C>, C extends Collection<E>, 
      */
 
     @Override
-    public GroupValidator<M, C, K, E> requireAtLeastCountOf(
-        BiPredicate<? super K, CollectValidator<C, E>> tester, int count, String message
-    ) {
-        return ifCondition(value -> {
-            int amount = 0;
-            for (Map.Entry<K, C> item : value.entrySet()) {
-                if (tester.test(item.getKey(), new CollectValidator<>(
-                    item.getValue(), ensureMessages(), getSeparator(), isImmediate()
-                )) && (++amount >= count)) {
-                    return this;
-                }
-            }
-            return amount < count ? createMsgAtLeast(message, count) : this;
-        });
+    public GroupValidator<M, K, C, E> requireCountOf(BiPredicate<? super K, ? super C> tester, int count, String message) {
+        return requireCountOf(this, tester, count, message);
     }
 
     @Override
-    public GroupValidator<M, C, K, E> requireAtMostCountOf(
-        BiPredicate<? super K, CollectValidator<C, E>> tester, int count, String message
-    ) {
-        return ifCondition(value -> {
-            int amount = 0;
-            for (Map.Entry<K, C> item : value.entrySet()) {
-                if (tester.test(item.getKey(), new CollectValidator<>(
-                    item.getValue(), ensureMessages(), getSeparator(), isImmediate()
-                )) && (++amount > count)) {
-                    return createMsgAtMost(message, count);
-                }
-            }
-            return amount > count ? createMsgAtMost(message, count) : this;
-        });
+    public GroupValidator<M, K, C, E> requireAtLeastCountOf(
+        BiPredicate<? super K, ? super C> tester, int count, String message) {
+        return requireAtLeastCountOf(this, tester, count, message);
     }
 
     @Override
-    public GroupValidator<M, C, K, E> requireCountOf(
-        BiPredicate<? super K, CollectValidator<C, E>> tester, int count, String message
-    ) {
-        return ifCondition(value -> {
-            int amount = 0;
+    public GroupValidator<M, K, C, E> requireAtMostCountOf(
+        BiPredicate<? super K, ? super C> tester, int count, String message) {
+        return requireAtMostCountOf(this, tester, count, message);
+    }
+
+    @Override
+    public GroupValidator<M, K, C, E> requireForEach(BiConsumer<? super K, CollectValidator<C, E>> consumer) {
+        return ifWhen(value -> {
             for (Map.Entry<K, C> item : value.entrySet()) {
-                if (tester.test(item.getKey(), new CollectValidator<>(
-                    item.getValue(), ensureMessages(), getSeparator(), isImmediate()
-                )) && (++amount > count)) {
-                    return createMsgOfCount(message, count);
-                }
+                consumer.accept(item.getKey(), new CollectValidator(item.getValue(),
+                    ensureMessages(), getSeparator(), isImmediate()));
             }
-            return amount > count ? createMsgOfCount(message, count) : this;
         });
     }
 }

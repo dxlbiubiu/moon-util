@@ -28,9 +28,8 @@ public final class CollectValidator<C extends Collection<E>, E>
         super(value, messages, separator, immediate);
     }
 
-    public final static <C extends Collection<E>, E> CollectValidator<C, E> of(C collect) {
-        return new CollectValidator<>(collect);
-    }
+    public final static <C extends Collection<E>, E> CollectValidator<C, E>
+    of(C collect) { return new CollectValidator<>(collect); }
 
 
     /*
@@ -61,7 +60,7 @@ public final class CollectValidator<C extends Collection<E>, E>
                     return createMsgAtMost(message, count);
                 }
             }
-            return amount < count ? createMsgAtMost(message, count) : this;
+            return amount > count ? createMsgAtMost(message, count) : this;
         });
     }
 
@@ -71,10 +70,10 @@ public final class CollectValidator<C extends Collection<E>, E>
             int amount = 0;
             for (E item : value) {
                 if (tester.test(item) && (++amount > count)) {
-                    return createMsgOfCount(message, count);
+                    return createMsgCountOf(message, count);
                 }
             }
-            return amount > count ? createMsgOfCount(message, count) : this;
+            return amount < count ? createMsgCountOf(message, count) : this;
         });
     }
 
@@ -84,7 +83,7 @@ public final class CollectValidator<C extends Collection<E>, E>
      * -----------------------------------------------------
      */
 
-    public final <O> GroupValidator<Map<O, Collection<E>>, Collection<E>, O, E> groupBy(Function<? super E, O> grouper) {
+    public final <O> GroupValidator<Map<O, Collection<E>>, O, Collection<E>, E> groupBy(Function<? super E, O> grouper) {
         return new GroupValidator<>(GroupUtil.groupBy(value, grouper),
             ensureMessages(), getSeparator(), isImmediate());
     }

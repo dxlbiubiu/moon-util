@@ -2,26 +2,24 @@ package com.moon.util.validator;
 
 import com.moon.lang.JoinerUtil;
 import com.moon.lang.StringUtil;
-import com.moon.util.CollectUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author benshaoye
  */
 abstract class BaseValidator<T, IMPL extends BaseValidator>
-    extends Value<T> implements Cloneable, Serializable, IValidator<T, IMPL>, Supplier<T> {
+    extends Value<T> implements Cloneable,
+    Serializable, IValidator<T, IMPL>, Supplier<T> {
 
     static final long serialVersionUID = 1L;
 
-    final static String SEPARATOR = ", ";
+    static final String SEPARATOR = ", ";
 
     private List<String> messages;
 
@@ -41,7 +39,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
 
     /*
      * -----------------------------------------------------------------
-     * inner methods
+     * create messages
      * -----------------------------------------------------------------
      */
 
@@ -60,36 +58,38 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
         return current();
     }
 
-    final IMPL createMsgOfCount(String message, int count) {
-        return createMsg(message == null ? StringUtil.format("必须有 {} 项符合条件", count) : message);
-    }
-
-    final IMPL createMsgAtMost(String message, int count) {
-        return createMsg(message == null ? StringUtil.format("最多只能有 {} 项符合条件", count) : message);
-    }
-
-    final IMPL createMsgAtLeast(String message, int count) {
-        return createMsg(message == null ? StringUtil.format("至少需要有 {} 项符合条件", count) : message);
-    }
-
     final IMPL createMsg(boolean tested, String message) {
         return tested ? current() : createMsg(message);
     }
 
-    final boolean isEmpty() {
-        return CollectUtil.isEmpty(messages);
+    final IMPL createMsgOfCount(String message, int count) {
+        return createMsg(message == null ? String.format("必须有 %d 项符合条件", count) : message);
     }
+
+    final IMPL createMsgAtMost(String message, int count) {
+        return createMsg(message == null ? String.format("最多只能有 %d 项符合条件", count) : message);
+    }
+
+    final IMPL createMsgAtLeast(String message, int count) {
+        return createMsg(message == null ? String.format("至少需要有 %d 项符合条件", count) : message);
+    }
+
+    final IMPL createMsgCountOf(String message, int count) {
+        return createMsg(message == null ? String.format("只能有 %d 项符合条件", count) : message);
+    }
+
+    /*
+     * -----------------------------------------------------------------
+     * inner member methods
+     * -----------------------------------------------------------------
+     */
 
     final List<String> ensureMessages() {
         return messages == null ? (messages = new ArrayList<>()) : messages;
     }
 
-    final boolean isTrueCondition() {
-        return condition;
-    }
-
     final IMPL ifCondition(Function<T, IMPL> handler) {
-        return isTrueCondition() ? handler.apply(value) : current();
+        return condition ? handler.apply(value) : current();
     }
 
     final IMPL current() {
@@ -98,7 +98,52 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
 
     /*
      * -----------------------------------------------------------------
-     * public info methods
+     * inner static methods
+     * -----------------------------------------------------------------
+     */
+
+    final static <IMPL extends BaseValidator<M, IMPL>, M extends Map<K, V>, K, V> IMPL
+    requireAtMostCountOf(IMPL impl, BiPredicate<? super K, ? super V> tester, int count, String message) {
+        return impl.ifCondition(value -> {
+            int amount = 0;
+            for (Map.Entry<K, V> item : value.entrySet()) {
+                if (tester.test(item.getKey(), item.getValue()) && (++amount > count)) {
+                    return impl.createMsgAtMost(message, count);
+                }
+            }
+            return amount > count ? impl.createMsgAtMost(message, count) : impl;
+        });
+    }
+
+    final static <IMPL extends BaseValidator<M, IMPL>, M extends Map<K, V>, K, V> IMPL
+    requireAtLeastCountOf(IMPL impl, BiPredicate<? super K, ? super V> tester, int count, String message) {
+        return impl.ifCondition(value -> {
+            int amount = 0;
+            for (Map.Entry<K, V> item : value.entrySet()) {
+                if (tester.test(item.getKey(), item.getValue()) && (++amount >= count)) {
+                    return impl;
+                }
+            }
+            return amount < count ? impl.createMsgAtLeast(message, count) : impl;
+        });
+    }
+
+    final static <IMPL extends BaseValidator<M, IMPL>, M extends Map<K, V>, K, V> IMPL
+    requireCountOf(IMPL impl, BiPredicate<? super K, ? super V> tester, int count, String message) {
+        return impl.ifCondition(value -> {
+            int amount = 0;
+            for (Map.Entry<K, V> item : value.entrySet()) {
+                if (tester.test(item.getKey(), item.getValue()) && (++amount > count)) {
+                    return impl.createMsgCountOf(message, count);
+                }
+            }
+            return amount < count ? impl.createMsgCountOf(message, count) : impl;
+        });
+    }
+
+    /*
+     * -----------------------------------------------------------------
+     * public methods
      * -----------------------------------------------------------------
      */
 
@@ -142,7 +187,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
         if (obj == null || obj.getClass() != getClass()) {
             return false;
         }
-        return Objects.equals(value, ((BaseValidator) obj).value);
+        return Objects.equals(value, ((Value) obj).value);
     }
 
     /*
@@ -157,27 +202,27 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      * @return
      */
     public final T nullIfInvalid() {
-        return defaultIfInvalid((T) null);
+        return elseIfInvalid((T) null);
     }
 
     /**
      * 验证通过，返回该对象，否则返回指定的默认值
      *
-     * @param defaultValue
+     * @param elseValue
      * @return
      */
-    public final T defaultIfInvalid(T defaultValue) {
-        return isEmpty() ? value : defaultValue;
+    public final T elseIfInvalid(T elseValue) {
+        return isValid() ? value : elseValue;
     }
 
     /**
      * 验证通过，返回该对象，否则返回指定的默认值
      *
-     * @param defaultSupplier
+     * @param elseGetter
      * @return
      */
-    public final T defaultIfInvalid(Supplier<T> defaultSupplier) {
-        return isEmpty() ? value : defaultSupplier.get();
+    public final T elseIfInvalid(Supplier<T> elseGetter) {
+        return isValid() ? value : elseGetter.get();
     }
 
     /**
@@ -187,7 +232,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      */
     @Override
     public final T get() {
-        if (isEmpty()) {
+        if (isValid()) {
             return value;
         }
         throw new IllegalArgumentException(getMessage());
@@ -200,7 +245,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      * @return
      */
     public final T get(String errorMessage) {
-        if (isEmpty()) {
+        if (isValid()) {
             return value;
         }
         throw new IllegalArgumentException(errorMessage);
@@ -215,7 +260,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      * @throws EX
      */
     public final <EX extends Throwable> T get(Function<String, EX> exception) throws EX {
-        if (isEmpty()) {
+        if (isValid()) {
             return value;
         }
         throw exception.apply(toString());
@@ -227,13 +272,18 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      * -----------------------------------------------------------------
      */
 
+    @Override
+    public final IMPL addErrorMessage(String message) {
+        return createMsg(message);
+    }
+
     /**
      * 可用于在后面条件验证前预先设置一部分默认值
      *
      * @param consumer
      * @return
      */
-    public final IMPL preset(Consumer<T> consumer) {
+    public final IMPL preset(Consumer<? super T> consumer) {
         consumer.accept(value);
         return current();
     }
@@ -260,38 +310,45 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
         return current();
     }
 
-    public final IMPL ifValid(Consumer<T> consumer) {
-        if (isEmpty()) {
+    public final boolean isValid() {
+        return messages == null || messages.isEmpty();
+    }
+
+    public final boolean isInvalid() {
+        return !isValid();
+    }
+
+    public final IMPL ifValid(Consumer<? super T> consumer) {
+        if (isValid()) {
             consumer.accept(value);
         }
         return current();
     }
 
-    public final IMPL ifInvalid(Consumer<T> consumer) {
-        if (!isEmpty()) {
+    public final IMPL ifInvalid(Consumer<? super T> consumer) {
+        if (!isValid()) {
             consumer.accept(value);
         }
         return current();
     }
 
     @Override
-    public final IMPL ifWhen(Consumer<T> consumer) {
-        if (isTrueCondition()) {
+    public final IMPL ifWhen(Consumer<? super T> consumer) {
+        if (condition) {
             consumer.accept(value);
         }
         return current();
     }
 
     @Override
-    public final IMPL when(Predicate<T> tester) {
+    public final IMPL when(Predicate<? super T> tester) {
         condition = tester.test(value);
         return current();
     }
 
     @Override
     public final IMPL end() {
-        condition = true;
-        return current();
+        return when(o -> true);
     }
 
     /*
@@ -301,7 +358,7 @@ abstract class BaseValidator<T, IMPL extends BaseValidator>
      */
 
     @Override
-    public IMPL require(Predicate<? super T> tester, String message) {
+    public final IMPL require(Predicate<? super T> tester, String message) {
         return ifCondition(value -> createMsg(tester.test(value), message));
     }
 }

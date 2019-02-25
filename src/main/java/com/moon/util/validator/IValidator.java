@@ -13,7 +13,7 @@ interface IValidator<T, IMPL> {
      * @param tester
      * @return
      */
-    IMPL when(Predicate<T> tester);
+    IMPL when(Predicate<? super T> tester);
 
     /**
      * 前置条件内执行
@@ -21,14 +21,16 @@ interface IValidator<T, IMPL> {
      * @param consumer
      * @return
      */
-    IMPL ifWhen(Consumer<T> consumer);
+    IMPL ifWhen(Consumer<? super T> consumer);
 
     /**
      * 结束条件
      *
      * @return
      */
-    IMPL end();
+    default IMPL end() {
+        return when(o -> true);
+    }
 
     /**
      * 返回对象
@@ -45,6 +47,14 @@ interface IValidator<T, IMPL> {
      * @return
      */
     IMPL require(Predicate<? super T> tester, String message);
+
+    /**
+     * 手动添加一条错误信息
+     *
+     * @param message
+     * @return
+     */
+    IMPL addErrorMessage(String message);
 
     /**
      * 要求符合指定验证规则

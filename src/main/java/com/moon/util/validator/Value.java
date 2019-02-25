@@ -13,7 +13,7 @@ abstract class Value<T> {
 
     final T value;
 
-    protected Value(T value) {this.value = Objects.requireNonNull(value);}
+    Value(T value) {this.value = Objects.requireNonNull(value);}
 
     public final T getValue() {
         return value;

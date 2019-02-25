@@ -14,6 +14,7 @@ class ValidatorTestTest {
     @Test
     void testOf() {
         Validator<String> validator = Validator.of("aaa")
+            .setSeparator("|")
             .require(item -> item.length() > 3, "长度必须大于2")
             .require(item -> item.contains("b"), "必须包含字母‘b’")
             .require(item -> item.contains("a"), "必须包含字母‘a’");

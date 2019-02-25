@@ -66,7 +66,8 @@ public enum EnvEnum {
     static {
         boolean prod;
         try {
-            prod = !FALSE.toString().equalsIgnoreCase(getProperty("moon.production"));
+            prod = !FALSE.toString().equalsIgnoreCase(
+                getProperty("moon.production"));
         } catch (Throwable e) {
             prod = true;
         }
