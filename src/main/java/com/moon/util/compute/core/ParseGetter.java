@@ -61,7 +61,20 @@ final class ParseGetter {
         ParseUtil.assertTrue(handler.isValuer(), chars, indexer);
         AsRunner invoker = ParseInvoker.tryParseInvoker(chars,
             indexer, len, sets, handler.toString(), prevValuer);
-        return invoker == null ? new GetLink(prevValuer, (AsValuer) handler) : invoker;
+        return invoker == null ? new GetLink(prevValuer, (AsValuer) handler)
+            : assertNotExistInvoker(chars, indexer, invoker, handler);
+    }
+
+    final static AsRunner assertNotExistInvoker(char[] chars, IntAccessor indexer, AsRunner invoker, AsRunner handler) {
+        ParseUtil.assertTrue(invoker.isInvoker(), chars, indexer);
+        if (invoker instanceof InvokeOneEnsure) {
+            final String exist = "exist";
+            InvokeOneEnsure ensure = (InvokeOneEnsure) invoker;
+            if (ensure.sourceType == System.class && exist.equals(ensure.name)) {
+                ParseUtil.throwErr(chars, indexer);
+            }
+        }
+        return invoker;
     }
 
     final static AsRunner parseNot(

@@ -30,7 +30,7 @@ class GetOrdinary implements AsGetter {
     GetOrdinary(Object key) {
         BooleanUtil.requireFalse(key instanceof AsRunner);
         this.key = key;
-        this.message = "Variable of: " + String.valueOf(key);
+        this.message = "Variable of: " + key;
         if (key instanceof Integer) {
             index = ((Number) key).intValue();
         } else {

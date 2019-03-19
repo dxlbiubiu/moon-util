@@ -40,7 +40,7 @@ public interface RunnerFunction {
      * @return
      */
     default Object apply() {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -50,7 +50,7 @@ public interface RunnerFunction {
      * @return
      */
     default Object apply(Object value) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -61,7 +61,7 @@ public interface RunnerFunction {
      * @return
      */
     default Object apply(Object value1, Object value2) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -73,7 +73,7 @@ public interface RunnerFunction {
      * @return
      */
     default Object apply(Object value1, Object value2, Object value3) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -83,6 +83,6 @@ public interface RunnerFunction {
      * @return
      */
     default Object apply(Object... values) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

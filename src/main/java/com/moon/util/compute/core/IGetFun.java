@@ -39,6 +39,9 @@ class IGetFun {
     }
 
     private enum DateFunctions implements RunnerFunction {
+        /**
+         * @see DateUtil#format(Date, String) }
+         */
         date_format {
             @Override
             public Object apply(Object date, Object pattern) {
@@ -96,6 +99,9 @@ class IGetFun {
     }
 
     private enum StrFunctions implements RunnerFunction {
+        /**
+         * @see String#substring(int, int) }
+         */
         str_substring {
             @Override
             public String apply(Object str, Object from) {
@@ -107,6 +113,9 @@ class IGetFun {
                 return ((String) str).substring(toInt(from), toInt(to));
             }
         },
+        /**
+         * @see String#contains(CharSequence) }
+         */
         str_contains {
             @Override
             public Object apply(Object value1, Object value2) {
@@ -260,7 +269,7 @@ class IGetFun {
         map_get {
             @Override
             public Object apply(Object value1, Object value2) {
-                return ListUtil.getByObject(value1, toInt(value2));
+                return MapUtil.getByObject(value1, value2);
             }
         },
         map_size {
@@ -306,7 +315,7 @@ class IGetFun {
                     for (int i = 0; i < len; ) {
                         map.put(formatToKey(values[i++]), values[i++]);
                     }
-                    if (mod == 0) {
+                    if (mod == 1) {
                         map.put(formatToKey(values[len]), null);
                     }
                 }

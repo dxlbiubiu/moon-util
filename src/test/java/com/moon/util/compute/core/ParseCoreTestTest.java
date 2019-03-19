@@ -24,7 +24,7 @@ class ParseCoreTestTest {
     String str;
     Object data;
     Object res;
-    AsRunner handler, handler1;
+    AsRunner handler, handler1, runner;
 
     static AsRunner running(String str) {
         return ParseCore.parse(str, null);
@@ -262,6 +262,31 @@ class ParseCoreTestTest {
 
     public static class Employee {
         int age = 20;
+    }
+
+    @Test
+    void testFnRunner() {
+        str = "@map.get({20:25}, 20)";
+        assertions.assertEquals(running(str).run(), 25);
+
+        str = "@map.get(@map(23,24,25,26,68),68)";
+        runner = running(str);
+        assertions.assertEquals(runner.run(), null);
+
+        str = "@list.size(@list(23,24,25,26,68))";
+        runner = running(str);
+        assertions.assertEquals(runner.run(), 5);
+
+        str = "@System.getProperty('os.name')";
+        runner = running(str);
+        data = runner.run();
+        System.out.println(data);
+    }
+
+    @Test
+    void testParseExist() {
+        str = "@System.exist(0)";
+        runner = running(str);
     }
 
     @Test
