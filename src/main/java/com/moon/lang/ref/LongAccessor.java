@@ -99,7 +99,7 @@ public class LongAccessor {
         return this.increment(1);
     }
 
-    public LongAccessor increment(int value) {
+    public LongAccessor increment(long value) {
         this.value += value;
         return this;
     }
@@ -110,35 +110,35 @@ public class LongAccessor {
      * ------------------------------------------------------------
      */
 
-    public LongAccessor ifEq(int value, LongConsumer consumer) {
+    public LongAccessor ifEq(long value, LongConsumer consumer) {
         if (this.value == value) {
             consumer.accept(this.value);
         }
         return this;
     }
 
-    public LongAccessor ifGt(int value, LongConsumer consumer) {
+    public LongAccessor ifGt(long value, LongConsumer consumer) {
         if (this.value > value) {
             consumer.accept(this.value);
         }
         return this;
     }
 
-    public LongAccessor ifLt(int value, LongConsumer consumer) {
+    public LongAccessor ifLt(long value, LongConsumer consumer) {
         if (this.value < value) {
             consumer.accept(this.value);
         }
         return this;
     }
 
-    public LongAccessor ifGtOrEq(int value, LongConsumer consumer) {
+    public LongAccessor ifGtOrEq(long value, LongConsumer consumer) {
         if (this.value >= value) {
             consumer.accept(this.value);
         }
         return this;
     }
 
-    public LongAccessor ifLtOrEq(int value, LongConsumer consumer) {
+    public LongAccessor ifLtOrEq(long value, LongConsumer consumer) {
         if (this.value <= value) {
             consumer.accept(this.value);
         }

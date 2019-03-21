@@ -1,4 +1,4 @@
-package com.moon.modals;
+package com.moon.models;
 
 import com.moon.enums.EnumDescriptor;
 
