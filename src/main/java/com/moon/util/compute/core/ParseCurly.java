@@ -19,6 +19,17 @@ final class ParseCurly {
         noInstanceError();
     }
 
+    /**
+     * 花括号检测，可能是：
+     * Map
+     * List
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param settings
+     * @return
+     */
     final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len, RunnerSettings settings
     ) {
@@ -180,9 +191,6 @@ final class ParseCurly {
                     ParseGetter.parseVar(chars, indexer, len, curr);
                     type = doNext(chars, indexer, curr);
                 } else {
-                    /*
-                    type = ParseUtil.throwErr(chars, indexer);
-                    */
                     type = CreateType.MAP;
                 }
                 break;

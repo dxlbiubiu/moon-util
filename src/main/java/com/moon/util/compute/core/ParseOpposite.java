@@ -7,6 +7,9 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
 
 /**
+ * 负号解析：
+ * 减法运算或负数都有可能
+ *
  * @author benshaoye
  */
 final class ParseOpposite {

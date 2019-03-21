@@ -119,6 +119,20 @@ class RunnerUtilTestTest {
     }
 
     @Test
+    void testRunMulti() {
+        Map m1 = new HashMap() {{
+            put("name", 1);
+        }};
+        Map m2 = new HashMap() {{
+            put("name", 2);
+        }};
+
+        runner = RunnerUtil.parse("name");
+        data = runner.runMulti(m1, m2);
+        assertions.assertSame(data, 2);
+    }
+
+    @Test
     void testParseRunPerformance() {
         int count = 100000;
         long begin = DateUtil.now();
@@ -221,6 +235,39 @@ class RunnerUtilTestTest {
         Runner runner = RunnerUtil.parse("{'已有人数','需要人数','已提交','已付款','已完成'}");
         res = runner.run();
         System.out.println(res);
+    }
+
+    @Test
+    void testCreateList() {
+        str = "{'1111','2222','3333','4444'}";
+        runner = RunnerUtil.parse(str);
+
+        data=runner.run();
+        System.out.println(data);
+        System.out.println(createList());
+        System.out.println("===============================");
+        final int count = 1000;
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            createList();
+        }
+        Console.out.timeEnd();
+        Console.out.time();
+        for (int i = 0; i < count; i++) {
+            runner.run();
+        }
+        Console.out.timeEnd();
+    }
+
+    List<String> createList() {
+        List<String> list = new ArrayList<>();
+
+        list.add("1111");
+        list.add("2222");
+        list.add("3333");
+        list.add("4444");
+
+        return list;
     }
 
     @Test

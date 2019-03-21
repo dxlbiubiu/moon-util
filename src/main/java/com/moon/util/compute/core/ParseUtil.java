@@ -14,6 +14,10 @@ import static com.moon.util.compute.core.Constants.SINGLE;
  * @author benshaoye
  */
 public class ParseUtil {
+    /**
+     * 默认字符串表达式分隔符：DELIMITERS = {"{{", "}}"}
+     */
+    protected final static String[] DELIMITERS = {"{{", "}}"};
 
     /**
      * @throws AssertionError 不可实例化

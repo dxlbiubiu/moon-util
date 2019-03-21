@@ -40,7 +40,7 @@ class IGetFun {
 
     private enum DateFunctions implements RunnerFunction {
         /**
-         * @see DateUtil#format(Date, String) }
+         * @see DateUtil#format(Date, String)
          */
         date_format {
             @Override
@@ -53,11 +53,50 @@ class IGetFun {
                 }
                 throw new IllegalArgumentException(String.valueOf(date));
             }
+
+            @Override
+            public Object apply() {
+                return DateUtil.format();
+            }
+
+            @Override
+            public Object apply(Object value) {
+                if (value instanceof Date) {
+                    return DateUtil.format((Date) value);
+                }
+                if (value instanceof CharSequence) {
+                    return DateUtil.format(value.toString());
+                }
+                if (value instanceof Calendar) {
+                    return DateUtil.format(((Calendar) value).getTime());
+                }
+                throw new IllegalArgumentException(String.valueOf(date));
+            }
         },
         date_now {
             @Override
             public Object apply() {
                 return System.currentTimeMillis();
+            }
+
+            @Override
+            public Object apply(Object value) {
+                return apply();
+            }
+
+            @Override
+            public Object apply(Object value1, Object value2) {
+                return apply();
+            }
+
+            @Override
+            public Object apply(Object value1, Object value2, Object value3) {
+                return apply();
+            }
+
+            @Override
+            public Object apply(Object... values) {
+                return apply();
             }
         },
         date {
@@ -78,17 +117,17 @@ class IGetFun {
 
             @Override
             public Object apply(Object o, Object o1) {
-                return this.apply();
+                return apply();
             }
 
             @Override
             public Object apply(Object o, Object o1, Object o2) {
-                return this.apply();
+                return apply();
             }
 
             @Override
             public Object apply(Object... values) {
-                return this.apply();
+                return apply();
             }
         };
 
@@ -132,6 +171,11 @@ class IGetFun {
             @Override
             public Boolean apply(Object value1, Object value2) {
                 return String.valueOf(value1).startsWith(String.valueOf(value2));
+            }
+
+            @Override
+            public Boolean apply(Object value1, Object value2, Object value3) {
+                return String.valueOf(value1).startsWith(String.valueOf(value2), toInt(value3));
             }
         },
         str_endsWith {

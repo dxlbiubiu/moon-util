@@ -3,6 +3,7 @@ package com.moon.util;
 import com.moon.lang.ThrowUtil;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static com.moon.util.TypeUtil.cast;
 
@@ -122,6 +123,16 @@ public final class MapUtil {
         return map;
     }
 
+    /**
+     * 忽略类型兼容
+     *
+     * @param map
+     * @param key
+     * @param value
+     * @param <K>
+     * @param <V>
+     * @return
+     */
     public static <K, V> Map<K, V> putToObject(Object map, Object key, Object value) {
         return put((Map) map, key, value);
     }
@@ -274,7 +285,7 @@ public final class MapUtil {
     }
 
     public static <K> char getCharValue(Map<K, ?> map, K key) {
-        return map == null ? null : cast().toCharValue(map.get(key));
+        return map == null ? 0 : cast().toCharValue(map.get(key));
     }
 
     /*
@@ -346,6 +357,15 @@ public final class MapUtil {
             : defaultVal);
     }
 
+    public static <K> boolean getOrDefault(Map<K, ?> map, K key, boolean defaultVal) {
+        Object value;
+        return map == null
+            ? defaultVal
+            : (value = map.get(key)) instanceof Boolean
+            ? (Boolean) value
+            : defaultVal;
+    }
+
     /**
      * Object value = map.get(key);
      * 如果 value 不是一个 boolean 型数据或 map == null，返回 true，否则返回 value
@@ -355,12 +375,7 @@ public final class MapUtil {
      * @return
      */
     public static <K> boolean getOrTrue(Map<K, ?> map, K key) {
-        Object value;
-        return map == null
-            ? Boolean.TRUE
-            : (value = map.get(key)) instanceof Boolean
-            ? (Boolean) value
-            : Boolean.TRUE;
+        return getOrDefault(map, key, true);
     }
 
     /**
@@ -372,12 +387,7 @@ public final class MapUtil {
      * @return
      */
     public static <K> boolean getOrFalse(Map<K, ?> map, K key) {
-        Object value;
-        return map == null
-            ? Boolean.FALSE
-            : (value = map.get(key)) instanceof Boolean
-            ? (Boolean) value
-            : Boolean.FALSE;
+        return getOrDefault(map, key, false);
     }
 
     public static <K> String getOrDefault(Map<K, ?> map, K key, String defaultVal) {
@@ -391,5 +401,12 @@ public final class MapUtil {
 
     public static <K, V> V getOrDefault(Map<K, V> map, K key, V defaultVal) {
         return map == null ? defaultVal : map.getOrDefault(key, defaultVal);
+    }
+
+    public static <K, V> V getOrElse(Map<K, V> map, K key, Supplier<V> supplier) {
+        V value;
+        return map == null ? supplier.get() :
+            (value = map.get(key)) == null
+                ? supplier.get() : value;
     }
 }

@@ -20,6 +20,15 @@ class ParseCall {
         noInstanceError();
     }
 
+    /**
+     * 静态方法调用或者函数调用
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param settings
+     * @return
+     */
     final static AsRunner parse(
         char[] chars, IntAccessor indexer, int len, RunnerSettings settings
     ) {

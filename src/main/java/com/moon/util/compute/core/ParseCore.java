@@ -31,6 +31,12 @@ class ParseCore {
         return runner;
     }
 
+    /*
+     * ----------------------------------------------------------------------
+     * 对外入口 parse
+     * ----------------------------------------------------------------------
+     */
+
     final static AsRunner parse(String expression) {
         AsRunner runner = CACHE.get(expression);
         return runner == null ? (expression == null
@@ -44,6 +50,12 @@ class ParseCore {
         AsRunner runner = parse(chars, IntAccessor.of(), chars.length, settings);
         return settings == null ? putCache(expression, runner) : runner;
     }
+
+    /*
+     * ----------------------------------------------------------------------
+     * 内部使用 parse
+     * ----------------------------------------------------------------------
+     */
 
     final static AsRunner parse(
         char[] chars, IntAccessor indexer,
@@ -120,12 +132,31 @@ class ParseCore {
         return toRunner(values, methods);
     }
 
+    /*
+     * ----------------------------------------------------------------------
+     * 本类使用
+     * ----------------------------------------------------------------------
+     */
+
     private final static AsRunner toRunner(
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods
     ) {
         return GetCalc.valueOf(cleanTo(values, methods, null));
     }
 
+    /**
+     * 表达式解析核心
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param settings
+     * @param curr
+     * @param values
+     * @param methods
+     * @param prevHandler
+     * @return
+     */
     private final static AsRunner core(
         char[] chars, IntAccessor indexer, int len, RunnerSettings settings, int curr,
         LinkedList<AsRunner> values, LinkedList<AsRunner> methods, AsRunner prevHandler

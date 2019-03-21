@@ -4,7 +4,7 @@ import com.moon.lang.SupportUtil;
 import com.moon.lang.ref.IntAccessor;
 import com.moon.util.compute.RunnerSettings;
 
-import java.util.LinkedList;
+import java.util.*;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
 
@@ -14,6 +14,14 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 final class ParseGetter {
     private ParseGetter() {
         noInstanceError();
+    }
+
+    private final static Map<Class, Set<String>> EXCLUDE_METHODS = new HashMap<>();
+
+    static {
+        EXCLUDE_METHODS.put(System.class, new HashSet() {{
+            add("exist");
+        }});
     }
 
     /**
@@ -62,17 +70,25 @@ final class ParseGetter {
         AsRunner invoker = ParseInvoker.tryParseInvoker(chars,
             indexer, len, sets, handler.toString(), prevValuer);
         return invoker == null ? new GetLink(prevValuer, (AsValuer) handler)
-            : assertNotExistInvoker(chars, indexer, invoker, handler);
+            : assertNotExistInvoker(chars, indexer, len, invoker);
     }
 
-    final static AsRunner assertNotExistInvoker(char[] chars, IntAccessor indexer, AsRunner invoker, AsRunner handler) {
-        ParseUtil.assertTrue(invoker.isInvoker(), chars, indexer);
-        if (invoker instanceof InvokeOneEnsure) {
-            final String exist = "exist";
-            InvokeOneEnsure ensure = (InvokeOneEnsure) invoker;
-            if (ensure.sourceType == System.class && exist.equals(ensure.name)) {
-                ParseUtil.throwErr(chars, indexer);
-            }
+    /**
+     * 禁用某些静态方法调用
+     *
+     * @param chars
+     * @param indexer
+     * @param len
+     * @param invoker
+     * @return
+     */
+    final static AsRunner assertNotExistInvoker(
+        char[] chars, IntAccessor indexer, int len, AsRunner invoker
+    ) {
+        if (invoker.isInvoker() && invoker instanceof InvokeOneEnsure) {
+            InvokeOneEnsure one = (InvokeOneEnsure) invoker;
+            Asserts.disableIllegalCallers(chars, indexer,
+                len, one.sourceType, one.name);
         }
         return invoker;
     }
@@ -99,11 +115,7 @@ final class ParseGetter {
                 if (ParseUtil.isVar(curr)) {
                     valuer = parseVar(chars, indexer, len, curr);
                     ParseUtil.assertFalse(valuer == DataConst.NULL, chars, indexer);
-                    if (valuer == DataConst.TRUE) {
-                        valuer = DataConst.FALSE;
-                    } else if (valuer == DataConst.FALSE) {
-                        valuer = DataConst.TRUE;
-                    }
+                    valuer = valuer == DataConst.TRUE ? DataConst.FALSE : DataConst.TRUE;
                 } else {
                     valuer = ParseUtil.throwErr(chars, indexer);
                 }

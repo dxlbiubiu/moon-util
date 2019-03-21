@@ -12,7 +12,8 @@ import static com.moon.lang.SupportUtil.matchOne;
 import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.lang.reflect.FieldUtil.getAccessibleField;
 import static com.moon.lang.reflect.MethodUtil.getPublicStaticMethods;
-import static com.moon.util.compute.core.Constants.*;
+import static com.moon.util.compute.core.Constants.YUAN_L;
+import static com.moon.util.compute.core.Constants.YUAN_R;
 import static com.moon.util.compute.core.ParseUtil.nextVal;
 import static java.util.Objects.requireNonNull;
 
@@ -27,7 +28,8 @@ final class ParseInvoker {
     private final static Predicate<Method> NONE_PARAM = m -> m.getParameterCount() == 0;
 
     final static AsRunner tryParseInvoker(
-        char[] chars, IntAccessor indexer, int len, RunnerSettings settings, String name, AsValuer prevValuer
+        char[] chars, IntAccessor indexer, int len,
+        RunnerSettings settings, String name, AsValuer prevValuer
     ) {
         final int cache = indexer.get();
         final boolean isStatic = prevValuer instanceof DataLoader;
@@ -37,7 +39,8 @@ final class ParseInvoker {
                 return parseNoneParams(prevValuer, name, isStatic);
             } else {
                 // 带有参数的方法调用
-                return parseHasParams(chars, indexer.decrement(), len, settings, prevValuer, name, isStatic);
+                return parseHasParams(chars, indexer.decrement(),
+                    len, settings, prevValuer, name, isStatic);
             }
         } else {
             // 静态字段检测
@@ -54,12 +57,18 @@ final class ParseInvoker {
         AsValuer prev, String name, boolean isStatic
     ) {
         AsRunner[] params = ParseParams.parse(chars, indexer, len, settings);
-        return params.length>1? parseMultiParamCaller(params, prev, name, isStatic)
+        return params.length > 1 ? parseMultiParamCaller(params, prev, name, isStatic)
             : parseOnlyParamCaller(params, prev, name, isStatic);
     }
 
     /**
-     * 多参数调用的方法
+     * 多参数调用的方法（未实现）
+     *
+     * @param params   参数
+     * @param prev     静态方法的 class 或实例方法的{@link AsGetter}
+     * @param name     方法名{@link Method#getName()}
+     * @param isStatic 是否是静态方法
+     * @return
      */
     private final static AsRunner parseMultiParamCaller(
         AsRunner[] params, AsValuer prev, String name, boolean isStatic

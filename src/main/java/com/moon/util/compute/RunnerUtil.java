@@ -2,6 +2,8 @@ package com.moon.util.compute;
 
 import com.moon.util.compute.core.ParseUtil;
 
+import java.util.Date;
+
 /**
  * 介绍，运行计算表达式工具类，如：
  * <p>employee.name<p>employee.name.length()
@@ -11,11 +13,11 @@ import com.moon.util.compute.core.ParseUtil;
  * <p>
  * 1. 基本运算：+、-、*、/、%；
  * <p>
- * 2. 位运算：&、|、^；
+ * 2. 位运算：&、|、^、<<、>>、>>>；
  * <p>
  * 3. 比较运算：==、>、>=、==、<、<=；
  * <p>
- * 4. 逻辑运算：&&、||、！;
+ * 4. 逻辑运算：&&、||、!;
  * <p>
  * 5. 括号提升优先级：( )
  * <p>
@@ -78,6 +80,69 @@ import com.moon.util.compute.core.ParseUtil;
  * <p>
  * <strong>【 十 】</strong>、链式取值和方法调用：employee.name.length()
  * <p>
+ * <strong>【 十一 】</strong>、内置函数：@；
+ * 此工具类内置了一些内置函数，提供一些常用的操作，对于一些基本的操作，
+ * <p>
+ * 建议使用函数，而不是静态或实例方法调用；
+ * <p>
+ * 函数调用与静态方法调用相同，都是用 “@” 符号标识，如：@map(...)，
+ * <p>
+ * 不同的是函数命名空间全小写，并且函数优先级高于方法执行；
+ * <p>
+ * 内置函数有：
+ * <p>
+ * - @map(...)：将一组数据按键值列表返回一个 Map，<p>
+ * - @map.get(Map, keyName)：获取 Map 指定值<p>
+ * - @map.size(Map)：返回 Map 的大小；<p>
+ * - @map.isEmpty(Map)<p>
+ * - @map.hasKey(Map)<p>
+ * - @map.hasValue(Map)<p>
+ * <p>
+ * - @list(...)：将一组数据列表封装成 List<p>
+ * - @list.get(List, int)：获取指定索引值<p>
+ * - @list.size(List)：返回 List 的大小；<p>
+ * - @list.isEmpty(List)：<p>
+ * - @list.hasIndex(List)：<p>
+ * - @list.hasValue(List)：<p>
+ * <p>
+ * - @now()：返回当前时间毫秒数{@link System#currentTimeMillis()}；<p>
+ * - @now(Object)：将对象转换成{@link java.time.LocalDateTime}}<p>
+ * - @now.year()：当前年份<p>
+ * - @now.month()：当前月份<p>
+ * - @now.day()：当前月份第几天<p>
+ * - @now.hour()：当前小时数<p>
+ * - @now.minute()：当前分钟数<p>
+ * - @now.second()：当前秒数<p>
+ * <p>
+ * - @str(Object)：将对象转换成 String {@link Object#toString()}<p>
+ * - @str.substring(String,index[,index])：{@link String#substring(int, int)}}<p>
+ * - @str.indexOf(String,String)：{@link String#indexOf(int)}<p>
+ * - @str.contains(String,String)：{@link String#contains(CharSequence)}<p>
+ * - @str.startsWith(String,String[, int])：{@link String#startsWith(String)}<p>
+ * - @str.endsWith(String,String[, int])：{@link String#endsWith(String)}<p>
+ * - @str.length(String)：{@link String#length()} 返回字符串长度<p>
+ * <p>
+ * - @date()：返回当前日期{@link java.util.Date}}<p>
+ * - @date(Object)：将对象转换成{@link java.util.Date}}<p>
+ * - @date.now()：返回当前时间毫秒数{@link System#currentTimeMillis()}；<p>
+ * - @date.format(Date, String)：格式化日期{@link java.text.DateFormat#format(Date)}}<p>
+ * <p>
+ * - @math.double(Object)：<p>
+ * - @math.int(Object)：<p>
+ * - @math.ceil(Number)：<p>
+ * - @math.floor(Number)：<p>
+ * - @math.sin(Number)：正弦函数<p>
+ * - @math.cos(Number)：余弦函数<p>
+ * - @math.tan(Number)：正切函数<p>
+ * - @math.abs(Number)：绝对值<p>
+ * - @math.round(Number)：四舍五入<p>
+ * - @math.pow(Number,Number)：幂次方<p>
+ * - @math.cbrt(Number,Number)：<p>
+ * - @math.sqrt(Number,Number)：<p>
+ * - @math.log(Number)：<p>
+ * - @math.log10(Number)：<p>
+ * - @math.random()：随机数<p>
+ * <p>
  * <strong>注意：</strong>
  * * 静态方法调用只支持部分包下的类，具体见【 八 】
  * <p>
@@ -86,14 +151,12 @@ import com.moon.util.compute.core.ParseUtil;
  * * 基本数据类型只支持 boolean、int、double，没有 char 类型数据，被征用做字符串了
  * <p>
  * * 没有 char 数据类型，双引号和单引号包裹的都是字符串，
+ * <p>
+ * * 默认字符串表达式分隔符：DELIMITERS = {"{{", "}}"}
  *
  * @author benshaoye
  */
 public final class RunnerUtil extends ParseUtil {
-    /**
-     * 默认字符串表达式分隔符：DELIMITERS = {"{{", "}}"}
-     */
-    public final static String[] DELIMITERS = {"{{", "}}"};
 
     /**
      * @throws AssertionError 不可实例化

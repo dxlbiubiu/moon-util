@@ -5,6 +5,7 @@ import com.moon.lang.StringUtil;
 import com.moon.util.Console;
 import com.moon.util.MapUtil;
 import com.moon.util.assertions.Assertions;
+import com.moon.util.compute.RunnerUtil;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -209,12 +210,14 @@ class ParseCoreTestTest {
         handler1 = ParseCore.parse("@ ArraysEnum . OBJECTS . stringify(['array']).toString()");
         res = handler1.run(data);
 
+        System.out.println(RunnerUtil.run("@now()"));
+
     }
 
     @Test
     void testCalc() {
         res = ParseCore.parse("15+5/3").run();
-        Console.out.println(res);
+        assertions.assertEquals(res, 15 + 5 / 3);
     }
 
     @Test
@@ -285,8 +288,8 @@ class ParseCoreTestTest {
 
     @Test
     void testParseExist() {
-        str = "@System.exist(0)";
-        runner = running(str);
+        str = "@System.exit(0)";
+        assertions.assertThrows(() -> running(str));
     }
 
     @Test

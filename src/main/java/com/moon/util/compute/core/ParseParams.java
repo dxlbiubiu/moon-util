@@ -10,6 +10,8 @@ import static com.moon.lang.ThrowUtil.noInstanceError;
 import static com.moon.util.compute.core.Constants.*;
 
 /**
+ * 方法调用参数解析
+ *
  * @author benshaoye
  */
 final class ParseParams {
@@ -18,7 +20,9 @@ final class ParseParams {
     }
 
     /**
-     * 从左括号的下一个字符开始解析
+     * 从左括号的下一个字符开始解析，右括号为止
+     * 两个连续逗号之间默认有一个 null 值，
+     * 最后一个逗号后如果是右圆括号，则忽略
      *
      * @param chars
      * @param indexer
