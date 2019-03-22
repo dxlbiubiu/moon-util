@@ -26,17 +26,14 @@ abstract class BaseConsolePrinter
      */
     protected static final String LINE_SEPARATOR = line_separator.value();
 
-    @NotNull
     protected final Class topClass;
 
-    @NotNull
     protected final ConsoleSettings settings;
 
     protected boolean closeOutput = false;
     /**
      * 输出，必须存在
      */
-    @NotNull
     private Appender appender;
 
     public BaseConsolePrinter() {

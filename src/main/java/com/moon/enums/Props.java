@@ -66,7 +66,7 @@ public enum Props {
     /**
      * 默认路径
      */
-    moonBasePath;
+    moon_base_path;
 
     private final String key;
     private final String value;

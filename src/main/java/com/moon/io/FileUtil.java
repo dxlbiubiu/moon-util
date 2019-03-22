@@ -193,32 +193,40 @@ public final class FileUtil {
     }
 
     /**
+     * 文件列表遍历器
+     * @return
+     */
+    public static FileTraveller traveller(){
+        return new FileTraveller();
+    }
+
+    /**
      * 遍历指定目录的文件列表，如遇不可访问的安全保护会打印相应错误信息，但不会影响程序执行
      *
      * @param dirPath
      */
     public static List<File> traverseDirectory(String dirPath) {
-        return new DirectoryTraveller().traverse(dirPath).get();
+        return traveller().traverse(dirPath);
     }
 
     public static List<File> traverseDirectory(File dirPath) {
-        return new DirectoryTraveller().traverse(dirPath).get();
+        return traveller().traverse(dirPath);
     }
 
     public static List<File> traverseAll(File... dirs) {
-        Traveller<File> traveller = new DirectoryTraveller();
+        FileTraveller traveller = traveller();
         for (int i = 0; i < dirs.length; i++) {
             traveller.traverse(dirs[i]);
         }
-        return traveller.get();
+        return traveller;
     }
 
     public static List<File> traverseAll(List<File> dirs) {
-        Traveller<File> traveller = new DirectoryTraveller();
+        FileTraveller traveller = traveller();
         for (int i = 0; i < dirs.size(); i++) {
             traveller.traverse(dirs.get(i));
         }
-        return traveller.get();
+        return traveller;
     }
 
     /**
@@ -324,32 +332,32 @@ public final class FileUtil {
     /**
      * 深度删除所有文件
      *
-     * @param dirPath
+     * @param dir
      * @return
      */
-    public static boolean deleteAllFiles(String dirPath) {
-        return deleteAllFiles(new File(dirPath));
+    public static boolean deleteAllFiles(String dir) {
+        return deleteAllFiles(new File(dir));
     }
 
     /**
      * 深度删除所有文件
      *
-     * @param dirFile
+     * @param dir
      * @return
      */
-    public static boolean deleteAllFiles(File dirFile) {
-        if (dirFile == null) {
+    public static boolean deleteAllFiles(File dir) {
+        if (dir == null) {
             return true;
         }
-        if (dirFile.isDirectory()) {
-            List<File> files = traverseDirectory(dirFile);
+        if (dir.isDirectory()) {
+            List<File> files = traverseDirectory(dir);
             for (File file : files) {
                 delete(file);
             }
         }
-        if (dirFile.isFile()) {
-            return dirFile.delete();
+        if (dir.isFile()) {
+            return dir.delete();
         }
-        return !dirFile.exists();
+        return !dir.exists();
     }
 }

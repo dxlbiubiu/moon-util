@@ -16,7 +16,7 @@ public interface Traveller<T> extends Supplier<List<T>> {
      * @param path
      * @return
      */
-    Traveller traverse(String path);
+    Traveller<T> traverse(String path);
 
     /**
      * 遍历指定目录下的文件
@@ -24,7 +24,7 @@ public interface Traveller<T> extends Supplier<List<T>> {
      * @param path
      * @return
      */
-    Traveller traverse(File path);
+    Traveller<T> traverse(File path);
 
     /**
      * 初始化或重置

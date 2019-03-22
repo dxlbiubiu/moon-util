@@ -20,7 +20,7 @@ public enum ConsoleGlobal implements ConsoleEnabled {
 
     ConsoleGlobal() {
         // 留着初始化 base path
-        setBasePath(Props.moonBasePath.value());
+        setBasePath(Props.moon_base_path.value());
     }
 
     @Override
