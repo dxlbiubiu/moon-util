@@ -24,15 +24,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextChinese() {
+    public final static char nextChineseChar() {
         return (char) nextInt(0x4e00, 0x9fa6);
+    }
+
+    public final static String nextChinese() {
+        return nextChinese(nextInt(99));
     }
 
     public final static String nextChinese(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextChinese();
+                value[i] = nextChineseChar();
             }
             return new String(value);
         }
@@ -51,15 +55,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextUpper() {
+    public final static char nextUpperChar() {
         return (char) nextInt(65, 91);
+    }
+
+    public final static String nextUpper() {
+        return nextUpper(nextInt(99));
     }
 
     public final static String nextUpper(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextUpper();
+                value[i] = nextUpperChar();
             }
             return new String(value);
         }
@@ -78,15 +86,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextLower() {
+    public final static char nextLowerChar() {
         return (char) nextInt(97, 123);
+    }
+
+    public final static String nextLower() {
+        return nextLower(nextInt(99));
     }
 
     public final static String nextLower(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextLower();
+                value[i] = nextLowerChar();
             }
             return new String(value);
         }
@@ -105,15 +117,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextLetter() {
-        return nextBoolean() ? nextUpper() : nextLower();
+    public final static char nextLetterChar() {
+        return nextBoolean() ? nextUpperChar() : nextLowerChar();
+    }
+
+    public final static String nextLetter() {
+        return nextLetter(nextInt(99));
     }
 
     public final static String nextLetter(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextLetter();
+                value[i] = nextLetterChar();
             }
             return new String(value);
         }
@@ -132,15 +148,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextControl() {
+    public final static char nextControlChar() {
         return (char) nextInt(0, 32);
+    }
+
+    public final static String nextControl() {
+        return nextControl(nextInt(99));
     }
 
     public final static String nextControl(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextControl();
+                value[i] = nextControlChar();
             }
             return new String(value);
         }
@@ -159,15 +179,19 @@ public final class RandomStringUtil {
      * -------------------------------------------------------------------
      */
 
-    public final static char nextDigit() {
+    public final static char nextDigitChar() {
         return (char) nextInt(48, 58);
+    }
+
+    public final static String nextDigit() {
+        return nextDigit(nextInt(99));
     }
 
     public final static String nextDigit(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextDigit();
+                value[i] = nextDigitChar();
             }
             return new String(value);
         }
@@ -188,15 +212,19 @@ public final class RandomStringUtil {
 
     private static final char[] SYMBOLS = "!@#$%^&*()_-+={}[]:;\"'|\\<>,.?/~`".toCharArray();
 
-    public final static char nextSymbol() {
+    public final static char nextSymbolChar() {
         return SYMBOLS[nextInt(0, SYMBOLS.length)];
+    }
+
+    public final static String nextSymbol() {
+        return nextSymbol(nextInt(99));
     }
 
     public final static String nextSymbol(int length) {
         if (length > 0) {
             char[] value = new char[length];
             for (int i = 0; i < length; i++) {
-                value[i] = nextSymbol();
+                value[i] = nextSymbolChar();
             }
             return new String(value);
         }
@@ -207,6 +235,44 @@ public final class RandomStringUtil {
         IntUtil.requireGtOrEq(min, 0);
         IntUtil.requireLtOrEq(min, max);
         return nextSymbol(nextInt(min, max));
+    }
+
+    /*
+     * -------------------------------------------------------------------
+     * all char
+     * -------------------------------------------------------------------
+     */
+
+    public final static char nextChar() {
+        switch (nextInt() % 3) {
+            case 0:
+                return nextLowerChar();
+            case 1:
+                return nextUpperChar();
+            default:
+                return nextDigitChar();
+        }
+    }
+
+    public final static String next() {
+        return next(nextInt(99));
+    }
+
+    public final static String next(int length) {
+        if (length > 0) {
+            char[] value = new char[length];
+            for (int i = 0; i < length; i++) {
+                value[i] = nextChar();
+            }
+            return new String(value);
+        }
+        return Const.EMPTY;
+    }
+
+    public final static String next(int min, int max) {
+        IntUtil.requireGtOrEq(min, 0);
+        IntUtil.requireLtOrEq(min, max);
+        return next(nextInt(min, max));
     }
 
     /**

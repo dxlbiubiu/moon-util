@@ -121,6 +121,9 @@ import java.util.Date;
  * - @str.startsWith(String,String[, int])：{@link String#startsWith(String)}<p>
  * - @str.endsWith(String,String[, int])：{@link String#endsWith(String)}<p>
  * - @str.length(String)：{@link String#length()} 返回字符串长度<p>
+ * - @str.random()：{@link com.moon.util.RandomStringUtil#next()} 随机字符串<p>
+ * - @str.random(int)：{@link com.moon.util.RandomStringUtil#next(int)} 随机字符串<p>
+ * - @str.random(int, int)：{@link com.moon.util.RandomStringUtil#next(int, int)} 随机字符串<p>
  * <p>
  * - @date()：返回当前日期{@link java.util.Date}}<p>
  * - @date(Object)：将对象转换成{@link java.util.Date}}<p>

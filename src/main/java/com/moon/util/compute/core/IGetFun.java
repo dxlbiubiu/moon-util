@@ -6,6 +6,7 @@ import com.moon.time.TimeUtil;
 import com.moon.util.DateUtil;
 import com.moon.util.ListUtil;
 import com.moon.util.MapUtil;
+import com.moon.util.RandomStringUtil;
 import com.moon.util.compute.RunnerFunction;
 
 import java.time.LocalDate;
@@ -188,6 +189,22 @@ class IGetFun {
             @Override
             public Integer apply(Object value) {
                 return value == null ? 0 : ((CharSequence) value).length();
+            }
+        },
+        str_random {
+            @Override
+            public Object apply() {
+                return RandomStringUtil.next();
+            }
+
+            @Override
+            public Object apply(Object value) {
+                return RandomStringUtil.next(toInt(value));
+            }
+
+            @Override
+            public Object apply(Object value1, Object value2) {
+                return RandomStringUtil.next(toInt(value1), toInt(value2));
             }
         },
         str {

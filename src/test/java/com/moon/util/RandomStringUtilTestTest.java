@@ -132,4 +132,9 @@ class RandomStringUtilTestTest {
         Arrays.sort(chars1);
         assertions.assertTrue(Arrays.equals(chars0, chars1));
     }
+
+    @Test
+    void testName() {
+        System.out.println(2 % 3);
+    }
 }
