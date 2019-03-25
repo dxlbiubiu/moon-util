@@ -52,7 +52,7 @@ class IGetLoad {
         };
         String[] names = packages = new String[classes.length];
         for (int i = 0; i < classes.length; i++) {
-            names[i] = classes[i].getPackage().getName();
+            names[i] = classes[i].getPackage().getName() + ".";
         }
     }
 
@@ -65,7 +65,9 @@ class IGetLoad {
                 try {
                     type = ClassUtil.forName(packageName + name);
                     if (ModifierUtil.isPublic(type)) {
-                        CACHE.put(name, type);
+                        synchronized (CACHE) {
+                            CACHE.put(name, type);
+                        }
                         return type;
                     }
                 } catch (Throwable t) {

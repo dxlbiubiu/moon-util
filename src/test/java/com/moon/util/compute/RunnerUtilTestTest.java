@@ -74,6 +74,12 @@ class RunnerUtilTestTest {
     }
 
     @Test
+    void testStaticCaller() {
+        runner = RunnerUtil.parse("@DateUtil.now()");
+
+    }
+
+    @Test
     void testRun() {
         res = RunnerUtil.run("1+1.doubleValue()");
         assertions.assertEquals(res, 2D);
