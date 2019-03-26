@@ -24,7 +24,7 @@ public final class IOUtil {
         ThrowUtil.noInstanceError();
     }
 
-    public static final String DEFAULT_CHARSET = Charsets.UTF_8.text();
+    public static final String DEFAULT_CHARSET = Charsets.UTF_8.getText();
 
     /*
      * -----------------------------------------------------------------------

@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
@@ -37,8 +39,8 @@ public final class StringUtil {
      * @param str2
      * @return
      */
-    public static <T extends CharSequence> boolean equals(T str1, T str2) {
-        return str1 == null ? str2 == null : str1.equals(str2);
+    public static <T> boolean equals(T str1, T str2) {
+        return Objects.equals(str1, str2);
     }
 
     /**
@@ -419,23 +421,20 @@ public final class StringUtil {
      */
 
     public static String padStart(Object source, char ch, int length) {
-        String src = String.valueOf(source);
-        int diff = length - length(src);
-        if (diff > 0) {
-            char[] chars = new char[diff];
-            Arrays.fill(chars, ch);
-            return String.valueOf(chars) + source;
-        }
-        return src;
+        return doPad(source, ch, length, (src, chars) -> new StringBuilder().append(chars).append(src));
     }
 
     public static String padEnd(Object source, char ch, int length) {
+        return doPad(source, ch, length, (src, chars) -> new StringBuilder().append(src).append(chars));
+    }
+
+    private static String doPad(Object source, char ch, int length, BiFunction<String, char[], ?> toString) {
         String src = String.valueOf(source);
         int diff = length - length(src);
         if (diff > 0) {
             char[] chars = new char[diff];
             Arrays.fill(chars, ch);
-            return source + String.valueOf(chars);
+            return toString.apply(src, chars).toString();
         }
         return src;
     }
@@ -770,5 +769,27 @@ public final class StringUtil {
 
     public final static int charCodeAt(String str, int index) {
         return str.charAt(index);
+    }
+
+    /*
+     * -------------------------------------------------------------------
+     * replace
+     * -------------------------------------------------------------------
+     */
+
+    public final static String replace(String str, char old, char now) {
+        if (str == null) {
+            return null;
+        }
+        int len = str.length();
+        if (len == 0) {
+            return str;
+        }
+        char ch;
+        StringBuilder res = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            res.append((ch = str.charAt(i)) == old ? now : ch);
+        }
+        return res.toString();
     }
 }

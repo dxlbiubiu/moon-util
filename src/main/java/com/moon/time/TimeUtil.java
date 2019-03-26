@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.moon.lang.ThrowUtil.noInstanceError;
+import static java.util.Calendar.*;
 
 /**
  * @author benshaoye
@@ -43,18 +44,18 @@ public final class TimeUtil {
      */
 
     public final static LocalDate toDate(Calendar calendar) {
-        return LocalDate.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        return LocalDate.of(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH));
     }
 
     public final static LocalTime toTime(Calendar calendar) {
-        return LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-            calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND));
+        return LocalTime.of(calendar.get(HOUR_OF_DAY), calendar.get(MINUTE),
+            calendar.get(SECOND), calendar.get(MILLISECOND));
     }
 
     public final static LocalDateTime toDateTime(Calendar calendar) {
-        return LocalDateTime.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-            calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND),
-            calendar.get(Calendar.MILLISECOND));
+        return LocalDateTime.of(calendar.get(YEAR), calendar.get(MONTH), calendar.get(DAY_OF_MONTH),
+            calendar.get(HOUR_OF_DAY), calendar.get(MINUTE), calendar.get(SECOND),
+            calendar.get(MILLISECOND));
     }
 
     public final static LocalDate toDate(Date date) {

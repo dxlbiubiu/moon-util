@@ -34,7 +34,7 @@ public final class ImageUtil {
         try (InputStream input = FileUtil.getFileInputStream(imageFile)) {
             byte[] bytes = new byte[input.available()];
             input.read(bytes);
-            return new String(Base64.getEncoder().encodeToString(bytes));
+            return Base64.getEncoder().encodeToString(bytes);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
