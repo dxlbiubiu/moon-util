@@ -509,7 +509,7 @@ public enum Collects implements Supplier<Collection>,
         @Override
         public ArrayBlockingQueue apply(Collection collection) {
             if (collection == null) {
-                return null;
+                return new ArrayBlockingQueue(16);
             } else {
                 ArrayBlockingQueue collect = new ArrayBlockingQueue<>(collection.size());
                 collect.addAll(collection);

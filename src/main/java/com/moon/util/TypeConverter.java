@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
  * @author benshaoye
  * @date 2018/9/11
  */
+@FunctionalInterface
 public interface TypeConverter {
     /**
      * register type converter
@@ -22,7 +23,9 @@ public interface TypeConverter {
      * @param <C>
      * @return
      */
-    <C> TypeConverter register(Class<C> toType, BiFunction<Object, Class<C>, C> func);
+    default <C> TypeConverter register(Class<C> toType, BiFunction<Object, Class<C>, C> func) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * register type converter if absent
@@ -32,7 +35,9 @@ public interface TypeConverter {
      * @param <C>
      * @return
      */
-    <C> TypeConverter registerIfAbsent(Class<C> toType, BiFunction<Object, Class<C>, C> func);
+    default <C> TypeConverter registerIfAbsent(Class<C> toType, BiFunction<Object, Class<C>, C> func) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to type
@@ -50,7 +55,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    boolean toBooleanValue(Object value);
+    default boolean toBooleanValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to boolean
@@ -58,7 +65,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Boolean toBoolean(Object value);
+    default Boolean toBoolean(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to char value
@@ -66,7 +75,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    char toCharValue(Object value);
+    default char toCharValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to character
@@ -74,7 +85,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Character toCharacter(Object value);
+    default Character toCharacter(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to byte value
@@ -82,7 +95,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    byte toByteValue(Object value);
+    default byte toByteValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to byte
@@ -90,7 +105,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Byte toByte(Object value);
+    default Byte toByte(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to short value
@@ -98,7 +115,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    short toShortValue(Object value);
+    default short toShortValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to short
@@ -106,7 +125,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Short toShort(Object value);
+    default Short toShort(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to int value
@@ -114,7 +135,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    int toIntValue(Object value);
+    default int toIntValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to integer
@@ -122,7 +145,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Integer toInteger(Object value);
+    default Integer toInteger(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to long value
@@ -130,7 +155,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    long toLongValue(Object value);
+    default long toLongValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to long
@@ -138,7 +165,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Long toLong(Object value);
+    default Long toLong(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to float value
@@ -146,7 +175,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    float toFloatValue(Object value);
+    default float toFloatValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to float
@@ -154,7 +185,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Float toFloat(Object value);
+    default Float toFloat(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to double value
@@ -162,7 +195,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    double toDoubleValue(Object value);
+    default double toDoubleValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to double
@@ -170,7 +205,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Double toDouble(Object value);
+    default Double toDouble(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to big integer
@@ -178,7 +215,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    BigInteger toBigInteger(Object value);
+    default BigInteger toBigInteger(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to big decimal
@@ -186,7 +225,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    BigDecimal toBigDecimal(Object value);
+    default BigDecimal toBigDecimal(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to date
@@ -194,7 +235,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Date toDate(Object value);
+    default Date toDate(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to sql date
@@ -202,7 +245,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    java.sql.Date toSqlDate(Object value);
+    default java.sql.Date toSqlDate(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to timestamp
@@ -210,7 +255,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Timestamp toTimestamp(Object value);
+    default Timestamp toTimestamp(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to sql time
@@ -218,7 +265,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Time toTime(Object value);
+    default Time toTime(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to calendar
@@ -226,7 +275,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    Calendar toCalendar(Object value);
+    default Calendar toCalendar(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to string
@@ -234,7 +285,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    String toString(Object value);
+    default String toString(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to stringBuilder
@@ -242,7 +295,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    StringBuilder toStringBuilder(Object value);
+    default StringBuilder toStringBuilder(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to stringBuffer
@@ -250,7 +305,9 @@ public interface TypeConverter {
      * @param value
      * @return
      */
-    StringBuffer toStringBuffer(Object value);
+    default StringBuffer toStringBuffer(Object value) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to enum
@@ -260,7 +317,9 @@ public interface TypeConverter {
      * @param <T>
      * @return
      */
-    <T extends Enum<T>> T toEnum(Object value, Class<T> clazz);
+    default <T extends Enum<T>> T toEnum(Object value, Class<T> clazz) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to java bean
@@ -270,7 +329,9 @@ public interface TypeConverter {
      * @param <T>
      * @return
      */
-    <T> T toBean(Map map, Class<T> clazz);
+    default <T> T toBean(Map map, Class<T> clazz) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to array
@@ -279,7 +340,9 @@ public interface TypeConverter {
      * @param arrayType
      * @return
      */
-    <T> T toArray(Object value, Class<T> arrayType);
+    default <T> T toArray(Object value, Class<T> arrayType) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to componentType array
@@ -288,7 +351,9 @@ public interface TypeConverter {
      * @param componentType
      * @return
      */
-    <T> T[] toTypeArray(Object value, Class<T> componentType);
+    default <T> T[] toTypeArray(Object value, Class<T> componentType) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to map
@@ -298,7 +363,9 @@ public interface TypeConverter {
      * @param <T>
      * @return
      */
-    <T extends Map> T toMap(Object value, Class<T> mapClass);
+    default <T extends Map> T toMap(Object value, Class<T> mapClass) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to data
@@ -308,7 +375,9 @@ public interface TypeConverter {
      * @param <T>
      * @return
      */
-    <T extends List> T toList(Object value, Class<T> listType);
+    default <T extends List> T toList(Object value, Class<T> listType) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * value to collection
@@ -318,5 +387,7 @@ public interface TypeConverter {
      * @param <T>
      * @return
      */
-    <T extends Collection> T toCollection(Object value, Class<T> collectionType);
+    default <T extends Collection> T toCollection(Object value, Class<T> collectionType) {
+        throw new UnsupportedOperationException();
+    }
 }
