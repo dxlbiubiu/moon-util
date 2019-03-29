@@ -1,9 +1,8 @@
 package com.moon.lang;
 
+import com.moon.util.IteratorUtil;
 import com.moon.util.assertions.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +31,7 @@ class StringUtilTestTest {
     void testCapitalize() {
         String name = "className";
         assertEquals(StringUtil.capitalize(name), "ClassName");
+        assertEquals(StringUtil.capitalize("ClassName"), "ClassName");
         assertNull(StringUtil.capitalize(null));
         assertEquals(StringUtil.capitalize(""), "");
         assertEquals("  ", StringUtil.capitalize("  "));
@@ -321,5 +321,134 @@ class StringUtilTestTest {
         CharSequence deleted2 = StringUtil.deleteWhitespaces(cs2);
         assertions.assertInstanceOf(deleted2, StringBuffer.class);
         assertions.assertEquals(deleted2.toString(), "123456");
+    }
+
+
+    @Test
+    void testRequireEmpty() {
+    }
+
+    @Test
+    void testRequireNotEmpty() {
+    }
+
+    @Test
+    void testRequireBlank() {
+    }
+
+    @Test
+    void testRequireNotBlank() {
+    }
+
+    @Test
+    void testOnlyWhitespace() {
+    }
+
+    @Test
+    void testUnderscore() {
+        String str = "testOnlyWhitespace";
+        String now = StringUtil.underscore(str);
+        assertEquals(now, "test_only_whitespace");
+        str = "StringUtilTestTest";
+        now = StringUtil.underscore(str);
+        assertEquals(now, "string_util_test_test");
+
+    }
+
+    @Test
+    void testCamelcaseToHyphen() {
+        String str = "testOnlyWhitespace";
+        String now = StringUtil.camelcaseToHyphen(str);
+        assertEquals(now, "test-only-whitespace");
+        str = "StringUtilTestTest";
+        now = StringUtil.camelcaseToHyphen(str);
+        assertEquals(now, "string-util-test-test");
+    }
+
+    /**
+     * 4E00-9FA5
+     * 4E00-9FA5
+     * 4E00-9FA5
+     * 20000-2A6D6
+     * 2A700-2B734
+     * 2B740-2B81D
+     * 2B820-2CEA1
+     * 2CEB0-2EBE0
+     * 2F00-2FD5
+     * 2E80-2EF3
+     * F900-FAD9
+     * 2F800-2FA1D
+     * E815-E86F
+     * E400-E5E8
+     * E600-E6CF
+     * 31C0-31E3
+     * 2FF0-2FFB
+     * 3105-312F
+     * 31A0-31BA
+     * 3007
+     */
+    @Test
+    void testCharCodeAt() {
+    }
+
+    @Test
+    void testUnicode() {
+        String str = " 4E00-9FA5\n" +
+            "      4E00-9FA5\n" +
+            "      4E00-9FA5\n" +
+            "      20000-2A6D6\n" +
+            "      2A700-2B734\n" +
+            "      2B740-2B81D\n" +
+            "      2B820-2CEA1\n" +
+            "      2CEB0-2EBE0\n" +
+            "      2F00-2FD5\n" +
+            "      2E80-2EF3\n" +
+            "      F900-FAD9\n" +
+            "      2F800-2FA1D\n" +
+            "      E815-E86F\n" +
+            "      E400-E5E8\n" +
+            "      E600-E6CF\n" +
+            "      31C0-31E3\n" +
+            "      2FF0-2FFB\n" +
+            "      3105-312F\n" +
+            "      31A0-31BA\n" +
+            "      3007";
+
+        String[] strings = str.split("\\n");
+        IteratorUtil.forEach(strings, s -> {
+            System.out.println("=========================================");
+            s = s.trim();
+            String[] unicodes = s.split("-");
+            IteratorUtil.forEach(unicodes, u -> {
+                u = u.trim();
+                Integer.parseInt(u, 16);
+                System.out.println(u + "\t" + Integer.parseInt(u, 16));
+            });
+        });
+    }
+
+    @Test
+    void testReplace() {
+        double val = .1 * .1;
+        System.out.println(val);
+        boolean now = true & true;
+        System.out.println(now);
+        now = false | false;
+        System.out.println(now);
+        now = true ^ false;// 表示互斥
+        System.out.println(now);
+
+        now = true;
+        int num = 0;
+        boolean flag = now | num++ == 0;
+        System.out.println("=======================");
+        System.out.println(flag);
+        System.out.println(num);
+
+        num = 0;
+        flag = now || num++ > 0;
+        System.out.println("=======================");
+        System.out.println(flag);
+        System.out.println(num);
     }
 }

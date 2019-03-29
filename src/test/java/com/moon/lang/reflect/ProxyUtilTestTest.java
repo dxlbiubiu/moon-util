@@ -1,5 +1,6 @@
 package com.moon.lang.reflect;
 
+import com.moon.lang.StringUtil;
 import com.moon.util.RandomStringUtil;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -9,6 +10,10 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.moon.util.Console.out;
 
 /**
  * @author benshaoye
@@ -48,9 +53,9 @@ class ProxyUtilTestTest {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("+++++++++++++++++++++++++++++++++++  before");
+            //            System.out.println("+++++++++++++++++++++++++++++++++++  before");
             Object invoked = method.invoke(student, args);
-            System.out.println("+++++++++++++++++++++++++++++++++++  after");
+            //            System.out.println("+++++++++++++++++++++++++++++++++++  after");
             return invoked;
         }
     }
@@ -76,6 +81,15 @@ class ProxyUtilTestTest {
         System.out.println("===================================  " + res);
     }
 
+    Getter getByJdkProxy() {
+        Student student = new Student();
+        Class[] interfaces = {Getter.class};
+        Object o = Proxy.newProxyInstance(getClass().getClassLoader(),
+            interfaces, new StudentInvocationHandler(student));
+        Getter getter = (Getter) o;
+        return getter;
+    }
+
     public static class StudentMethodInterceptor implements MethodInterceptor {
 
         private final Student student;
@@ -84,20 +98,134 @@ class ProxyUtilTestTest {
 
         @Override
         public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
-            System.out.println("-----------------------------------  before");
+            //            System.out.println("-----------------------------------  before");
             Object invoked = proxy.invoke(student, args);
-            System.out.println("-----------------------------------  after");
+            //            System.out.println("-----------------------------------  after");
             return invoked;
         }
     }
 
-    @Test
-    void testFirstMethod() {
+    Getter getByCglib() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(Student.class);
         enhancer.setCallback(new StudentMethodInterceptor());
         Student student = (Student) enhancer.create();
-        Object res = student.get();
+        return student;
+    }
+
+    @Test
+    void testFirstMethod() {
+        Getter getter = getByCglib();
+        Object res = getter.get();
         System.out.println("===================================  " + res);
+    }
+
+    @Test
+    void testTimeZone() {
+        Map<String, String> map = new HashMap<>(64);
+        map.put("ACT", "Australia/Darwin");
+        map.put("AET", "Australia/Sydney");
+        map.put("AGT", "America/Argentina/Buenos_Aires");
+        map.put("ART", "Africa/Cairo");
+        map.put("AST", "America/Anchorage");
+        map.put("BET", "America/Sao_Paulo");
+        map.put("BST", "Asia/Dhaka");
+        map.put("CAT", "Africa/Harare");
+        map.put("CNT", "America/St_Johns");
+        map.put("CST", "America/Chicago");
+        map.put("CTT", "Asia/Shanghai");
+        map.put("EAT", "Africa/Addis_Ababa");
+        map.put("ECT", "Europe/Paris");
+        map.put("IET", "America/Indiana/Indianapolis");
+        map.put("IST", "Asia/Kolkata");
+        map.put("JST", "Asia/Tokyo");
+        map.put("MIT", "Pacific/Apia");
+        map.put("NET", "Asia/Yerevan");
+        map.put("NST", "Pacific/Auckland");
+        map.put("PLT", "Asia/Karachi");
+        map.put("PNT", "America/Phoenix");
+        map.put("PRT", "America/Puerto_Rico");
+        map.put("PST", "America/Los_Angeles");
+        map.put("SST", "Pacific/Guadalcanal");
+        map.put("VST", "Asia/Ho_Chi_Minh");
+
+        map.forEach((key, value) -> {
+            String name = StringUtil.replace(value, '_', '$');
+            name = StringUtil.replace(name, '/', '_');
+            String out = "/**\n * " + value + "\n */\n";
+            out += name.toUpperCase()+",";
+            String now = "{\n@Override\npublic DateFormat with(String pattern){\n" +
+                "return withTimeZone(pattern, \"" + value + "\");\n" +
+                "}\n},";
+            System.out.println(out);
+        });
+    }
+
+    @Test
+    void testProxy() {
+        Getter getter1 = getByCglib();
+        Getter getter2 = getByJdkProxy();
+        Getter getter3 = new Student();
+
+        getter1.get();
+        getter2.get();
+
+        final int count = 100000000;
+        out.println("==============================");
+        out.time("cglib:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter1.get();
+        }
+        out.timeNext("jdk:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter2.get();
+        }
+        out.timeNext("java:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter3.get();
+        }
+        out.timeEnd();
+        out.println("==============================");
+        out.time("jdk:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter2.get();
+        }
+        out.timeNext("java:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter3.get();
+        }
+        out.timeNext("cglib:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter1.get();
+        }
+        out.timeEnd();
+        out.println("==============================");
+        out.time("cglib:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter1.get();
+        }
+        out.timeNext("java:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter3.get();
+        }
+        out.timeNext("jdk:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter2.get();
+        }
+        out.timeEnd();
+        out.println("==============================");
+        out.time("java:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter3.get();
+        }
+        out.timeNext("jdk:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter2.get();
+        }
+        out.timeNext("cglib:{}ms");
+        for (int i = 0; i < count; i++) {
+            getter1.get();
+        }
+        out.timeEnd();
     }
 }

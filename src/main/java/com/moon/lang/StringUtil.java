@@ -748,6 +748,11 @@ public final class StringUtil {
 
     /**
      * 首字母大写
+     * "className"    ==>      "ClassName"
+     * "ClassName"    ==>      "ClassName"
+     * null           ==>      null
+     * ""             ==>      ""
+     * " "             ==>      " "
      *
      * @param str
      * @return
@@ -767,6 +772,74 @@ public final class StringUtil {
         return str;
     }
 
+    final static String camelcase(String str) {
+        final int len = str == null ? 0 : str.length();
+        if (len == 0) {
+            return str;
+        }
+        char curr;
+        boolean isCamel = false;
+        char[] nowChars = new char[len];
+        for (int strIndex = 0, nowIndex = 0; strIndex < len; strIndex++) {
+            curr = str.charAt(strIndex);
+            if (strIndex == 0) {
+            }
+            if (Character.isLetterOrDigit(curr)) {
+                nowChars[nowIndex++] = curr;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * "oneOnlyWhitespace"      ===>    "one_only_whitespace"
+     * "StringUtilTestTest"     ===>    "string_util_test_test"
+     * null                     ===>    null
+     * ""                       ===>    ""
+     * " "                      ===>    " "
+     *
+     * @param str
+     * @return
+     */
+    public final static String underscore(String str) {
+        return hyphenWith(str, '_');
+    }
+
+    /**
+     * "oneOnlyWhitespace"      ===>    "one-only-whitespace"
+     * "StringUtilTestTest"     ===>    "string-util-test-test"
+     * null                     ===>    null
+     * ""                       ===>    ""
+     * " "                      ===>    " "
+     *
+     * @param str
+     * @return
+     */
+    public final static String camelcaseToHyphen(String str) {
+        return hyphenWith(str, '-');
+    }
+
+    private static String hyphenWith(String str, char hyphen) {
+        int len = str == null ? 0 : str.length();
+        if (len == 0) {
+            return str;
+        }
+        char ch;
+        StringBuilder res = new StringBuilder(len + 5);
+        for (int i = 0; i < len; i++) {
+            if (Character.isUpperCase(ch = str.charAt(i))) {
+                if (i == 0) {
+                    res.append(Character.toLowerCase(ch));
+                } else {
+                    res.append(hyphen).append(Character.toLowerCase(ch));
+                }
+            } else {
+                res.append(ch);
+            }
+        }
+        return res.toString();
+    }
+
     public final static int charCodeAt(String str, int index) {
         return str.charAt(index);
     }
@@ -778,18 +851,6 @@ public final class StringUtil {
      */
 
     public final static String replace(String str, char old, char now) {
-        if (str == null) {
-            return null;
-        }
-        int len = str.length();
-        if (len == 0) {
-            return str;
-        }
-        char ch;
-        StringBuilder res = new StringBuilder(len);
-        for (int i = 0; i < len; i++) {
-            res.append((ch = str.charAt(i)) == old ? now : ch);
-        }
-        return res.toString();
+        return str == null ? null : str.replace(old, now);
     }
 }

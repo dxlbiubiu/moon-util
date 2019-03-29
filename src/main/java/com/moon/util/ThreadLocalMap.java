@@ -35,11 +35,15 @@ public class ThreadLocalMap<K, V>
     }
 
     public ThreadLocalMap() {
-        this(null);
+        this(HashMap::new);
     }
 
     public ThreadLocalMap(Supplier<Map<K, V>> constructor) {
         this.constructor = constructor;
+    }
+
+    public ThreadLocalMap(Map<K, V> map) {
+        this(() -> new HashMap<>(map));
     }
 
     @Override
